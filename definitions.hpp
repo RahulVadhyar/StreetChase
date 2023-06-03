@@ -15,7 +15,7 @@
 
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
-// #define INPUT_STATUS //uncomment to enable input status debugging
+#define INPUT_STATUS //uncomment to enable input status debugging
 #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 
 

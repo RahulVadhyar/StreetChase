@@ -25,14 +25,14 @@ class PlayerClass: public PhysicsObject{
     //Updates the player's velocity based on inputs
     void update(){
         velocity_x = 0;
-        velocity_y = 0;
-        if(input_status.up) velocity_y = 0.01;
-        if(input_status.down) velocity_y = -0.01;
+        // velocity_y = 0;
+        // if(input_status.up) velocity_y = 0.01;
+        // if(input_status.down) velocity_y = -0.01;
         if(input_status.left) velocity_x = -0.01;
         if(input_status.right) velocity_x = 0.01;
         //only if standing still, allow the player to jump
         //TODO: add a jump cooldown and make sure player is on ground before jumping
-        if(input_status.jump && velocity_y == 0) velocity_y = 0.1;
+        if(input_status.jump && is_grounded) velocity_y = 0.1;
 
         //debugging
         #ifdef INPUT_STATUS

@@ -11,6 +11,8 @@ int main(){
     //create ground and player
     RenderObject ground(2.0f, 0.5f, &shader1, STONE_TEX_DIR);
     ground.y = -0.75f;
+    RenderObject wall(0.1, 0.2, &shader1, STONE_TEX_DIR);
+    wall.y = -0.2;
     PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
 
     //game loop
@@ -20,12 +22,12 @@ int main(){
 
         //update player
         player.update();
-        player.collision(ground);
         player.update_coords();
-
+        player.collision(ground);
         //rendering commands
         clearScreen();
         ground.draw();
+        wall.draw();
         player.draw();
 
         //update the screen
