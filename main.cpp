@@ -4,30 +4,34 @@
 int main(){
     //Initalize OpenGl with a window
     GLFWwindow* window = Initalize();
+
+    //create a shader
     Shader shader1("/home/rahul/StreetChase/Shaders/shader.vs", "/home/rahul/StreetChase/Shaders/shader.fs");
+
+    //create ground and player
     RenderObject ground(2.0f, 0.5f, &shader1, STONE_TEX_DIR);
     ground.y = -0.75f;
     PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
 
-    //wireframe mode
-    #ifdef WIREFRAME_MODE
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    #endif
-
+    //game loop
     while(!glfwWindowShouldClose(window)){
-        
+        //get input
         ProcessInput(window, &player);
+
+        //update player
         player.update();
         player.collision(ground);
         player.update_coords();
+
         //rendering commands
         clearScreen();
         ground.draw();
         player.draw();
+
+        //update the screen
         swapBuffers(window);
     }
-    
-    
+
     //terminate glfw
     glfwTerminate();
     return 0;

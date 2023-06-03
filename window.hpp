@@ -61,6 +61,10 @@ GLFWwindow* Initalize(){
     //tell glfw to call framebuffer_size_callback on window resize
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-
+     //debugging: wireframe mode
+    #ifdef WIREFRAME_MODE
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    #endif
+    
     return window;
 }
