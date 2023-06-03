@@ -6,6 +6,7 @@ class PhysicsObject: public RenderObject {
         float acceleration_x, acceleration_y;
         float last_time;
         bool is_grounded;
+        bool wall_colliding;
 
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
         PhysicsObject(float width, float height, Shader *shader, std::string texture_dir) : 
@@ -20,21 +21,39 @@ class PhysicsObject: public RenderObject {
             acceleration_x = 0;
             acceleration_y = 0;
             is_grounded = true;
+            wall_colliding = false;
         }
 
-        void collision(RenderObject other){
+        void collisionY(RenderObject other){
+            is_grounded = false;
             if(other.y + other.height/2 > y - height/2){
                 y = other.y + other.height/2 + height/2;
                 is_grounded = true;
-            } else {
-                is_grounded = false;
-            }
+            } 
             //debugging
             #ifdef PRINT_PLAYER_STATUS
-            std::cout << "Status player.collision():" << std::endl;
+            std::cout << "Status player.collisionY():" << std::endl;
             printPlayerStatus();
             #endif
         }
+
+        void collisionX(RenderObject other){
+            wall_colliding = false;
+            if(other.x - other.width/2 < x + width/2){
+                x = other.x - other.width/2 -width/2;
+                wall_colliding = true;
+            }
+
+            //debugging
+            #ifdef PRINT_PLAYER_STATUS
+            std::cout << "Status player.collisionX():" << std::endl;
+            printPlayerStatus();
+            #endif
+        }
+
+        // void collisionXandY(RenderObject other){
+
+        // }
 
         //updates the coordinates of the object based on the physics variables
         void update_coords(){
@@ -88,6 +107,7 @@ class PhysicsObject: public RenderObject {
             std::cout << "x: " << x << " y: " << y << std::endl;
             std::cout << "velocity_x: " << velocity_x << " velocity_y: " << velocity_y << std::endl;
             std::cout << "acceleration_x: " << acceleration_x << " acceleration_y: " << acceleration_y << std::endl;
-            std::cout << "Collision status:  " << is_grounded << std::endl << std::endl;
+            std::cout << "Collision status: " << is_grounded << std::endl;
+            std::cout << "Wall Collision status: " << wall_colliding << std::endl << std::endl;
         }
 };
