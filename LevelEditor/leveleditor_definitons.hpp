@@ -11,9 +11,6 @@
 #define STONE_TEX_DIR "/home/rahul/StreetChase/Textures/stone.jpg"
 #define PLAYER_TEX_DIR "/home/rahul/StreetChase/Textures/player.png"
 
-//level editor mode
-#define LEVEL_EDITOR
-
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -47,4 +44,6 @@
 #include </home/rahul/StreetChase/PhysicsClass.hpp>
 #include </home/rahul/StreetChase/PlayerClass.hpp>
 #include </home/rahul/StreetChase/window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+
+#include </home/rahul/StreetChase/LevelEditor/LevelEditorClass.hpp>
 #endif

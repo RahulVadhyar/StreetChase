@@ -11,6 +11,8 @@ class PhysicsObject: public RenderObject {
         float default_x, default_y;
         float acceleration_x, acceleration_y;
         float last_time;
+        float delay;
+        bool gravity;
         //collision variables
         std::vector<RenderObject*> collision_objects;
         Collision collision_status;
@@ -27,6 +29,7 @@ class PhysicsObject: public RenderObject {
             acceleration_x = 0;
             acceleration_y = 0;
             collision_status = {false, false, false, false};
+            gravity = true;
 
         }
         PhysicsObject(float x, float y, float width, float height, Shader *shader, std::string texture_dir) : 
@@ -41,6 +44,7 @@ class PhysicsObject: public RenderObject {
             acceleration_x = 0;
             acceleration_y = 0;
             collision_status = {false, false, false, false};
+            gravity = true;
 
         }
     private: 
@@ -95,13 +99,14 @@ class PhysicsObject: public RenderObject {
         }
 
         //updates the coordinates of the object based on the physics variables
-        void updateCoords(){
+        void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
-            auto delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+            delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
 
             //gravity
-            acceleration_y = -0.001;
+            if(gravity)
+                acceleration_y = -0.001;
 
             //update the coordinates and velocity based on delay
             velocity_x += acceleration_x*delay;
@@ -116,10 +121,6 @@ class PhysicsObject: public RenderObject {
             y += velocity_y*delay;
             x += velocity_x*delay;
 
-            //move the screen if the player is too far to the right or left
-            if(std::abs(x - *screen_x) > 0.3)
-                *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
-
             //if the object is out of bounds, then set it to the edge of the screen
             if(y > 1.0f - height/2){
                 y = 1.0f - height/2;
@@ -130,29 +131,8 @@ class PhysicsObject: public RenderObject {
 
             //update the last time
             last_time = current_time;
-            printPlayerStatus("updateCoords");
+            
         }
   
-        //if needed then it prints out the current status of player
-        //mainly for debugging purposes
-        void printPlayerStatus(std::string function_name){
-        #ifdef PRINT_PLAYER_STATUS
-            std::cout << "DEBUG: Current Player Status" << std::endl;
-            std::cout << "Function name: " << function_name << std::endl;
-            std::cout << "x: " << x << " y: " << y << std::endl;
-            std::cout << "velocity_x: " << velocity_x << " velocity_y: " << velocity_y << std::endl;
-            std::cout << "acceleration_x: " << acceleration_x << " acceleration_y: " << acceleration_y << std::endl << std::endl;
-            
-        #endif
-        }
-
-        void printPlayerCollisionStatus(){{
-        #ifdef PRINT_COLLISION_STATUS
-            std::cout << "DEBUG: Current Player Collision Status" << std::endl;
-            std::cout << "Collision Down status: " << collision_status.down << std::endl;
-            std::cout << "Collision Up status: " << collision_status.up << std::endl;
-            std::cout << "Collision Right status: " << collision_status.right << std::endl;
-            std::cout << "Collision Left status: " << collision_status.left  << std::endl << std::endl;
-        #endif
-        }}
+        
 };

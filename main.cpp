@@ -12,7 +12,8 @@ int main(){
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &shader1, STONE_TEX_DIR);
     RenderObject wall(-0.4, -0.3, 0.4, 0.2, &shader1, STONE_TEX_DIR);
     PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
-    player.shouldRender = false;
+    player.gravity = false;
+    player.shouldRender = true;
     player.addCollisionObject(&ground);
     player.addCollisionObject(&wall);
     window.addRenderObject(&ground);

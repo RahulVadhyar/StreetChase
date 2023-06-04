@@ -1,5 +1,5 @@
 #include </home/rahul/StreetChase/LevelEditor/leveleditor_definitons.hpp>
-
+//command to compile: g++ LevelEditor/leveleditor.cpp glad/glad.c -lglfw -lGL -Iglm -o main &&./main
 int main(){
     //Initalize  window
     Window window;
@@ -9,12 +9,12 @@ int main(){
 
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &shader1, STONE_TEX_DIR);
-    PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
-    player.shouldRender = false;
-    player.addCollisionObject(&ground);
+    LevelEditor editor(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
+    editor.shouldRender = false;
+    editor.addCollisionObject(&ground);
     window.addRenderObject(&ground);
-    window.addRenderObject(&player);
-    window.addPlayer(&player);
+    window.addRenderObject(&editor);
+    window.addPlayer(&editor);
 
     //render and play the game
     window.play();

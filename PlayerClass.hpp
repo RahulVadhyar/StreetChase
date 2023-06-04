@@ -14,7 +14,6 @@ class PlayerClass: public PhysicsObject{
     InputStatus input_status;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
-    //TODO: add a default x and y attribute to the constructor
     PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
     PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir){
     input_status = {false, false, false, false, false};
@@ -22,15 +21,18 @@ class PlayerClass: public PhysicsObject{
 
     //Updates the player's velocity based on inputs
     void update(){
-        
         velocity_x = 0;
-        if(input_status.down) velocity_y = -0.01;
         if(input_status.left) velocity_x = -0.01;
         if(input_status.right) velocity_x = 0.01;
+        if(input_status.down) velocity_y = -0.01;
         if(input_status.up) velocity_y = 0.01;
         if(input_status.jump && collision_status.down) velocity_y = 0.04;
-        updateCoords();
+        PhysicsObject::update();
+        //move the screen if the player is too far to the right or left
+        if(std::abs(x - *screen_x) > 0.3)
+            *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
         updateCollisions();
+        printPlayerStatus("Update");
     }
 
     //debugging: prints the inputs
@@ -42,5 +44,27 @@ class PlayerClass: public PhysicsObject{
         std::cout << "Jump(Space Bar): " << input_status.jump << std::endl; 
         std::cout << std::endl;
         #endif
+    }
+    //if needed then it prints out the current status of player
+    //mainly for debugging purposes
+    void printPlayerStatus(std::string function_name){
+    #ifdef PRINT_PLAYER_STATUS
+        std::cout << "DEBUG: Current Player Status" << std::endl;
+        std::cout << "Function name: " << function_name << std::endl;
+        std::cout << "x: " << x << " y: " << y << std::endl;
+        std::cout << "velocity_x: " << velocity_x << " velocity_y: " << velocity_y << std::endl;
+        std::cout << "acceleration_x: " << acceleration_x << " acceleration_y: " << acceleration_y << std::endl << std::endl;
+        
+    #endif
+    }
+
+    void printPlayerCollisionStatus(){
+    #ifdef PRINT_COLLISION_STATUS
+        std::cout << "DEBUG: Current Player Collision Status" << std::endl;
+        std::cout << "Collision Down status: " << collision_status.down << std::endl;
+        std::cout << "Collision Up status: " << collision_status.up << std::endl;
+        std::cout << "Collision Right status: " << collision_status.right << std::endl;
+        std::cout << "Collision Left status: " << collision_status.left  << std::endl << std::endl;
+    #endif
     }
 };
