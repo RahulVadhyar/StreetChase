@@ -64,7 +64,7 @@ class Window{
     }
     private:
     void clear(){
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //state setting function
+        glClearColor(1.0f, 1.0f, 1.0f, 0.0f); //state setting function
         glClear(GL_COLOR_BUFFER_BIT); //state using function
     }
     void swap(){

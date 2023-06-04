@@ -43,4 +43,5 @@
 #include </home/rahul/StreetChase/PhysicsClass.hpp>
 #include </home/rahul/StreetChase/PlayerClass.hpp>
 #include </home/rahul/StreetChase/window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+// #include </home/rahul/StreetChase/HUDClass.hpp>
 #endif

@@ -78,6 +78,7 @@ class Shader{
             }
             glDeleteShader(vertex);
             glDeleteShader(fragment);
+            use();
             setInt("texture1", 0);
         }
 
