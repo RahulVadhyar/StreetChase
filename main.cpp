@@ -9,22 +9,18 @@ int main(){
     Shader shader1("/home/rahul/StreetChase/Shaders/shader.vs", "/home/rahul/StreetChase/Shaders/shader.fs");
 
     //create ground and player
-    RenderObject ground(2.0f, 2.0f, &shader1, STONE_TEX_DIR);
-    ground.y = -1.75f;
-    RenderObject wall(0.4, 0.2, &shader1, STONE_TEX_DIR);
-    wall.y = -0.4;
-    wall.x = -0.3;
+    RenderObject ground(0, -1.0f, 2.0f, 1.0f, &shader1, STONE_TEX_DIR);
+    RenderObject wall(-0.4, -0.3, 0.4, 0.2, &shader1, STONE_TEX_DIR);
     PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
-    // player.y = 0.7f;
-    //game loop
+    //game loop 
+    player.addCollisionObject(&ground);
+    player.addCollisionObject(&wall);
     while(!glfwWindowShouldClose(window)){
         //get input
         ProcessInput(window, &player);
 
         //update player
         player.update();
-        player.getCollision(wall);
-        player.getCollision(ground);
         
         //rendering commands
         clearScreen();

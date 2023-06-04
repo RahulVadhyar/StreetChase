@@ -11,7 +11,9 @@ class PhysicsObject: public RenderObject {
         float default_x, default_y;
         float acceleration_x, acceleration_y;
         float last_time;
-        bool is_touching_ground = false;
+        //collision variables
+        std::vector<RenderObject*> collision_objects;
+        Collision collision_status;
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
         PhysicsObject(float width, float height, Shader *shader, std::string texture_dir) : 
         RenderObject::RenderObject(width, height, shader, texture_dir)
@@ -24,11 +26,26 @@ class PhysicsObject: public RenderObject {
             velocity_y = 0;
             acceleration_x = 0;
             acceleration_y = 0;
-
+            collision_status = {false, false, false, false};
 
         }
-        Collision getCollision(RenderObject other){
-            Collision collision = {false, false, false, false};
+        PhysicsObject(float x, float y, float width, float height, Shader *shader, std::string texture_dir) : 
+        RenderObject::RenderObject(width, height, shader, texture_dir)
+        {
+            default_x = x;
+            default_y = y;
+            x = default_x;
+            y = default_y;
+            velocity_x = 0;
+            velocity_y = 0;
+            acceleration_x = 0;
+            acceleration_y = 0;
+            collision_status = {false, false, false, false};
+
+        }
+    private: 
+        //gets the collision between the object and another object
+        void getCollision(RenderObject other){
             auto distance_x = (other.width/2 + width/2) - std::abs(other.x - x);
             auto distance_y = (other.height/2 + height/2) - std::abs(other.y - y);
             auto side_x = other.x - x;
@@ -40,47 +57,57 @@ class PhysicsObject: public RenderObject {
             auto right = distance_x >= 0 && side_x >= 0;
 
             auto mag = distance_y - distance_x;
-            is_touching_ground = false;
+
+            //when there is a collision
             if((down||up) && left && mag >= 0){
                 //go left
                 x = other.x + other.width/2 + width/2;
                 if(velocity_x < 0) velocity_x = 0;
-                collision.left = true;
+                collision_status.left = true;
             } else if((left||right) && down && mag <= 0){
                 //go up
                 y = other.y + other.height/2 + height/2;
                 if(velocity_y < 0) velocity_y = 0;
-                collision.down = true;
-                is_touching_ground = true;
+                collision_status.down = true;
             } else if((down||up) && right && mag >= 0){
                 //go right
                 x = other.x - other.width/2 - width/2;
                 if(velocity_x > 0) velocity_x = 0;
-                collision.right = true;
+                collision_status.right = true;
             } else if((left||right) && up && mag <= 0){
                 //go down
                 y = other.y - other.height/2 - height/2;
                 if(velocity_y > 0) velocity_y = 0;
-                collision.up = true;
+                collision_status.up = true;
             } 
-            printPlayerStatus("player.getCollision()");
-            printPlayerCollisionStatus(collision);
-            return collision;
+        }
+    public:
+        //updates the collision status of the object
+        void updateCollisions(){
+            collision_status = {false, false, false, false};
+            if(!collision_objects.empty())
+                for(RenderObject *i : collision_objects)
+                    getCollision(*i);
+        }
+        //adds an collision object to the list of collision objects
+        void addCollisionObject(RenderObject *object){
+            collision_objects.push_back(object);
         }
 
-
         //updates the coordinates of the object based on the physics variables
-        void update_coords(){
+        void updateCoords(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
             auto delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
 
+            //gravity
             acceleration_y = -0.001;
 
             //update the coordinates and velocity based on delay
             velocity_x += acceleration_x*delay;
             velocity_y += acceleration_y*delay;
 
+            //speed limits
             if(velocity_x > 0.3) velocity_x = 0.3;
             if(velocity_y > 0.3) velocity_y = 0.3;
             if(velocity_x < -0.3) velocity_x = -0.3;
@@ -105,11 +132,8 @@ class PhysicsObject: public RenderObject {
 
             //update the last time
             last_time = current_time;
-
-            //debugging
-            printPlayerStatus("player.update_coords()");
         }
-
+  
         //if needed then it prints out the current status of player
         //mainly for debugging purposes
         void printPlayerStatus(std::string function_name){
@@ -123,13 +147,13 @@ class PhysicsObject: public RenderObject {
         #endif
         }
 
-        void printPlayerCollisionStatus(Collision collision){{
+        void printPlayerCollisionStatus(){{
         #ifdef PRINT_COLLISION_STATUS
             std::cout << "DEBUG: Current Player Collision Status" << std::endl;
-            std::cout << "Collision Down status: " << collision.down << std::endl;
-            std::cout << "Collision Up status: " << collision.up << std::endl;
-            std::cout << "Collision Right status: " << collision.right << std::endl;
-            std::cout << "Collision Left status: " << collision.left  << std::endl << std::endl;
+            std::cout << "Collision Down status: " << collision_status.down << std::endl;
+            std::cout << "Collision Up status: " << collision_status.up << std::endl;
+            std::cout << "Collision Right status: " << collision_status.right << std::endl;
+            std::cout << "Collision Left status: " << collision_status.left  << std::endl << std::endl;
         #endif
         }}
 };

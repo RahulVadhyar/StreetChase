@@ -1,8 +1,9 @@
-
+//for resizing the viewport in the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
 }
 
+//processes the input from the keyboard and gives it to player
 void ProcessInput(GLFWwindow* window, PlayerClass* player){
     InputStatus inputs = {false, false, false, false, false};
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
@@ -26,16 +27,19 @@ void ProcessInput(GLFWwindow* window, PlayerClass* player){
     player->input_status = inputs;
 }
 
+//clears the screen with a black color
 void clearScreen(){
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //state setting function
     glClear(GL_COLOR_BUFFER_BIT); //state using function
 }
 
+//swaps the buffers and polls for events
 void swapBuffers(GLFWwindow* window){
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
 
+//initalizes glfw and glad
 GLFWwindow* Initalize(){
     //initialize glfw
     glfwInit();

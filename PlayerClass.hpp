@@ -28,9 +28,9 @@ class PlayerClass: public PhysicsObject{
         if(input_status.left) velocity_x = -0.01;
         if(input_status.right) velocity_x = 0.01;
         if(input_status.up) velocity_y = 0.01;
-        if(input_status.jump && is_touching_ground) velocity_y = 0.04;
-        printPlayerStatus("player.update()");
-        update_coords();
+        if(input_status.jump && collision_status.down) velocity_y = 0.04;
+        updateCoords();
+        updateCollisions();
     }
 
     //debugging: prints the inputs

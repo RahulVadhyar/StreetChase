@@ -16,8 +16,8 @@
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
-#define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
-#define PRINT_COLLISION_STATUS
+// #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
+// #define PRINT_COLLISION_STATUS
 
 //standard libraries
 #include <iostream>
@@ -26,6 +26,7 @@
 #include <sstream>
 #include <cmath>
 #include <ctime>
+#include <vector>
 
 //Third party libraries(OpenGL, stbi and glm)
 #include </home/rahul/StreetChase/glad/glad.h>

@@ -1,10 +1,14 @@
 class RenderObject{
     public:
+        //opengl variables
         unsigned int texture1, texture2;
         unsigned int VBO, VAO, EBO;
         glm::mat4 (*Transform_func)(float, float);
         Shader* shader;
         float x, y, width, height;
+
+        //Constructors
+        //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
         {   
             width = input_width;
@@ -24,7 +28,28 @@ class RenderObject{
             x = 0; y= 0;
         };
 
+        RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
+        {   
+            width = input_width;
+            height = input_height;
+             float vertices[] = {
+                //verticies         texture coords
+                width/2,  height/2, 0.0f,  1.0f, 1.0f, 
+                width/2, -height/2, 0.0f,  1.0f, 0.0f, 
+                -width/2, -height/2, 0.0f,  0.0f, 0.0f, 
+                -width/2,  height/2, 0.0f,  0.0f, 1.0f 
+                    };
+            shader = input_shader;
+            generateVertices(vertices, sizeof(vertices));
+            shader->use();
+            attachTexture(texture_dir);
+            Transform_func = &Transform::Default; 
+            x = input_x; y= input_y;
+        };
+
+
         private:
+        //generates the vertices and binds them to the VAO(sends to GPU)
         void generateVertices(float vertices[], int vertices_size){
             glGenVertexArrays(1, &VAO);
             glGenBuffers(1, &VBO);
@@ -51,6 +76,7 @@ class RenderObject{
             glBindVertexArray(0); 
         }
         private:
+        //attaches the texture to the object
         void attachTexture(std::string image_dir){
             //texture1
             glGenTextures(1, &texture1);
@@ -80,6 +106,7 @@ class RenderObject{
             stbi_image_free(data);
         }
         public:
+        //draws the object when called
         void draw(){
             glm::mat4 trans = Transform_func(x, y);
             shader->use();
