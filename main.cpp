@@ -3,7 +3,7 @@
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 int main(){
     //Initalize OpenGl with a window
-    GLFWwindow* window = Initalize();
+    Window window;
 
     //create a shader
     Shader shader1("/home/rahul/StreetChase/Shaders/shader.vs", "/home/rahul/StreetChase/Shaders/shader.fs");
@@ -15,24 +15,11 @@ int main(){
     //game loop 
     player.addCollisionObject(&ground);
     player.addCollisionObject(&wall);
-    while(!glfwWindowShouldClose(window)){
-        //get input
-        ProcessInput(window, &player);
+    window.addRenderObject(&ground);
+    window.addRenderObject(&wall);
+    window.addRenderObject(&player);
+    window.addPlayer(&player);
+    window.play();
 
-        //update player
-        player.update();
-        
-        //rendering commands
-        clearScreen();
-        ground.draw();
-        wall.draw();
-        player.draw();
-
-        //update the screen
-        swapBuffers(window);
-    }
-
-    //terminate glfw
-    glfwTerminate();
     return 0;
 }
