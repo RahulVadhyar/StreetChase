@@ -8,6 +8,7 @@ class Window{
     GLFWwindow* window;
     PlayerClass *player;
     std::vector<RenderObject*> render_objects;
+    float screen_x;
     Window(){
         //initialize glfw
         glfwInit();
@@ -33,13 +34,17 @@ class Window{
         //tell glfw to call framebuffer_size_callback on window resize
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+        screen_x = 1.0f;
+
         //debugging: wireframe mode
         #ifdef WIREFRAME_MODE
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         #endif
+
     }
     void addRenderObject(RenderObject* object){
         render_objects.push_back(object);
+        object->addScreenX(&this->screen_x);
     }
 
     void addPlayer(PlayerClass* player){

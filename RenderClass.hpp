@@ -6,6 +6,8 @@ class RenderObject{
         glm::mat4 (*Transform_func)(float, float);
         Shader* shader;
         float x, y, width, height;
+        float* screen_x;
+        bool shouldRender = true;
 
         //Constructors
         //if x, y are not provided, else use the other one
@@ -26,6 +28,8 @@ class RenderObject{
             attachTexture(texture_dir);
             Transform_func = &Transform::Default; 
             x = 0; y= 0;
+            shouldRender = true;
+            
         };
 
         RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -45,6 +49,7 @@ class RenderObject{
             attachTexture(texture_dir);
             Transform_func = &Transform::Default; 
             x = input_x; y= input_y;
+            shouldRender = true;
         };
 
 
@@ -108,7 +113,9 @@ class RenderObject{
         public:
         //draws the object when called
         void draw(){
-            glm::mat4 trans = Transform_func(x, y);
+            if(!shouldRender)
+                return;
+            glm::mat4 trans = Transform_func(x - *screen_x, y);
             shader->use();
             unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
@@ -121,4 +128,9 @@ class RenderObject{
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
         }
+
+        void addScreenX(float* input_screen_x){
+            screen_x = input_screen_x;
+        }
+
 };
