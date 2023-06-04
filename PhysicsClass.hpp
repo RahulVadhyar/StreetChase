@@ -116,13 +116,11 @@ class PhysicsObject: public RenderObject {
             y += velocity_y*delay;
             x += velocity_x*delay;
 
+            //move the screen if the player is too far to the right or left
+            if(std::abs(x - *screen_x) > 0.3)
+                *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
+
             //if the object is out of bounds, then set it to the edge of the screen
-            if(x > 1.0f - width/2){
-                x = 1.0f - width/2;
-            }
-            if(x < -1.0f + width/2){
-                x = -1.0f + width/2;
-            }
             if(y > 1.0f - height/2){
                 y = 1.0f - height/2;
             }
@@ -132,6 +130,7 @@ class PhysicsObject: public RenderObject {
 
             //update the last time
             last_time = current_time;
+            printPlayerStatus("updateCoords");
         }
   
         //if needed then it prints out the current status of player
