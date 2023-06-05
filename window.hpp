@@ -18,6 +18,7 @@ class Window{
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         //tell glfw we are using core profile
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
         window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Street Chase", NULL, NULL);
         if(window == NULL){
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -54,6 +55,7 @@ class Window{
 
     void play(){
         while(!glfwWindowShouldClose(window)){
+            show_fps();
             processInput();
             player->update();
             clear();
@@ -69,7 +71,8 @@ class Window{
         glClear(GL_COLOR_BUFFER_BIT); //state using function
     }
     void swap(){
-        glfwSwapBuffers(window);
+        // glfwSwapBuffers(window);
+        glFlush();
         glfwPollEvents();
     }
     void processInput(){
@@ -102,6 +105,11 @@ class Window{
         float current_time = glfwGetTime();
         std::cout << "FPS: " << 1.0f/(current_time - prev_time) << std::endl;
         prev_time = current_time;
+        #endif
+    }
+    void show_screen_x(){
+        #ifdef SHOW_SCREEN_X
+        std::cout << "Screen X: " << *screen_x << std::endl;
         #endif
     }
     public:

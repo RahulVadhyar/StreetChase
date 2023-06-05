@@ -19,7 +19,7 @@
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
 // #define SHOW_FPS
-
+// #define SHOW_SCREEN_X
 
 //standard libraries
 #include <iostream>

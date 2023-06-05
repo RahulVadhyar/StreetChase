@@ -1,7 +1,7 @@
 #include <C:\Users\vadhy\StreetChase\definitions.hpp>
 //command to compile: g++ main.cpp glad/glad.c -lglfw -lGL -Iglm -o main &&./main
 
-//command:clang++ -target x86_64-pc-windows-msvc  main.cpp glad/glad.c -o main.exe -l"C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib"&& .\main.exe 
+//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra&& .\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 int main(){
     //Initalize  window
