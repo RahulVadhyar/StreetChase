@@ -7,9 +7,9 @@
 #define SCREEN_WIDTH 16*SCREEN_HEIGHT/9
 
 //textures, might eventually move to other files as strings
-#define IMAGE1_DIR "/home/rahul/StreetChase/Textures/container.jpg"
-#define STONE_TEX_DIR "/home/rahul/StreetChase/Textures/stone.jpg"
-#define PLAYER_TEX_DIR "/home/rahul/StreetChase/Textures/player.png"
+#define IMAGE1_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
+#define STONE_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\stone.jpg"
+#define PLAYER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\player.png"
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -18,6 +18,8 @@
 // #define INPUT_STATUS //uncomment to enable input status debugging
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
+// #define SHOW_FPS
+
 
 //standard libraries
 #include <iostream>
@@ -29,18 +31,20 @@
 #include <vector>
 
 //Third party libraries(OpenGL, stbi and glm)
-#include </home/rahul/StreetChase/glad/glad.h>
-#include <GLFW/glfw3.h>
-#include </home/rahul/StreetChase/stb_image.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+#include <C:\Users\vadhy\StreetChase\glad\glad.h>
+#define GLFW_DLL
+#include <C:\Users\vadhy\StreetChase\GLFW\include\glfw3.h>
+#include <C:\Users\vadhy\StreetChase\include\stb_image.h>
+#include <C:\Users\vadhy\StreetChase\glm\glm.hpp>
+#include <C:\Users\vadhy\StreetChase\glm\gtc\matrix_transform.hpp>
+#include <C:\Users\vadhy\StreetChase\glm\gtc\type_ptr.hpp>
 
 //Header files to be included
-#include </home/rahul/StreetChase/transforms.hpp> //contains the functions for transformations
-#include </home/rahul/StreetChase/shaders.hpp>
-#include </home/rahul/StreetChase/RenderClass.hpp> 
-#include </home/rahul/StreetChase/PhysicsClass.hpp>
-#include </home/rahul/StreetChase/PlayerClass.hpp>
-#include </home/rahul/StreetChase/window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+#include <C:\Users\vadhy\StreetChase\transforms.hpp> //contains the functions for transformations
+#include "C:\Users\vadhy\StreetChase\shaders.hpp"
+#include <C:\Users\vadhy\StreetChase\RenderClass.hpp> 
+#include <C:\Users\vadhy\StreetChase\PhysicsClass.hpp>
+#include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
+#include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
 #endif

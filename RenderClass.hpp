@@ -120,6 +120,7 @@ class RenderObject{
             unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
             
+            shader->use();
             //draw triangle
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture1);

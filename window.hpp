@@ -8,7 +8,8 @@ class Window{
     GLFWwindow* window;
     PlayerClass *player;
     std::vector<RenderObject*> render_objects;
-    float screen_x;
+    float* screen_x;
+    float prev_time;
     Window(){
         //initialize glfw
         glfwInit();
@@ -34,8 +35,8 @@ class Window{
         //tell glfw to call framebuffer_size_callback on window resize
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-        screen_x = 1.0f;
-
+        screen_x = new float(1.0f);
+        prev_time = glfwGetTime();
         //debugging: wireframe mode
         #ifdef WIREFRAME_MODE
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -44,7 +45,7 @@ class Window{
     }
     void addRenderObject(RenderObject* object){
         render_objects.push_back(object);
-        object->addScreenX(&this->screen_x);
+        object->addScreenX(this->screen_x);
     }
 
     void addPlayer(PlayerClass* player){
@@ -64,7 +65,7 @@ class Window{
     }
     private:
     void clear(){
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //state setting function
+        glClearColor(1.0f, 1.0f, 1.0f, 0.0f); //state setting function
         glClear(GL_COLOR_BUFFER_BIT); //state using function
     }
     void swap(){
@@ -96,8 +97,16 @@ class Window{
     bool shouldClose(){
         return glfwWindowShouldClose(window);
     }
+    void show_fps(){
+        #ifdef SHOW_FPS
+        float current_time = glfwGetTime();
+        std::cout << "FPS: " << 1.0f/(current_time - prev_time) << std::endl;
+        prev_time = current_time;
+        #endif
+    }
     public:
     ~Window(){
         glfwTerminate();
-    }
+        delete this->screen_x;
+    }   
 };

@@ -22,17 +22,19 @@ class PlayerClass: public PhysicsObject{
     //Updates the player's velocity based on inputs
     void update(){
         velocity_x = 0;
-        if(input_status.left) velocity_x = -0.01;
-        if(input_status.right) velocity_x = 0.01;
-        if(input_status.down) velocity_y = -0.01;
+        if(input_status.left) velocity_x = -0.005;
+        if(input_status.right) velocity_x = 0.005;
+        if(input_status.down) velocity_y = -0.005;
         if(input_status.up) velocity_y = 0.01;
-        if(input_status.jump && collision_status.down) velocity_y = 0.04;
+        if(input_status.jump && collision_status.down) velocity_y = 0.025;
         PhysicsObject::update();
         //move the screen if the player is too far to the right or left
         if(std::abs(x - *screen_x) > 0.3)
             *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
         updateCollisions();
+        printKeystrokes();
         printPlayerStatus("Update");
+        printPlayerCollisionStatus();
     }
 
     //debugging: prints the inputs

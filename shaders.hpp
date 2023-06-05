@@ -50,7 +50,7 @@ class Shader{
             if(!success){
                 glGetShaderInfoLog(vertex, 512, NULL, infoLog);
                 std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-            }
+            } 
 
             //fragment shaders
             fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -75,7 +75,7 @@ class Shader{
             if(!success){
                 glGetProgramInfoLog(shader_id, 512, NULL, infoLog);
                 std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-            }
+            } 
             glDeleteShader(vertex);
             glDeleteShader(fragment);
             setInt("texture1", 0);

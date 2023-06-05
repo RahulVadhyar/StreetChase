@@ -102,11 +102,11 @@ class PhysicsObject: public RenderObject {
         void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
-            delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+            delay = 200*(current_time - last_time) / (double) CLOCKS_PER_SEC;
 
             //gravity
             if(gravity)
-                acceleration_y = -0.001;
+                acceleration_y = -0.0005;
 
             //update the coordinates and velocity based on delay
             velocity_x += acceleration_x*delay;
