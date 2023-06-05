@@ -8,7 +8,7 @@ class RenderObject{
         float x, y, width, height;
         float* screen_x;
         bool shouldRender = true;
-        float mixValue;
+        float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         //Constructors
         //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -28,7 +28,6 @@ class RenderObject{
             Transform_func = &Transform::Default; 
             x = 0; y= 0;
             shouldRender = true;
-            mixValue = 1.0f;
         };
 
         RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -122,8 +121,14 @@ class RenderObject{
             unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
             
-            unsigned int MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue");
-            glUniform1f(MixValueLoc, mixValue);
+            unsigned int MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue2");
+            glUniform1f(MixValueLoc, mixValue[0]);
+            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue3");
+            glUniform1f(MixValueLoc, mixValue[1]);
+            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue4");
+            glUniform1f(MixValueLoc, mixValue[2]);
+            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue5");
+            glUniform1f(MixValueLoc, mixValue[3]);
 
             shader->use();
             //draw triangle

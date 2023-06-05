@@ -1,7 +1,7 @@
 #include <C:\Users\vadhy\StreetChase\definitions.hpp>
 //command to compile: g++ main.cpp glad/glad.c -lglfw -lGL -Iglm -o main &&./main
 
-//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra&& .\main.exe
+//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -O3&& .\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 int main(){
     //Initalize  window
@@ -18,7 +18,9 @@ int main(){
     PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
 
     wall.attachTexture(PLAYER_TEX_DIR);
-    wall.mixValue = 0.5f;
+    wall.attachTexture(CONTAINER_TEX_DIR);
+    wall.mixValue[0] = 0.5f;
+    wall.mixValue[1] = 0.5f;
 
     // player.gravity = false;
     player.shouldRender = true;
