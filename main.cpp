@@ -3,6 +3,7 @@
 
 //command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -O3&& .\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
+//for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
 int main(){
     //Initalize  window
     Window window;

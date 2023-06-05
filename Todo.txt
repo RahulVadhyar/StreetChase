@@ -1,0 +1,46 @@
+this is a todo file, will be deleted.
+
+Things to be done
+    -Things I can do right now
+        -In Progress
+            -Render Class
+                -Create a standard block system for efficient placing and rendering blocks for the level
+            -HUD class implementation
+                -Display the object's texture
+                -Remove the object texture
+                -Create a way of changing the position
+            -Level editor class and cpp file
+                -Need to add cursor support
+                -Drag and drop support
+                -Integrate the HUD class
+                -Connect it with the Level File System
+            -Level File system
+                -Need to expand the language to add more information to the file. 
+                -Need to create classes and variables for storing the information.
+                -Need to create a way of propogating that to the rest of the system.
+                -Need to display all available textures
+        -Not yet started
+            -Weapons class and system
+            -health status
+            -health bar
+            -main menu
+            -death screen
+            -settings menu
+            -setting for switching between 60, 120, and 144fps(right now it is uncapped)
+
+    -Things I need to wait for drawings
+        -animations
+        -level design
+        -enemies class(AI player)
+
+
+Optimizations I want to do
+- seperate textures from the RenderClass. TextureClass maybe?
+- Multithreading(big one)
+- Optimize the shaders
+
+If time permits
+-Add ability in level editor to import your own textures
+
+
+---more as progress moves on
