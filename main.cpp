@@ -21,6 +21,7 @@ int main(){
     window.addRenderObject(&ground);
     window.addRenderObject(&wall);
     window.addRenderObject(&player);
+    // window.addRenderObject(&hud1);
     window.addPlayer(&player);
 
     //render and play the game
