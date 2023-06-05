@@ -5,6 +5,10 @@ struct InputStatus{
     bool left;
     bool right;
     bool jump;
+    double mouse_x;
+    double mouse_y;
+    bool left_click;
+    bool right_click;
 };
 
 //main player class
@@ -16,7 +20,7 @@ class PlayerClass: public PhysicsObject{
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
     PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
     PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir){
-    input_status = {false, false, false, false, false};
+    input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
     }
 
     //Updates the player's velocity based on inputs
@@ -44,6 +48,8 @@ class PlayerClass: public PhysicsObject{
         std::cout << "Up(W): " << input_status.up << " Down(S): " << input_status.down << std::endl;
         std::cout << "Left(A): " << input_status.left << " Right(D): " << input_status.right << std::endl;
         std::cout << "Jump(Space Bar): " << input_status.jump << std::endl; 
+        std::cout << "Mouse X: " << input_status.mouse_x << " Mouse Y: " << input_status.mouse_y << std::endl;
+        std::cout << "Left Click: " << input_status.left_click << " Right Click: " << input_status.right_click << std::endl;
         std::cout << std::endl;
         #endif
     }

@@ -1,6 +1,14 @@
+struct ScreenStatus{
+    float height;
+    float width;
+};
+ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
+
 //for resizing the viewport in the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
+    screen_status.height = height;
+    screen_status.width = width;
 }
 
 class Window{
@@ -21,9 +29,9 @@ class Window{
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
         window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Street Chase", NULL, NULL);
         if(window == NULL){
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        exit(-1); }
+            std::cout << "Failed to create GLFW window" << std::endl;
+            glfwTerminate();
+            exit(-1); }
         //make the window the current context
         glfwMakeContextCurrent(window);
         //initialize glad
@@ -35,7 +43,7 @@ class Window{
 
         //tell glfw to call framebuffer_size_callback on window resize
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         screen_x = new float(1.0f);
         prev_time = glfwGetTime();
         //debugging: wireframe mode
@@ -44,6 +52,7 @@ class Window{
         #endif
 
     }
+
     void addRenderObject(RenderObject* object){
         render_objects.push_back(object);
         object->addScreenX(this->screen_x);
@@ -76,25 +85,18 @@ class Window{
         glfwPollEvents();
     }
     void processInput(){
-        InputStatus inputs = {false, false, false, false, false};
+        InputStatus inputs;
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
             glfwSetWindowShouldClose(window, true);
         }
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-            inputs.up = true;
-        }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-            inputs.down = true;
-        }
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-            inputs.left = true;
-        }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-            inputs.right = true;
-        }
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-            inputs.jump = true;
-        }
+        inputs.up = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
+        inputs.down = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+        inputs.left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
+        inputs.right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+        inputs.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+        glfwGetCursorPos(window, &inputs.mouse_x, &inputs.mouse_y);
+        inputs.left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        inputs.right_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
         player->input_status = inputs;
     }
     bool shouldClose(){
