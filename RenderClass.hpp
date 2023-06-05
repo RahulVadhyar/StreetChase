@@ -9,6 +9,7 @@ class RenderObject{
         float* screen_x;
         bool shouldRender = true;
         float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        float TexScale[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         //Constructors
         //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -133,6 +134,11 @@ class RenderObject{
             shader->setFloat("mixValue3", mixValue[1]);
             shader->setFloat("mixValue4", mixValue[2]);
             shader->setFloat("mixValue5", mixValue[3]);
+
+            shader->setFloat("TexScale2", TexScale[0]);
+            shader->setFloat("TexScale3", TexScale[1]);
+            shader->setFloat("TexScale4", TexScale[2]);
+            shader->setFloat("TexScale5", TexScale[3]);
 
             shader->use();
             //draw triangle

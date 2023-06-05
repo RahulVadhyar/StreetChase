@@ -102,6 +102,10 @@ class Shader{
             glUniform1f(glGetUniformLocation(shader_id, name.c_str()), value);
         }
 
+        void setVec2(const std::string &name, const glm::vec2 &value) const{
+            glUniform2fv(glGetUniformLocation(shader_id, name.c_str()), 1, &value[0]);
+        }
+
 };
 
 #endif
