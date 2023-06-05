@@ -16,6 +16,8 @@ class Window{
     GLFWwindow* window;
     PlayerClass *player;
     std::vector<RenderObject*> render_objects;
+    std::vector<RenderObject*> mouse_callback_objects;
+
     float* screen_x;
     float prev_time;
     Window(){
@@ -74,6 +76,9 @@ class Window{
             swap();
         }
     }
+    void addMouseCallbackObject(RenderObject* object){
+        mouse_callback_objects.push_back(object);
+    }
     private:
     void clear(){
         glClearColor(1.0f, 1.0f, 1.0f, 0.0f); //state setting function
@@ -84,6 +89,7 @@ class Window{
         glFlush();
         glfwPollEvents();
     }
+
     void processInput(){
         InputStatus inputs;
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
@@ -98,6 +104,15 @@ class Window{
         inputs.left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
         inputs.right_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
         player->input_status = inputs;
+        if(inputs.left_click){
+        float pos_x = (inputs.mouse_x/screen_status.width)*2 - 1.0f;
+        float pos_y = -(inputs.mouse_y/screen_status.height)*2 + 1.0f;
+            for(int i = 0; i < mouse_callback_objects.size(); ++i){
+                auto object = mouse_callback_objects[i];             
+                if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y)
+                    object->mouseClick();
+            }
+        }
     }
     bool shouldClose(){
         return glfwWindowShouldClose(window);

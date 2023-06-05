@@ -3,6 +3,12 @@ this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
         -In Progress
+            -Window
+                -Create a callback system that allows for checking whether a 
+                 object is clicked on by the mouse
+            -HUD
+                -Allow for scaling of secondary textures on to the HUD element
+                -Create a system where we can show if a HUD element is selected
             -Render Class
                 -Create a standard block system for efficient placing and rendering blocks for the level
             -Level editor class and cpp file

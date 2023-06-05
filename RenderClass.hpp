@@ -146,7 +146,9 @@ class RenderObject{
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
         }
-
+        virtual void mouseClick(){
+            std::cout << "Clicked" << std::endl;
+        }
         void addScreenX(float* input_screen_x){
             screen_x = input_screen_x;
         }

@@ -20,7 +20,7 @@ int main(){
     PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
 
     //create HUD
-    HUDObject hud1(0.0f, -0.9f, 0.2f, 0.2f, &hud_shader, CONTAINER_TEX_DIR);
+    HUDObject hud1(0.0f, -0.5f, 0.2f, 0.2f, &hud_shader, CONTAINER_TEX_DIR);
 
     wall.attachTexture(PLAYER_TEX_DIR);
     wall.attachTexture(CONTAINER_TEX_DIR);
@@ -35,6 +35,7 @@ int main(){
     window.addRenderObject(&wall);
     window.addRenderObject(&player);
     window.addRenderObject(&hud1);
+    window.addMouseCallbackObject(&hud1);
     window.addPlayer(&player);
 
     //render and play the game
