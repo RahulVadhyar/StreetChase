@@ -78,8 +78,12 @@ class Shader{
             } 
             glDeleteShader(vertex);
             glDeleteShader(fragment);
+        }
+
+        void addTextureUniform(int texture_num){
             use();
-            setInt("texture1", 0);
+            std::string texture_name = "texture" + std::to_string(texture_num);
+            setInt(texture_name, texture_num -1);
         }
 
         //use/activate shader

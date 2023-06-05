@@ -1,14 +1,14 @@
 class RenderObject{
     public:
         //opengl variables
-        unsigned int texture1, texture2;
+        std::vector<unsigned int> textures;
         unsigned int VBO, VAO, EBO;
         glm::mat4 (*Transform_func)(float, float);
         Shader* shader;
         float x, y, width, height;
         float* screen_x;
         bool shouldRender = true;
-
+        float mixValue;
         //Constructors
         //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -24,12 +24,11 @@ class RenderObject{
                     };
             shader = input_shader;
             generateVertices(vertices, sizeof(vertices));
-            shader->use();
             attachTexture(texture_dir);
             Transform_func = &Transform::Default; 
             x = 0; y= 0;
             shouldRender = true;
-            
+            mixValue = 1.0f;
         };
 
         RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -80,12 +79,14 @@ class RenderObject{
             glBindBuffer(GL_ARRAY_BUFFER, 0); 
             glBindVertexArray(0); 
         }
-        private:
+        public:
         //attaches the texture to the object
         void attachTexture(std::string image_dir){
             //texture1
-            glGenTextures(1, &texture1);
-            glBindTexture(GL_TEXTURE_2D, texture1);
+            shader->use();
+            textures.push_back(0);
+            glGenTextures(1, &textures.back());
+            glBindTexture(GL_TEXTURE_2D, textures.back());
             //texture wrapping and filtering options
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -109,6 +110,7 @@ class RenderObject{
                 std::cout << "Failed to load texture" << std::endl;
             }
             stbi_image_free(data);
+            shader->addTextureUniform(textures.size());
         }
         public:
         //draws the object when called
@@ -120,10 +122,16 @@ class RenderObject{
             unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
             
+            unsigned int MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue");
+            glUniform1f(MixValueLoc, mixValue);
+
             shader->use();
             //draw triangle
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture1);
+            for(int i = 0; i < static_cast<int>(textures.size()); i++){
+                shader->use();
+                glActiveTexture(GL_TEXTURE0 + i);
+                glBindTexture(GL_TEXTURE_2D, textures[i]);
+            }
 
             shader->use();
             glBindVertexArray(VAO);

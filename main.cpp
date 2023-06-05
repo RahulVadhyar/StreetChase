@@ -8,12 +8,18 @@ int main(){
     Window window;
 
     //create a shader
-    Shader shader1("C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs", "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs");
+    Shader ground_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
 
     //create ground and player
-    RenderObject ground(0, -1.0f, 20.0f, 1.0f, &shader1, STONE_TEX_DIR);
-    RenderObject wall(-0.4, -0.3, 0.4, 0.2, &shader1, STONE_TEX_DIR);
-    PlayerClass player(0.1f, 0.2f, &shader1, PLAYER_TEX_DIR);
+    RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
+    RenderObject wall(-0.4, -0.3, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
+    PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
+
+    wall.attachTexture(PLAYER_TEX_DIR);
+    wall.mixValue = 0.5f;
+
     // player.gravity = false;
     player.shouldRender = true;
     player.addCollisionObject(&ground);
