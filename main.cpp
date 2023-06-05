@@ -12,11 +12,15 @@ int main(){
     Shader ground_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader hud_shader(VS_SHADER_DIR, FS_SHADER_DIR);
 
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
     RenderObject wall(-0.4, -0.3, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
     PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
+
+    //create HUD
+    HUDObject hud1(0.0f, -0.9f, 0.2f, 0.2f, &hud_shader, CONTAINER_TEX_DIR);
 
     wall.attachTexture(PLAYER_TEX_DIR);
     wall.attachTexture(CONTAINER_TEX_DIR);
@@ -30,7 +34,7 @@ int main(){
     window.addRenderObject(&ground);
     window.addRenderObject(&wall);
     window.addRenderObject(&player);
-    // window.addRenderObject(&hud1);
+    window.addRenderObject(&hud1);
     window.addPlayer(&player);
 
     //render and play the game

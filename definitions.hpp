@@ -50,4 +50,5 @@
 #include <C:\Users\vadhy\StreetChase\PhysicsClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+#include <C:\Users\vadhy\StreetChase\HUDClass.hpp>
 #endif

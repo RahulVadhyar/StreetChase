@@ -111,24 +111,28 @@ class RenderObject{
             stbi_image_free(data);
             shader->addTextureUniform(textures.size());
         }
+        void removeLastTexture(){
+            glDeleteTextures(1, &textures.back());
+            textures.pop_back();
+        }
         public:
         //draws the object when called
-        void draw(){
+        virtual void draw(){
             if(!shouldRender)
                 return;
             glm::mat4 trans = Transform_func(x - *screen_x, y);
             shader->use();
             unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
-            
-            unsigned int MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue2");
-            glUniform1f(MixValueLoc, mixValue[0]);
-            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue3");
-            glUniform1f(MixValueLoc, mixValue[1]);
-            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue4");
-            glUniform1f(MixValueLoc, mixValue[2]);
-            MixValueLoc = glGetUniformLocation(shader->shader_id, "mixValue5");
-            glUniform1f(MixValueLoc, mixValue[3]);
+            justDraw();
+        }
+
+        public:
+        void justDraw(){
+            shader->setFloat("mixValue2", mixValue[0]);
+            shader->setFloat("mixValue3", mixValue[1]);
+            shader->setFloat("mixValue4", mixValue[2]);
+            shader->setFloat("mixValue5", mixValue[3]);
 
             shader->use();
             //draw triangle
