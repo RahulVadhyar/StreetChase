@@ -32,6 +32,8 @@
 #include <cmath>
 #include <ctime>
 #include <vector>
+#include <list>
+#include <C:\Users\vadhy\StreetChase\DataStructures\DoublyLinkedList.hpp
 
 //Third party libraries(OpenGL, stbi and glm)
 
@@ -48,6 +50,9 @@
 #include "C:\Users\vadhy\StreetChase\shaders.hpp"
 #include <C:\Users\vadhy\StreetChase\RenderClass.hpp> 
 #include <C:\Users\vadhy\StreetChase\PhysicsClass.hpp>
+#include <C:\Users\vadhy\StreetChase\BulletClass.hpp>
+#include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
+#include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
 #include <C:\Users\vadhy\StreetChase\HUDClass.hpp>

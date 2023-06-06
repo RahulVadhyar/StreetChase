@@ -12,15 +12,28 @@ struct InputStatus{
 };
 
 //main player class
-class PlayerClass: public PhysicsObject{
+class PlayerClass: public PhysicsObject, public Health{
     public:
     //input status struct
     InputStatus input_status;
+    int num_weapons;
+    std::list<BaseWeaponClass*> weapons;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
     PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
-    PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir){
+    PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){
     input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
+    num_weapons = 0;
+    }
+
+    void addWeapon(BaseWeaponClass* weapon){
+        num_weapons += 1;
+        weapons.push_back(weapon);
+    }
+
+    void removeWeapon(int index){
+        num_weapons -= 1;
+        weapons.remove(weapons.at(index));
     }
 
     //Updates the player's velocity based on inputs
@@ -36,6 +49,7 @@ class PlayerClass: public PhysicsObject{
         if(std::abs(x - *screen_x) > 0.3)
             *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
         updateCollisions();
+        Health::regen();
         printKeystrokes();
         printPlayerStatus("Update");
         printPlayerCollisionStatus();
