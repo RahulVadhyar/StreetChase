@@ -28,6 +28,7 @@
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
 // #define WEAPON_DEBUG
+// #define GCC //uncomment if using GCC compiler
 
 //standard libraries
 #include <iostream>
@@ -38,7 +39,6 @@
 #include <ctime>
 #include <vector>
 #include <list>
-#include <C:\Users\vadhy\StreetChase\DataStructures\DoublyLinkedList.hpp>
 
 //Third party libraries(OpenGL, stbi and glm)
 

@@ -117,9 +117,10 @@ class PhysicsObject: public RenderObject {
             if(velocity_y > 0.3) velocity_y = 0.3;
             if(velocity_x < -0.3) velocity_x = -0.3;
             if(velocity_y < -0.3) velocity_y = -0.3;
-
+    
             y += velocity_y*delay;
             x += velocity_x*delay;
+
 
             //if the object is out of bounds, then set it to the edge of the screen
             if(y > 1.0f - height/2){

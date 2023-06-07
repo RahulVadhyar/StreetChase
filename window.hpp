@@ -67,9 +67,9 @@ class Window{
     void play(){
         while(!glfwWindowShouldClose(window)){
             show_fps();
+            clear();
             processInput();
             player->update();
-            clear();
             for(auto object : render_objects){
                 object->draw();
             }

@@ -102,7 +102,7 @@ class RenderObject{
                 else if(nrChannels == 4)
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
                 else{
-                    std::cout << "Unsupported number of channels" << std::endl;
+                    std::cout << "Unsupported number of channels: " << nrChannels << "for "<< image_dir << std::endl;
                     exit(-1);
                 }
             glGenerateMipmap(GL_TEXTURE_2D);   
@@ -119,13 +119,16 @@ class RenderObject{
         public:
         //draws the object when called
         virtual void draw(){
-            if(!shouldRender)
-                return;
-            glm::mat4 trans = Transform_func(x - *screen_x, y);
-            shader->use();
-            unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
-            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
-            justDraw();
+            if(shouldRender){
+                Transform_func(x - *screen_x, y);
+                glm::mat4 trans = Transform_func(x - *screen_x, y);
+                    
+                shader->use();
+                
+                unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
+                glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
+                justDraw();
+            }
         }
 
         public:
@@ -151,6 +154,7 @@ class RenderObject{
             shader->use();
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
+            
         }
         virtual void mouseClick(){
             std::cout << "Clicked" << std::endl;

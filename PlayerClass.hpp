@@ -16,26 +16,19 @@ class PlayerClass: public PhysicsObject, public Health{
     public:
     //input status struct
     InputStatus input_status;
-    DoublyLinkedList<BaseWeaponClass*> weapons;
+    BaseWeaponClass* weapon;
+    BaseBulletClass* bullet = nullptr;
+    int current_weapon = 0;
+    bool fired = false;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
     PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
     PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){
     input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
     }
-
-    void addWeapon(BaseWeaponClass* weapon){
-        weapons.insertRear(weapon);
-        #ifdef WEAPON_DEBUG
-        std::cout << "DEBUG: Weapon added" << std::endl;
-        #endif
-    }
-
-    void removeWeapon(int index){
-        weapons.deleteAt(index);
-        #ifdef WEAPON_DEBUG
-        std::cout << "DEBUG: Weapon removed" << std::endl;
-        #endif
+\
+    void addWeapon(BaseWeaponClass* input_weapon){
+        weapon = input_weapon;
     }
 
     //Updates the player's velocity based on inputs
@@ -51,6 +44,27 @@ class PlayerClass: public PhysicsObject, public Health{
         if(std::abs(x - *screen_x) > 0.3)
             *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
         updateCollisions();
+        //update the weapons
+        weapon->update(x, y);
+        if(input_status.left_click){
+            if(!fired){
+                bullet = weapon->fire(x, y);
+                bullet->screen_x = screen_x;
+            }
+                
+            fired = true;
+        } else{
+            fired = false;
+        }
+        
+        if(bullet != nullptr){
+            bullet->update();
+            bullet->draw();
+            if(bullet->isTimeOver()){
+                delete bullet;
+                bullet = nullptr;
+            }
+        }
         Health::regen();
         printKeystrokes();
         printPlayerStatus("Update");

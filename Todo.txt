@@ -1,5 +1,8 @@
 this is a todo file, will be deleted.
 
+note to self:
+-GCC is broken, and miscompiles things, using only clang from now on.
+
 Things to be done
     -Things I can do right now
         -In Progress
