@@ -11,6 +11,10 @@
 #define STONE_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\stone.jpg"
 #define PLAYER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\player.png"
 #define CONTAINER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
+#define GUN_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\gun.png"
+#define BULLET_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\bullet.png"
+
+
 #define VS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs"
 #define FS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs"
 //variable for stbi header
@@ -23,6 +27,7 @@
 // #define PRINT_COLLISION_STATUS
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
+// #define WEAPON_DEBUG
 
 //standard libraries
 #include <iostream>
@@ -33,7 +38,7 @@
 #include <ctime>
 #include <vector>
 #include <list>
-#include <C:\Users\vadhy\StreetChase\DataStructures\DoublyLinkedList.hpp
+#include <C:\Users\vadhy\StreetChase\DataStructures\DoublyLinkedList.hpp>
 
 //Third party libraries(OpenGL, stbi and glm)
 
@@ -51,7 +56,9 @@
 #include <C:\Users\vadhy\StreetChase\RenderClass.hpp> 
 #include <C:\Users\vadhy\StreetChase\PhysicsClass.hpp>
 #include <C:\Users\vadhy\StreetChase\BulletClass.hpp>
+#include <C:\Users\vadhy\StreetChase\Weapons\simplebullet.hpp>
 #include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
+#include <C:\Users\vadhy\StreetChase\Weapons\simplegun.hpp>
 #include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing

@@ -16,24 +16,26 @@ class PlayerClass: public PhysicsObject, public Health{
     public:
     //input status struct
     InputStatus input_status;
-    int num_weapons;
-    std::list<BaseWeaponClass*> weapons;
+    DoublyLinkedList<BaseWeaponClass*> weapons;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
     PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
     PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){
     input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
-    num_weapons = 0;
     }
 
     void addWeapon(BaseWeaponClass* weapon){
-        num_weapons += 1;
-        weapons.push_back(weapon);
+        weapons.insertRear(weapon);
+        #ifdef WEAPON_DEBUG
+        std::cout << "DEBUG: Weapon added" << std::endl;
+        #endif
     }
 
     void removeWeapon(int index){
-        num_weapons -= 1;
-        weapons.remove(weapons.at(index));
+        weapons.deleteAt(index);
+        #ifdef WEAPON_DEBUG
+        std::cout << "DEBUG: Weapon removed" << std::endl;
+        #endif
     }
 
     //Updates the player's velocity based on inputs

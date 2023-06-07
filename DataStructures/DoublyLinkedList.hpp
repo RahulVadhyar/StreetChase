@@ -29,7 +29,7 @@ public:
             first->prev = ele;
             first = ele;
         }
-    };
+    }
     void insertRear(T element){
         NODE ele = new Node;
         if(ele == nullptr){
@@ -48,11 +48,92 @@ public:
             ele->prev = temp;
             temp->next = ele;
         }
-    };
-    void insertAt(int index, T element);
-    void deleteFront();
-    void deleteRear();
-    void deleteAt(int index);
-    T getElementAt(int index);
-    void getSize();
+    }
+    void insertAt(int index, T element){
+        NODE ele = new Node;
+        if(ele == nullptr){
+            std::cout << "ERROR: Doubly Linked List Memory not allocated" << std::endl;
+            exit(-1);
+        }
+        ele->data = element;
+        if(first == nullptr){
+            first = ele;
+            ele->prev = nullptr;
+            ele->next = nullptr;
+        } else{
+            NODE temp = first;
+            for(int i = 0; i < index; i++){
+                temp = temp->next;
+            }
+            ele->next = temp;
+            ele->prev = temp->prev;
+            temp->prev->next = ele;
+            temp->prev = ele;
+        }
+    }
+    void deleteFront(){
+        if(first == nullptr){
+            std::cout << "ERROR: Doubly Linked List is empty" << std::endl;
+            exit(-1);
+        } else{
+            NODE temp = first;
+            first = first->next;
+            first->prev = temp->prev;
+            temp->prev->next = first;
+            delete temp;
+        }
+    }
+    void deleteRear(){
+        if(first == nullptr){
+            std::cout << "ERROR: Doubly Linked List is empty" << std::endl;
+            exit(-1);
+        } else{
+            NODE temp = first->prev;
+            first->prev = temp->prev;
+            temp->prev->next = first;
+            delete temp;
+        }
+    }
+    void deleteAt(int index){
+        if(first == nullptr){
+            std::cout << "ERROR: Doubly Linked List is empty" << std::endl;
+            exit(-1);
+        }else if(getSize() <= index){
+            std::cout << "ERROR: Index out of bounds" << std::endl;
+            exit(-1);
+        } else{
+            NODE temp = first;
+            for(int i = 0; i < index; i++){
+                temp = temp->next;
+            }
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            delete temp;
+        }
+    }
+    T getElementAt(int index){
+        if(first == nullptr){
+            std::cout << "ERROR: Doubly Linked List is empty" << std::endl;
+            exit(-1);
+        } else{
+            NODE temp = first;
+            for(int i = 0; i < index; i++){
+                temp = temp->next;
+            }
+            return temp->data;
+        }
+    }   
+    int getSize(){
+        if(first == nullptr){
+            return 0;
+        } else{
+            NODE temp = first;
+            int count = 0;
+            while(temp->next != first){
+                count++;
+                temp = temp->next;
+            }
+            return count;
+        }
+    }
 };

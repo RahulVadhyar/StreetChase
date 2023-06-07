@@ -5,7 +5,7 @@ class BaseWeaponClass{
         int max_ammo;
         int current_ammo;
         float reload_time;
-        float weapon_damage;
+        float weapon_health;
         float mags;
         Shader* bullet_shader;
         std::string bullet_texture_dir;
@@ -30,9 +30,8 @@ class BaseWeaponClass{
             mags -= 1;
             current_ammo = max_ammo;
         }
-
     };
     void take_damage(float damage){
-        weapon_damage -= damage;
+        weapon_health -= damage;
     }
 };
