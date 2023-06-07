@@ -13,14 +13,13 @@ int main(){
     Shader wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader hud_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader bullet_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader gun_shader(VS_SHADER_DIR, FS_SHADER_DIR);
 
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
-    RenderObject wall(-0.4, -0.3, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
+    RenderObject wall(-0.4, -0.4, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
     PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
-    SimpleGun gun(&gun_shader, &bullet_shader);
+    SimpleGun gun(&gun_shader);
     player.addWeapon(&gun);
     
 

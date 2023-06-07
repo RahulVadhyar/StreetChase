@@ -1,7 +1,7 @@
 class SimpleGun: public BaseWeaponClass{
     public:
-        SimpleGun(Shader* input_gun_shader, Shader* input_bullet_shader):
-        BaseWeaponClass::BaseWeaponClass(input_gun_shader, GUN_TEX_DIR ,input_bullet_shader, BULLET_TEX_DIR, 10){
+        SimpleGun(Shader* input_gun_shader):
+        BaseWeaponClass::BaseWeaponClass(input_gun_shader, GUN_TEX_DIR, 10){
             firing_rate = 0.5;
             firing_speed = 0.01;
             max_ammo = 10;

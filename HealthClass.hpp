@@ -13,7 +13,9 @@ class Health{
     }
 
     void takeDamage(float damage){
-        current_health -= damage;
+        std::cout << "taking damage2" << std::endl;
+        this->current_health -= damage;
+        std::cout << current_health << " " << damage <<std::endl;
         if(current_health <= 0){
             is_dead = true;
         }

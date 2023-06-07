@@ -17,7 +17,7 @@ class PlayerClass: public PhysicsObject, public Health{
     //input status struct
     InputStatus input_status;
     BaseWeaponClass* weapon;
-    BaseBulletClass* bullet = nullptr;
+    std::vector<BaseBulletClass*> bullets;
     int current_weapon = 0;
     bool fired = false;
 
@@ -26,7 +26,7 @@ class PlayerClass: public PhysicsObject, public Health{
     PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){
     input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
     }
-\
+
     void addWeapon(BaseWeaponClass* input_weapon){
         weapon = input_weapon;
     }
@@ -46,26 +46,33 @@ class PlayerClass: public PhysicsObject, public Health{
         updateCollisions();
         //update the weapons
         weapon->update(x, y);
-        if(input_status.left_click){
+        if(input_status.left_click && weapon->current_ammo > 0){
             if(!fired){
-                bullet = weapon->fire(x, y);
+                auto bullet = weapon->fire(x, y);
+                bullets.push_back(bullet);
                 bullet->screen_x = screen_x;
+                bullet->velocity_x = bullet->initial_velocity*direction;
+                bullet->addCollisionObject(this);             
             }
-                
             fired = true;
         } else{
             fired = false;
         }
         
-        if(bullet != nullptr){
-            bullet->update();
-            bullet->draw();
-            if(bullet->isTimeOver()){
-                delete bullet;
-                bullet = nullptr;
+
+        for(auto &bullet: bullets){
+            if(bullet != nullptr){
+                bullet->update();
+                if(bullet->isTimeOver() || bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
+                    delete bullet;
+                    bullet = nullptr;
+                    std::cout << "taking damage" << std::endl;
+                    this->takeDamage(0.1);
+                    std::cout << "Ammo left" << weapon->current_ammo << std::endl;
+
+                }
             }
         }
-        Health::regen();
         printKeystrokes();
         printPlayerStatus("Update");
         printPlayerCollisionStatus();

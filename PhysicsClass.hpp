@@ -13,6 +13,7 @@ class PhysicsObject: public RenderObject {
         float last_time;
         float delay;
         bool gravity;
+        float direction;
         //collision variables
         std::vector<RenderObject*> collision_objects;
         Collision collision_status;
@@ -30,6 +31,7 @@ class PhysicsObject: public RenderObject {
             acceleration_y = 0;
             collision_status = {false, false, false, false};
             gravity = true;
+            float direction = 1.0f;
 
         }
         PhysicsObject(float x, float y, float width, float height, Shader *shader, std::string texture_dir) : 
@@ -132,6 +134,10 @@ class PhysicsObject: public RenderObject {
 
             //update the last time
             last_time = current_time;
+            if(velocity_x > 0)
+                direction = 1.0f;
+            else if(velocity_x < 0)
+                direction = -1.0f;
             
         }
   

@@ -15,7 +15,9 @@ class BaseBulletClass: public PhysicsObject{
         gravity = false;
         
     }
-    virtual ~BaseBulletClass(){};
+    virtual ~BaseBulletClass(){
+        delete shader;
+    };
     void fire(){
         start_time = std::clock();
         velocity_x = initial_velocity;
@@ -23,7 +25,12 @@ class BaseBulletClass: public PhysicsObject{
 
     bool isTimeOver(){
         auto time_elapsed = (std::clock() - start_time) / (double) CLOCKS_PER_SEC;
-        return time_elapsed > 1;
+        return time_elapsed > 5;
     }
+    void update(){
+        PhysicsObject::update();
+        updateCollisions();
+        draw();
 
+    }
 };

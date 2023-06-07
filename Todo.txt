@@ -13,8 +13,6 @@ Things to be done
             -health status
                 -Integrate it with rest of the system
                 -When dead, destroy the object in question
-                -Regeneration system
-            -Bullet system
             -health bar
                 -Create a system for drawing bars and filling them with correct info
 
