@@ -63,13 +63,21 @@ class PlayerClass: public PhysicsObject, public Health{
         for(auto &bullet: bullets){
             if(bullet != nullptr){
                 bullet->update();
-                if(bullet->isTimeOver() || bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
+                if(bullet->isTimeOver()){
+                    delete bullet;
+                    bullet = nullptr;
+                } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
                     delete bullet;
                     bullet = nullptr;
                     std::cout << "taking damage" << std::endl;
                     this->takeDamage(0.1);
                     std::cout << "Ammo left" << weapon->current_ammo << std::endl;
-
+                    for(auto object: bullet->collided_objects){
+                        if(typeid(object) == typeid(EnemyClass)){
+                            EnemyClass* enemy = dynamic_cast<EnemyClass*>(object);
+                            enemy->takeDamage(0.1);
+                        }
+                    }
                 }
             }
         }

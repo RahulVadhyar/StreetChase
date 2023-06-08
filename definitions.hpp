@@ -39,6 +39,7 @@
 #include <ctime>
 #include <vector>
 #include <list>
+#include <typeinfo>
 
 //Third party libraries(OpenGL, stbi and glm)
 
@@ -60,6 +61,7 @@
 #include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
 #include <C:\Users\vadhy\StreetChase\Weapons\simplegun.hpp>
 #include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
+#include <C:\Users\vadhy\StreetChase\EnemyClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
 #include <C:\Users\vadhy\StreetChase\HUDClass.hpp>

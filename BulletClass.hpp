@@ -31,6 +31,5 @@ class BaseBulletClass: public PhysicsObject{
         PhysicsObject::update();
         updateCollisions();
         draw();
-
     }
 };

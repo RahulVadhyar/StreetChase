@@ -15,6 +15,7 @@ class Window{
     public:
     GLFWwindow* window;
     PlayerClass *player;
+    std::vector<PhysicsObject*> physics_objects;
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
 
@@ -63,6 +64,9 @@ class Window{
     void addPlayer(PlayerClass* player){
         this->player = player;
     }
+    void addPhysicsObject(PhysicsObject* object){
+        physics_objects.push_back(object);
+    }
 
     void play(){
         while(!glfwWindowShouldClose(window)){
@@ -70,6 +74,9 @@ class Window{
             clear();
             processInput();
             player->update();
+            for(auto object : physics_objects){
+                object->update();
+            }
             for(auto object : render_objects){
                 object->draw();
             }

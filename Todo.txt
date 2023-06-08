@@ -15,6 +15,9 @@ Things to be done
                 -When dead, destroy the object in question
             -health bar
                 -Create a system for drawing bars and filling them with correct info
+            
+            -enemies
+                
 
         -Paused for now as other things are needed before we can further work on this
 
@@ -38,7 +41,6 @@ Things to be done
     -Things I need to wait for drawings
         -animations
         -level design
-        -enemies class(AI player)
 
 
 Optimizations I want to do

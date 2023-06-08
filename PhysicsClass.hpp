@@ -16,6 +16,7 @@ class PhysicsObject: public RenderObject {
         float direction;
         //collision variables
         std::vector<RenderObject*> collision_objects;
+        std::vector<RenderObject*> collided_objects;
         Collision collision_status;
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
         PhysicsObject(float width, float height, Shader *shader, std::string texture_dir) : 
@@ -51,7 +52,8 @@ class PhysicsObject: public RenderObject {
         }
     private: 
         //gets the collision between the object and another object
-        void getCollision(RenderObject other){
+        bool getCollision(RenderObject other){
+            bool isCollided = false;
             auto distance_x = (other.width/2 + width/2) - std::abs(other.x - x);
             auto distance_y = (other.height/2 + height/2) - std::abs(other.y - y);
             auto side_x = other.x - x;
@@ -70,30 +72,38 @@ class PhysicsObject: public RenderObject {
                 x = other.x + other.width/2 + width/2;
                 if(velocity_x < 0) velocity_x = 0;
                 collision_status.left = true;
+                isCollided = true;
             } else if((left||right) && down && mag <= 0){
                 //go up
                 y = other.y + other.height/2 + height/2;
                 if(velocity_y < 0) velocity_y = 0;
                 collision_status.down = true;
+                isCollided = true;
             } else if((down||up) && right && mag >= 0){
                 //go right
                 x = other.x - other.width/2 - width/2;
                 if(velocity_x > 0) velocity_x = 0;
                 collision_status.right = true;
+                isCollided = true;
             } else if((left||right) && up && mag <= 0){
                 //go down
                 y = other.y - other.height/2 - height/2;
                 if(velocity_y > 0) velocity_y = 0;
                 collision_status.up = true;
+                isCollided = true;
             } 
+            return isCollided;
         }
     public:
         //updates the collision status of the object
         void updateCollisions(){
+            collided_objects.clear();
             collision_status = {false, false, false, false};
             if(!collision_objects.empty())
                 for(RenderObject *i : collision_objects)
-                    getCollision(*i);
+                    if(getCollision(*i)){
+                        collided_objects.push_back(i);
+                    }
         }
         //adds an collision object to the list of collision objects
         void addCollisionObject(RenderObject *object){
@@ -101,7 +111,7 @@ class PhysicsObject: public RenderObject {
         }
 
         //updates the coordinates of the object based on the physics variables
-        void update(){
+        virtual void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
             delay = 200*(current_time - last_time) / (double) CLOCKS_PER_SEC;
