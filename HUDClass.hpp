@@ -5,13 +5,22 @@ class HUDObject: public RenderObject{
     }
 
     void draw(){
-        if(!shouldRender)
-            return;
-        glm::mat4 trans = Transform_func(x, y);
-        shader->use();
-        unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
-        justDraw();
+        if(shouldRender){
+            if(screen_x == nullptr){
+                std::cout << "Screen_x not set" << std::endl;
+                exit(-1);
+            }
+            if(textures.empty()){
+                std::cout << "No textures attached" << std::endl;
+                exit(-1);
+            }
+            Transform_func(x, y);
+            glm::mat4 trans = Transform_func(x , y);
+            shader->use();
+            unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
+            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
+            justDraw();
+        }
         
     }
 };

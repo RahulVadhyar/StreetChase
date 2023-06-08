@@ -4,6 +4,7 @@
 //command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -O3&& .\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 //for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
+//lldb clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -g && lldb .\main.exe
 int main(){
     //Initalize  window
     Window window;
@@ -14,13 +15,14 @@ int main(){
     Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader hud_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader gun_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader enemy_shader(VS_SHADER_DIR, FS_SHADER_DIR);
 
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
     RenderObject wall(-0.4, -0.4, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
-    PlayerClass player(0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
+    PlayerClass player(0, 0, 0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
     SimpleGun gun(&gun_shader);
-    EnemyClass enemy(2, 0, 0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
+    EnemyClass enemy(2, 0, 0.1f, 0.2f, &enemy_shader, PLAYER_TEX_DIR);
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
     enemy.addWeapon(&enemy_gun);

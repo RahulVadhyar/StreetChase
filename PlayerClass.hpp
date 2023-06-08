@@ -15,17 +15,15 @@ struct InputStatus{
 class PlayerClass: public PhysicsObject, public Health{
     public:
     //input status struct
-    InputStatus input_status;
-    BaseWeaponClass* weapon;
+    InputStatus input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
+    BaseWeaponClass* weapon = nullptr;
     std::vector<BaseBulletClass*> bullets;
     int current_weapon = 0;
     bool fired = false;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
-    PlayerClass(float width, float height, Shader *o_shader, std::string texture_dir) : 
-    PhysicsObject::PhysicsObject(width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){
-    input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
-    }
+    PlayerClass(float input_x, float input_y, float width, float height, Shader *o_shader, std::string texture_dir) : 
+    PhysicsObject::PhysicsObject(input_x, input_y, width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){}
 
     void addWeapon(BaseWeaponClass* input_weapon){
         weapon = input_weapon;
@@ -41,45 +39,56 @@ class PlayerClass: public PhysicsObject, public Health{
         if(input_status.jump && collision_status.down) velocity_y = 0.025;
         PhysicsObject::update();
         //move the screen if the player is too far to the right or left
+        if(screen_x == nullptr){
+            std::cout << "Screen x is null" << std::endl;
+            exit(-1);
+        }
         if(std::abs(x - *screen_x) > 0.3)
             *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
         updateCollisions();
         //update the weapons
         weapon->update(x, y);
+        
+        if(bullets.size() > 0){
+            for(auto &bullet: bullets){
+                if(bullet != nullptr){
+                    bullet->update();
+                    bullet->updateCollisions();
+                    if(bullet->isTimeOver()){
+                        delete bullet;
+                        bullet = nullptr;
+                    } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
+                        for(auto object: bullet->collided_objects){
+                            if(dynamic_cast<EnemyClass*>(object)){
+                                EnemyClass* enemy = dynamic_cast<EnemyClass*>(object);
+                                enemy->takeDamage(0.1);
+                                std::cout << "Enemy hit!" << std::endl;
+                            }
+                        }
+                        delete bullet;
+                        bullet = nullptr;
+                        std::cout << "Ammo left" << weapon->current_ammo << std::endl;                        
+                    }
+                }
+            }
+        }
+
         if(input_status.left_click && weapon->current_ammo > 0){
             if(!fired){
-                auto bullet = weapon->fire(x, y);
+                BaseBulletClass* bullet = weapon->fire(x, y, direction);
                 bullets.push_back(bullet);
                 bullet->screen_x = screen_x;
-                bullet->velocity_x = bullet->initial_velocity*direction;
-                bullet->addCollisionObject(this);             
+                if(collision_objects.empty()){
+                    std::cout << "Collision objects is empty" << std::endl;
+                    exit(-1);
+                }
+                for(auto object: collision_objects)
+                    bullet->addCollisionObject(object);    
+                bullet->addCollisionObject(this);         
             }
             fired = true;
         } else{
             fired = false;
-        }
-        
-
-        for(auto &bullet: bullets){
-            if(bullet != nullptr){
-                bullet->update();
-                if(bullet->isTimeOver()){
-                    delete bullet;
-                    bullet = nullptr;
-                } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
-                    delete bullet;
-                    bullet = nullptr;
-                    std::cout << "taking damage" << std::endl;
-                    this->takeDamage(0.1);
-                    std::cout << "Ammo left" << weapon->current_ammo << std::endl;
-                    for(auto object: bullet->collided_objects){
-                        if(typeid(object) == typeid(EnemyClass)){
-                            EnemyClass* enemy = dynamic_cast<EnemyClass*>(object);
-                            enemy->takeDamage(0.1);
-                        }
-                    }
-                }
-            }
         }
         printKeystrokes();
         printPlayerStatus("Update");

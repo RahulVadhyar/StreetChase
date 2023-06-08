@@ -7,57 +7,33 @@ struct Collision {
 class PhysicsObject: public RenderObject {
     public:
         //Physics variables
-        float velocity_x, velocity_y;
-        float default_x, default_y;
-        float acceleration_x, acceleration_y;
+        float velocity_x = 0, velocity_y = 0;
+        float acceleration_x = 0, acceleration_y = 0;
         float last_time;
         float delay;
-        bool gravity;
-        float direction;
+        bool gravity = true;
+        float direction = 1.0f;
+        bool snap_collisions = true;
         //collision variables
         std::vector<RenderObject*> collision_objects;
         std::vector<RenderObject*> collided_objects;
-        Collision collision_status;
+        Collision collision_status = {false, false, false, false};
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
-        PhysicsObject(float width, float height, Shader *shader, std::string texture_dir) : 
-        RenderObject::RenderObject(width, height, shader, texture_dir)
-        {
-            default_x = 0;
-            default_y = 0;
-            x = default_x;
-            y = default_y;
-            velocity_x = 0;
-            velocity_y = 0;
-            acceleration_x = 0;
-            acceleration_y = 0;
-            collision_status = {false, false, false, false};
-            gravity = true;
-            float direction = 1.0f;
-
+        PhysicsObject(float input_x, float input_y, float width, float height, Shader *shader, std::string texture_dir) : 
+        RenderObject::RenderObject(input_x, input_y, width, height, shader, texture_dir){}
+        PhysicsObject(bool input_snap_collisions, float input_x, float input_y, float width, float height, Shader *shader, std::string texture_dir) : 
+        RenderObject::RenderObject(input_x, input_y, width, height, shader, texture_dir){
+            snap_collisions = input_snap_collisions;
         }
-        PhysicsObject(float x, float y, float width, float height, Shader *shader, std::string texture_dir) : 
-        RenderObject::RenderObject(width, height, shader, texture_dir)
-        {
-            default_x = x;
-            default_y = y;
-            x = default_x;
-            y = default_y;
-            velocity_x = 0;
-            velocity_y = 0;
-            acceleration_x = 0;
-            acceleration_y = 0;
-            collision_status = {false, false, false, false};
-            gravity = true;
 
-        }
     private: 
         //gets the collision between the object and another object
-        bool getCollision(RenderObject other){
+        bool getCollision(RenderObject* other){
             bool isCollided = false;
-            auto distance_x = (other.width/2 + width/2) - std::abs(other.x - x);
-            auto distance_y = (other.height/2 + height/2) - std::abs(other.y - y);
-            auto side_x = other.x - x;
-            auto side_y = other.y - y;
+            auto distance_x = (other->width/2 + width/2) - std::abs(other->x - x);
+            auto distance_y = (other->height/2 + height/2) - std::abs(other->y - y);
+            auto side_x = other->x - x;
+            auto side_y = other->y - y;
 
             auto down = distance_y >= 0 && side_y <= 0;
             auto up = distance_y >= 0 && side_y >= 0;
@@ -69,25 +45,29 @@ class PhysicsObject: public RenderObject {
             //when there is a collision
             if((down||up) && left && mag >= 0){
                 //go left
-                x = other.x + other.width/2 + width/2;
+                if(snap_collisions)
+                    x = other->x + other->width/2 + width/2;
                 if(velocity_x < 0) velocity_x = 0;
                 collision_status.left = true;
                 isCollided = true;
             } else if((left||right) && down && mag <= 0){
                 //go up
-                y = other.y + other.height/2 + height/2;
+                if(snap_collisions)
+                    y = other->y + other->height/2 + height/2;
                 if(velocity_y < 0) velocity_y = 0;
                 collision_status.down = true;
                 isCollided = true;
             } else if((down||up) && right && mag >= 0){
                 //go right
-                x = other.x - other.width/2 - width/2;
+                if(snap_collisions)
+                    x = other->x - other->width/2 - width/2;
                 if(velocity_x > 0) velocity_x = 0;
                 collision_status.right = true;
                 isCollided = true;
             } else if((left||right) && up && mag <= 0){
                 //go down
-                y = other.y - other.height/2 - height/2;
+                if(snap_collisions)
+                    y = other->y - other->height/2 - height/2;
                 if(velocity_y > 0) velocity_y = 0;
                 collision_status.up = true;
                 isCollided = true;
@@ -99,14 +79,18 @@ class PhysicsObject: public RenderObject {
         void updateCollisions(){
             collided_objects.clear();
             collision_status = {false, false, false, false};
-            if(!collision_objects.empty())
-                for(RenderObject *i : collision_objects)
-                    if(getCollision(*i)){
+            if(!collision_objects.empty()){
+                for(RenderObject* i : collision_objects)
+                    if(getCollision(i)){
                         collided_objects.push_back(i);
                     }
+            } else {
+                std::cout << "No collision objects" << std::endl;
+                exit(-1);
+            }
         }
         //adds an collision object to the list of collision objects
-        void addCollisionObject(RenderObject *object){
+        void addCollisionObject(RenderObject* object){
             collision_objects.push_back(object);
         }
 
@@ -115,6 +99,9 @@ class PhysicsObject: public RenderObject {
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
             delay = 200*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+
+            //update the last time
+            last_time = current_time;
 
             //gravity
             if(gravity)
@@ -142,8 +129,6 @@ class PhysicsObject: public RenderObject {
                 y = -1.0f + height/2;
             }
 
-            //update the last time
-            last_time = current_time;
             if(velocity_x > 0)
                 direction = 1.0f;
             else if(velocity_x < 0)

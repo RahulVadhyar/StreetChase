@@ -6,6 +6,7 @@ note to self:
 Things to be done
     -Things I can do right now
         -In Progress
+
             -Weapons class and system
                 -integrate it with players and AI
                 -Integrate it with health system
@@ -17,7 +18,7 @@ Things to be done
                 -Create a system for drawing bars and filling them with correct info
             
             -enemies
-                
+
 
         -Paused for now as other things are needed before we can further work on this
 

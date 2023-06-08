@@ -38,7 +38,6 @@
 #include <cmath>
 #include <ctime>
 #include <vector>
-#include <list>
 #include <typeinfo>
 
 //Third party libraries(OpenGL, stbi and glm)

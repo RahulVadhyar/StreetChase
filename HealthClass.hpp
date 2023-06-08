@@ -1,9 +1,9 @@
 class Health{
     public:
-        float max_health;
-        float current_health;
-        float regen_rate;
-        bool is_dead;
+        float max_health = 1.0f;
+        float current_health = 1.0f;
+        float regen_rate = 0;
+        bool is_dead = false;
     
     Health(float input_max_health, float input_regen_rate){
         max_health = input_max_health;

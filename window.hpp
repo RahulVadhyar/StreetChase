@@ -13,8 +13,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
 
 class Window{
     public:
-    GLFWwindow* window;
-    PlayerClass *player;
+    GLFWwindow* window = nullptr;
+    PlayerClass *player = nullptr;
     std::vector<PhysicsObject*> physics_objects;
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
@@ -73,9 +73,16 @@ class Window{
             show_fps();
             clear();
             processInput();
-            player->update();
-            for(auto object : physics_objects){
-                object->update();
+            if(player != nullptr){
+                player->update();
+            } else {
+                std::cout << "No player" << std::endl;
+                exit(-1);
+            }
+            if(!physics_objects.empty()){
+                for(auto object : physics_objects){
+                    object->update();
+                }
             }
             for(auto object : render_objects){
                 object->draw();
@@ -114,10 +121,12 @@ class Window{
         if(inputs.left_click){
         float pos_x = (inputs.mouse_x/screen_status.width)*2 - 1.0f;
         float pos_y = -(inputs.mouse_y/screen_status.height)*2 + 1.0f;
-            for(int i = 0; i < mouse_callback_objects.size(); ++i){
-                auto object = mouse_callback_objects[i];             
-                if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y)
-                    object->mouseClick();
+            if(!mouse_callback_objects.empty()){
+                for(int i = 0; i < static_cast<int>(mouse_callback_objects.size()); ++i){
+                    auto object = mouse_callback_objects[i];             
+                    if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y)
+                        object->mouseClick();
+                }
             }
         }
     }
