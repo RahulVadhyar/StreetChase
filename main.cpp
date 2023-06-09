@@ -22,10 +22,10 @@ int main(){
     RenderObject wall(-0.4, -0.4, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
     PlayerClass player(0, 0, 0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
     SimpleGun gun(&gun_shader);
-    EnemyClass enemy(2, 0, 0.1f, 0.2f, &enemy_shader, PLAYER_TEX_DIR);
+    EnemyClass* enemy = new EnemyClass(2, 0, 0.1f, 0.2f, &enemy_shader, PLAYER_TEX_DIR);
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
-    enemy.addWeapon(&enemy_gun);
+    enemy->addWeapon(&enemy_gun);
     
 
     //create HUD
@@ -41,23 +41,23 @@ int main(){
     player.shouldRender = true;
     player.addCollisionObject(&ground);
     player.addCollisionObject(&wall);
-    player.addCollisionObject(&enemy);
-    enemy.addCollisionObject(&ground);
-    enemy.addCollisionObject(&wall);
-    enemy.addCollisionObject(&player);
+    player.addCollisionObject(enemy);
+    enemy->addCollisionObject(&ground);
+    enemy->addCollisionObject(&wall);
+    enemy->addCollisionObject(&player);
 
     window.addRenderObject(&ground);
     window.addRenderObject(&wall);
     window.addRenderObject(&player);
     window.addRenderObject(&hud1);
     window.addRenderObject(&gun);
-    window.addRenderObject(&enemy);
+    window.addRenderObject(enemy);
     window.addMouseCallbackObject(&hud1);
     window.addPlayer(&player);
-    window.addPhysicsObject(&enemy);
-
+    window.addPhysicsObject(enemy);
+    
+    
     //render and play the game
     window.play();
-
     return 0;
 }

@@ -4,7 +4,7 @@ class SimpleBullet: public BaseBulletClass{
         BaseBulletClass::BaseBulletClass(x, y, 0.03, 0.03, shader, BULLET_TEX_DIR){
             damage = 0.5;
             max_speed = 0.1;
-            initial_velocity = 0.0001;
+            initial_velocity = 0.0004;
         }
 
 };

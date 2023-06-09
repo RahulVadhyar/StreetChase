@@ -48,6 +48,7 @@ class PlayerClass: public PhysicsObject, public Health{
         updateCollisions();
         //update the weapons
         weapon->update(x, y);
+        regen();
         
         if(bullets.size() > 0){
             for(auto &bullet: bullets){
@@ -83,7 +84,8 @@ class PlayerClass: public PhysicsObject, public Health{
                     exit(-1);
                 }
                 for(auto object: collision_objects)
-                    bullet->addCollisionObject(object);    
+                    if(object != nullptr)
+                        bullet->addCollisionObject(object);    
                 bullet->addCollisionObject(this);         
             }
             fired = true;

@@ -27,7 +27,8 @@ class EnemyClass : public PhysicsObject, public Health{
             }
             if(!collision_objects.empty()){
                 for(auto object: collision_objects)
-                    bullet->addCollisionObject(object);
+                    if(object != nullptr)
+                        bullet->addCollisionObject(object);
             }            
         }
     }

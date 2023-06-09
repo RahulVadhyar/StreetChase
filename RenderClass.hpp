@@ -6,6 +6,7 @@ class RenderObject{
         glm::mat4 (*Transform_func)(float, float) = nullptr;
         Shader* shader;
         float x = 0, y = 0, width, height;
+        float prev_x = 0, prev_y = 0;
         float* screen_x = nullptr;
         bool shouldRender = true;
         float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};

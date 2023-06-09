@@ -1,25 +1,12 @@
 this is a todo file, will be deleted.
-
-note to self:
--GCC is broken, and miscompiles things, using only clang from now on.
-
 Things to be done
     -Things I can do right now
         -In Progress
-
             -Weapons class and system
-                -integrate it with players and AI
-                -Integrate it with health system
-                -Create bullets and its class
             -health status
-                -Integrate it with rest of the system
-                -When dead, destroy the object in question
             -health bar
-                -Create a system for drawing bars and filling them with correct info
-            
             -enemies
-
-
+            
         -Paused for now as other things are needed before we can further work on this
 
             -Level editor class and cpp file

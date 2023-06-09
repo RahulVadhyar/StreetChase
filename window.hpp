@@ -81,11 +81,13 @@ class Window{
             }
             if(!physics_objects.empty()){
                 for(auto object : physics_objects){
-                    object->update();
+                    if(object != nullptr)
+                        object->update();
                 }
             }
             for(auto object : render_objects){
-                object->draw();
+                if(object != nullptr)
+                    object->draw();
             }
             swap();
         }

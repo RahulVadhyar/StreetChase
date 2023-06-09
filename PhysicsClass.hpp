@@ -30,8 +30,8 @@ class PhysicsObject: public RenderObject {
         //gets the collision between the object and another object
         bool getCollision(RenderObject* other){
             bool isCollided = false;
-            auto distance_x = (other->width/2 + width/2) - std::abs(other->x - x);
-            auto distance_y = (other->height/2 + height/2) - std::abs(other->y - y);
+            auto distance_x = (other->width + width + std::abs(x - prev_x))/2 - std::abs(other->x - x);
+            auto distance_y = (other->height + height + std::abs(y - prev_y))/2 - std::abs(other->y - y);
             auto side_x = other->x - x;
             auto side_y = other->y - y;
 
@@ -81,8 +81,10 @@ class PhysicsObject: public RenderObject {
             collision_status = {false, false, false, false};
             if(!collision_objects.empty()){
                 for(RenderObject* i : collision_objects)
-                    if(getCollision(i)){
-                        collided_objects.push_back(i);
+                    if(i != nullptr){
+                        if(getCollision(i)){
+                            collided_objects.push_back(i);
+                        }
                     }
             } else {
                 std::cout << "No collision objects" << std::endl;
@@ -116,7 +118,10 @@ class PhysicsObject: public RenderObject {
             if(velocity_y > 0.3) velocity_y = 0.3;
             if(velocity_x < -0.3) velocity_x = -0.3;
             if(velocity_y < -0.3) velocity_y = -0.3;
-    
+
+            prev_x = x;
+            prev_y = y;
+
             y += velocity_y*delay;
             x += velocity_x*delay;
 
