@@ -23,7 +23,7 @@
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
-// #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
+// #define PRINT_PLAYER_STAUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
@@ -60,7 +60,7 @@
 #include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
 #include <C:\Users\vadhy\StreetChase\Weapons\simplegun.hpp>
 #include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
-#include <C:\Users\vadhy\StreetChase\HealthBarClass.cpp>
+// #include <C:\Users\vadhy\StreetChase\HealthBarClass.cpp>
 #include <C:\Users\vadhy\StreetChase\EnemyClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
