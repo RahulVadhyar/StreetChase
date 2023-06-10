@@ -15,10 +15,9 @@ class Window{
     public:
     GLFWwindow* window = nullptr;
     PlayerClass *player = nullptr;
-    std::vector<PhysicsObject*> physics_objects;
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
-    std::vector<HealthBarClass*> health_bars; 
+    std::vector<PersonClass*> persons;
 
     float* screen_x;
     float prev_time;
@@ -65,12 +64,10 @@ class Window{
     void addPlayer(PlayerClass* player){
         this->player = player;
     }
-    void addPhysicsObject(PhysicsObject* object){
-        physics_objects.push_back(object);
-    }
 
-    void addHealthBar(HealthBarClass* health_bar){
-        health_bars.push_back(health_bar);
+    void addPerson(PersonClass* person){
+        persons.push_back(person);
+        person->addScreenX(this->screen_x);
     }
 
     void play(){
@@ -84,19 +81,20 @@ class Window{
                 std::cout << "No player" << std::endl;
                 exit(-1);
             }
-            if(!physics_objects.empty()){
-                for(auto object : physics_objects){
-                    if(object != nullptr)
-                        object->update();
-                }
-            }
             for(auto object : render_objects){
                 if(object != nullptr)
                     object->draw();
             }
-            for(auto object : health_bars){
+            for(auto &object : persons){
                 if(object != nullptr){
-                    object->draw();}
+                    if(object->is_dead){
+                        delete object;
+                        object = nullptr;
+                    } else{
+                        object->update();
+                        object->draw();
+                    }
+                }
             }
             swap();
         }

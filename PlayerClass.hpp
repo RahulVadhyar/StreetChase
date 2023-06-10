@@ -12,21 +12,18 @@ struct InputStatus{
 };
 
 //main player class
-class PlayerClass: public PhysicsObject, public Health{
+class PlayerClass: public PersonClass{
     public:
     //input status struct
     InputStatus input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
-    BaseWeaponClass* weapon = nullptr;
-    std::vector<BaseBulletClass*> bullets;
-    int current_weapon = 0;
     bool fired = false;
+    HealthBarClass health_bar = NULL;
 
     //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
     PlayerClass(float input_x, float input_y, float width, float height, Shader *o_shader, std::string texture_dir) : 
-    PhysicsObject::PhysicsObject(input_x, input_y, width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){}
-
-    void addWeapon(BaseWeaponClass* input_weapon){
-        weapon = input_weapon;
+    PersonClass(input_x, input_y, width, height, o_shader, texture_dir){
+        PersonClass* player_ptr = dynamic_cast<PersonClass*>(this);
+        health_bar = HealthBarClass(player_ptr);
     }
 
     //Updates the player's velocity based on inputs
@@ -50,51 +47,21 @@ class PlayerClass: public PhysicsObject, public Health{
         weapon->update(x, y);
         regen();
         
-        if(bullets.size() > 0){
-            for(auto &bullet: bullets){
-                if(bullet != nullptr){
-                    bullet->update();
-                    bullet->updateCollisions();
-                    if(bullet->isTimeOver()){
-                        delete bullet;
-                        bullet = nullptr;
-                    } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
-                        for(auto object: bullet->collided_objects){
-                            if(dynamic_cast<EnemyClass*>(object)){
-                                EnemyClass* enemy = dynamic_cast<EnemyClass*>(object);
-                                enemy->takeDamage(0.1);
-                                std::cout << "Enemy hit!" << std::endl;
-                            }
-                        }
-                        delete bullet;
-                        bullet = nullptr;
-                        std::cout << "Ammo left" << weapon->current_ammo << std::endl;                        
-                    }
-                }
-            }
-        }
+        updateBullets();
+        health_bar.draw();
 
-        if(input_status.left_click && weapon->current_ammo > 0){
+        if(input_status.left_click){
             if(!fired){
-                BaseBulletClass* bullet = weapon->fire(x, y, direction);
-                bullets.push_back(bullet);
-                bullet->screen_x = screen_x;
-                if(collision_objects.empty()){
-                    std::cout << "Collision objects is empty" << std::endl;
-                    exit(-1);
-                }
-                for(auto object: collision_objects)
-                    if(object != nullptr)
-                        bullet->addCollisionObject(object);    
-                bullet->addCollisionObject(this);         
+                fireWeapon();  
+                fired = true;
             }
-            fired = true;
-        } else{
+        } else if(fired){
             fired = false;
         }
         printKeystrokes();
         printPlayerStatus("Update");
         printPlayerCollisionStatus();
+        // std::cout << fired << std::endl;
     }
 
     //debugging: prints the inputs

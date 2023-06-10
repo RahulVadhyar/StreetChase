@@ -1,6 +1,6 @@
 class HealthBarClass{
     public:
-        PlayerClass *player;
+        PersonClass *person;
         float width = 0.1;
         float height = 0.01;
         Shader shader = Shader(VS_HEALTHBAR_SHADER_DIR, FS_HEALTHBAR_SHADER_DIR);
@@ -8,8 +8,8 @@ class HealthBarClass{
         bool shouldRender = true;
         glm::mat4(*Transform_func)(float, float) = Transform::Default;
         float offset_y = 0.13;
-    HealthBarClass(PlayerClass *input_player){
-        player = input_player;
+    HealthBarClass(PersonClass *input_player){
+        person = input_player;
         float vertices[] = {
             //verticies         texture coords
             width/2,  height/2, 
@@ -46,9 +46,9 @@ class HealthBarClass{
     void draw(){
         if(shouldRender){
             shader.use();
-            shader.setFloat("health_percent", player->current_health);
+            shader.setFloat("health_percent", person->current_health);
 
-            glm::mat4 trans = Transform_func(player->x - *player->screen_x, player->y + offset_y);
+            glm::mat4 trans = Transform_func(person->x - *person->screen_x, person->y + offset_y);
             
             shader.use();
             unsigned int transformLoc = glGetUniformLocation(shader.shader_id, "transform");
