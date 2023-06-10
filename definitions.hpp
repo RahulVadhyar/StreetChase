@@ -23,7 +23,7 @@
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
-// #define PRINT_PLAYER_STAUS //uncomment to enable player status debugging
+// #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X

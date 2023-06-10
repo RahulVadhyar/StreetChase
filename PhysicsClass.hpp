@@ -9,7 +9,7 @@ class PhysicsObject: public RenderObject {
         //Physics variables
         float velocity_x = 0, velocity_y = 0;
         float acceleration_x = 0, acceleration_y = 0;
-        float last_time;
+        float last_time = 0;
         float delay;
         bool gravity = true;
         float direction = 1.0f;
@@ -124,7 +124,6 @@ class PhysicsObject: public RenderObject {
 
             y += velocity_y*delay;
             x += velocity_x*delay;
-
 
             //if the object is out of bounds, then set it to the edge of the screen
             if(y > 1.0f - height/2){
