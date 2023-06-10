@@ -46,7 +46,7 @@ class HealthBarClass{
     void draw(){
         if(shouldRender){
             shader.use();
-            shader.setFloat("health_percent", 0.6);
+            shader.setFloat("health_percent", player->current_health);
 
             glm::mat4 trans = Transform_func(player->x - *player->screen_x, player->y + offset_y);
             

@@ -6,7 +6,7 @@ Things to be done
             -health status
             -health bar
             -enemies
-            
+            -multiple weapons
         -Paused for now as other things are needed before we can further work on this
 
             -Level editor class and cpp file

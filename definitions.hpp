@@ -62,6 +62,7 @@
 #include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
 #include <C:\Users\vadhy\StreetChase\Weapons\simplegun.hpp>
 #include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
+#include <C:\Users\vadhy\StreetChase\PersonClass.cpp>
 #include <C:\Users\vadhy\StreetChase\EnemyClass.hpp>
 #include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
 #include <C:\Users\vadhy\StreetChase\HealthBarClass.cpp>
