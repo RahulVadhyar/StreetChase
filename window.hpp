@@ -18,6 +18,7 @@ class Window{
     std::vector<PhysicsObject*> physics_objects;
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
+    std::vector<HealthBarClass*> health_bars; 
 
     float* screen_x;
     float prev_time;
@@ -68,6 +69,10 @@ class Window{
         physics_objects.push_back(object);
     }
 
+    void addHealthBar(HealthBarClass* health_bar){
+        health_bars.push_back(health_bar);
+    }
+
     void play(){
         while(!glfwWindowShouldClose(window)){
             show_fps();
@@ -88,6 +93,10 @@ class Window{
             for(auto object : render_objects){
                 if(object != nullptr)
                     object->draw();
+            }
+            for(auto object : health_bars){
+                if(object != nullptr){
+                    object->draw();}
             }
             swap();
         }

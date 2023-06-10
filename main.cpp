@@ -24,6 +24,7 @@ int main(){
     SimpleGun gun(&gun_shader);
     EnemyClass* enemy = new EnemyClass(2, 0, 0.1f, 0.2f, &enemy_shader, PLAYER_TEX_DIR);
     SimpleGun enemy_gun(&gun_shader);
+    HealthBarClass health_bar(&player);
     player.addWeapon(&gun);
     enemy->addWeapon(&enemy_gun);
     
@@ -52,6 +53,7 @@ int main(){
     window.addRenderObject(&hud1);
     window.addRenderObject(&gun);
     window.addRenderObject(enemy);
+    window.addHealthBar(&health_bar);
     window.addMouseCallbackObject(&hud1);
     window.addPlayer(&player);
     window.addPhysicsObject(enemy);
