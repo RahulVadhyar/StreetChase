@@ -18,7 +18,7 @@ class Window{
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
     std::vector<PersonClass*> persons;
-
+    TextClass text = TextClass();
     float* screen_x;
     float prev_time;
     Window(){
@@ -70,6 +70,16 @@ class Window{
         person->addScreenX(this->screen_x);
     }
 
+    void mainMenu(){
+        while(!glfwWindowShouldClose(window)){
+            show_fps();
+            clear();
+            //shit goes here
+            
+            swap();
+        }
+    }
+
     void play(){
         while(!glfwWindowShouldClose(window)){
             show_fps();
@@ -96,6 +106,7 @@ class Window{
                     }
                 }
             }
+            text.draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
             swap();
         }
     }

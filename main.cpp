@@ -1,7 +1,6 @@
 #include <C:\Users\vadhy\StreetChase\definitions.hpp>
-//command to compile: g++ main.cpp glad/glad.c -lglfw -lGL -Iglm -o main &&./main
 
-//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -O3&& .\main.exe
+//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" "C:\Users\vadhy\StreetChase\freetype.lib" -I"C:\Users\vadhy\StreetChase\"  -Wall -Wextra &&.\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 //for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
 //lldb clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -g && lldb .\main.exe
@@ -26,7 +25,6 @@ int main(){
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
     enemy->addWeapon(&enemy_gun);
-    
 
     //create HUD
     HUDObject hud1(0.0f, -0.9f, 0.2f, 0.2f, &hud_shader, CONTAINER_TEX_DIR);
@@ -37,7 +35,6 @@ int main(){
     wall.mixValue[1] = 0.5f;
     wall.TexScale[1] = 0.2f;
 
-    // player.gravity = false;
     player.shouldRender = true;
     player.addCollisionObject(&ground);
     player.addCollisionObject(&wall);

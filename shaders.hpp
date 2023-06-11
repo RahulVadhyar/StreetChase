@@ -110,6 +110,7 @@ class Shader{
             glUniform2fv(glGetUniformLocation(shader_id, name.c_str()), 1, &value[0]);
         }
 
+
 };
 
 #endif

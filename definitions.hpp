@@ -13,15 +13,16 @@
 #define CONTAINER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
 #define GUN_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\gun.png"
 #define BULLET_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\bullet.png"
-
-
 #define VS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs"
 #define FS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs"
 #define VS_HEALTHBAR_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\healthbar.vs"
 #define FS_HEALTHBAR_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\healthbar.fs"
+#define VS_TEXT_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\TextShader.vs"
+#define FS_TEXT_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\TextShader.fs"
+#define FONT1_DIR "C:\\Users\\vadhy\\StreetChase\\fonts\\AmaticSC-Bold.ttf"
+
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
-
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
@@ -40,32 +41,37 @@
 #include <cmath>
 #include <ctime>
 #include <vector>
-#include <typeinfo>
+#include <map>
 
 //Third party libraries(OpenGL, stbi and glm)
 
-#include <C:\Users\vadhy\StreetChase\glad\glad.h>
+#include <glad\glad.h>
 #define GLFW_DLL
-#include <C:\Users\vadhy\StreetChase\GLFW\include\glfw3.h>
-#include <C:\Users\vadhy\StreetChase\include\stb_image.h>
-#include <C:\Users\vadhy\StreetChase\glm\glm.hpp>
-#include <C:\Users\vadhy\StreetChase\glm\gtc\matrix_transform.hpp>
-#include <C:\Users\vadhy\StreetChase\glm\gtc\type_ptr.hpp>
+#include <GLFW\include\glfw3.h>
+#include <include\stb_image.h>
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 //Header files to be included
-#include <C:\Users\vadhy\StreetChase\transforms.hpp> //contains the functions for transformations
-#include "C:\Users\vadhy\StreetChase\shaders.hpp"
-#include <C:\Users\vadhy\StreetChase\RenderClass.hpp> 
-#include <C:\Users\vadhy\StreetChase\PhysicsClass.hpp>
-#include <C:\Users\vadhy\StreetChase\BulletClass.hpp>
-#include <C:\Users\vadhy\StreetChase\Weapons\simplebullet.hpp>
-#include <C:\Users\vadhy\StreetChase\WeaponClass.hpp>
-#include <C:\Users\vadhy\StreetChase\Weapons\simplegun.hpp>
-#include <C:\Users\vadhy\StreetChase\HealthClass.hpp>
-#include <C:\Users\vadhy\StreetChase\PersonClass.cpp>
-#include <C:\Users\vadhy\StreetChase\HealthBarClass.cpp>
-#include <C:\Users\vadhy\StreetChase\EnemyClass.hpp>
-#include <C:\Users\vadhy\StreetChase\PlayerClass.hpp>
-#include <C:\Users\vadhy\StreetChase\window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
-#include <C:\Users\vadhy\StreetChase\HUDClass.hpp>
+#include <transforms.hpp> //contains the functions for transformations
+#include "shaders.hpp"
+#include <TextClass.hpp>
+#include <RenderClass.hpp> 
+#include <PhysicsClass.hpp>
+#include <BulletClass.hpp>
+#include <Weapons\simplebullet.hpp>
+#include <WeaponClass.hpp>
+#include <Weapons\simplegun.hpp>
+#include <HealthClass.hpp>
+#include <PersonClass.cpp>
+#include <HealthBarClass.cpp>
+#include <EnemyClass.hpp>
+#include <PlayerClass.hpp>
+#include <HUDClass.hpp>
+#include <MenuClass.hpp>
+#include <window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+
 #endif
