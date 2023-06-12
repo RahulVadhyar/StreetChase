@@ -18,7 +18,7 @@ class Window{
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
     std::vector<PersonClass*> persons;
-    // TextClass text = TextClass();
+    TextClass* text;
     float* screen_x;
     float prev_time;
     Window(){
@@ -53,6 +53,7 @@ class Window{
         #ifdef WIREFRAME_MODE
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         #endif
+        text = new TextClass();
 
     }
 
@@ -113,7 +114,7 @@ class Window{
                     }
                 }
             }
-            // text.draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
+            text->draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
             swap();
         }
     }

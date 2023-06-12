@@ -6,14 +6,13 @@ class TextClass{
         glm::ivec2 bearing;
         unsigned int advance;
     };
-    std::map<char, Character> Characters;
-    Shader shader = Shader(VS_TEXT_SHADER_DIR, FS_TEXT_SHADER_DIR);
+    std::map<GLchar, Character> Characters;
+    Shader shader= Shader(VS_TEXT_SHADER_DIR, FS_TEXT_SHADER_DIR);
     unsigned int VAO, VBO;
     TextClass(){
-        glEnable(GL_CULL_FACE);
+        // glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
         FT_Library ft;
         if (FT_Init_FreeType(&ft)){
             std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;

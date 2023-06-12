@@ -58,7 +58,7 @@
 //Header files to be included
 #include <transforms.hpp> //contains the functions for transformations
 #include "shaders.hpp"
-// #include <TextClass.hpp>
+#include <TextClass.hpp>
 #include <RenderClass.hpp> 
 #include <PhysicsClass.hpp>
 #include <BulletClass.hpp>
