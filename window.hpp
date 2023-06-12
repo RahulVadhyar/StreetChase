@@ -18,7 +18,7 @@ class Window{
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
     std::vector<PersonClass*> persons;
-    TextClass text = TextClass();
+    // TextClass text = TextClass();
     float* screen_x;
     float prev_time;
     Window(){
@@ -29,7 +29,7 @@ class Window{
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         //tell glfw we are using core profile
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+        // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
         window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Street Chase", NULL, NULL);
         if(window == NULL){
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -95,10 +95,17 @@ class Window{
                 if(object != nullptr)
                     object->draw();
             }
+
             for(auto &object : persons){
                 if(object != nullptr){
                     if(object->is_dead){
                         delete object;
+                        for(auto object2: persons){
+                            if(object2 != nullptr){
+                                object2->removeCollisionObject(object);
+                            }
+                        }
+                        player->removeCollisionObject(object);
                         object = nullptr;
                     } else{
                         object->update();
@@ -106,7 +113,7 @@ class Window{
                     }
                 }
             }
-            text.draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
+            // text.draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
             swap();
         }
     }
@@ -119,8 +126,8 @@ class Window{
         glClear(GL_COLOR_BUFFER_BIT); //state using function
     }
     void swap(){
-        // glfwSwapBuffers(window);
-        glFlush();
+        glfwSwapBuffers(window);
+        // glFlush();
         glfwPollEvents();
     }
 

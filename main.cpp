@@ -1,6 +1,6 @@
-#include <C:\Users\vadhy\StreetChase\definitions.hpp>
+#include "definitions.hpp"
 
-//command:clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" "C:\Users\vadhy\StreetChase\freetype.lib" -I"C:\Users\vadhy\StreetChase\"  -Wall -Wextra &&.\main.exe
+//command:g++ main.cpp glad/glad.c -o main -lglfw -lfreetype   -I/usr/include/freetype2/ -I/home/starsystem/StreetChase/  && ./main
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 //for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
 //lldb clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -g && lldb .\main.exe
@@ -22,6 +22,7 @@ int main(){
     PlayerClass player(0, 0, 0.1f, 0.2f, &player_shader, PLAYER_TEX_DIR);
     SimpleGun gun(&gun_shader);
     EnemyClass* enemy = new EnemyClass(2, 0, 0.1f, 0.2f, &enemy_shader, PLAYER_TEX_DIR);
+
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
     enemy->addWeapon(&enemy_gun);

@@ -46,10 +46,8 @@ class PlayerClass: public PersonClass{
         //update the weapons
         weapon->update(x, y);
         regen();
-        
         updateBullets();
         health_bar.draw();
-
         if(input_status.left_click){
             if(!fired){
                 fireWeapon();  

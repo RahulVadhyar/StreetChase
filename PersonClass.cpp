@@ -23,9 +23,11 @@ class PersonClass: public PhysicsObject, public Health{
                         bullet = nullptr;
                     } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
                         for(auto object: bullet->collided_objects){
+                            if(object != nullptr && dynamic_cast<PersonClass*>(object)){
                                 PersonClass* enemy = dynamic_cast<PersonClass*>(object);
                                 enemy->takeDamage(bullet->damage);
                                 std::cout << "Enemy hit!" << std::endl;
+                            }
                         }
                         delete bullet;
                         bullet = nullptr;
@@ -49,11 +51,14 @@ class PersonClass: public PhysicsObject, public Health{
                     std::cout << "Collision objects is empty" << std::endl;
                     exit(-1);
                 }
-                for(auto object: collision_objects)
-                    if(object != nullptr && dynamic_cast<PersonClass*>(object)){
+                for(auto object: collision_objects){
+                    if(object != nullptr){
+                        if(dynamic_cast<PersonClass*>(object)){
+                            
                         bullet->addCollisionObject(object); 
-                   }
-                bullet->addCollisionObject(this);         
+                        }
+                   }    
+                }
         }
     }
 };

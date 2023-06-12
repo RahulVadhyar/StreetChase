@@ -7,19 +7,19 @@
 #define SCREEN_WIDTH 16*SCREEN_HEIGHT/9
 
 //textures, might eventually move to other files as strings
-#define IMAGE1_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
-#define STONE_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\stone.jpg"
-#define PLAYER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\player.png"
-#define CONTAINER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
-#define GUN_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\gun.png"
-#define BULLET_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\bullet.png"
-#define VS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs"
-#define FS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs"
-#define VS_HEALTHBAR_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\healthbar.vs"
-#define FS_HEALTHBAR_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\healthbar.fs"
-#define VS_TEXT_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\TextShader.vs"
-#define FS_TEXT_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\TextShader.fs"
-#define FONT1_DIR "C:\\Users\\vadhy\\StreetChase\\fonts\\AmaticSC-Bold.ttf"
+#define IMAGE1_DIR "Textures/container.jpg"
+#define STONE_TEX_DIR "Textures/stone.jpg"
+#define PLAYER_TEX_DIR "Textures/player.png"
+#define CONTAINER_TEX_DIR "Textures/container.jpg"
+#define GUN_TEX_DIR "Textures/gun.png"
+#define BULLET_TEX_DIR "Textures/bullet.png"
+#define VS_SHADER_DIR "Shaders/shader.vs"
+#define FS_SHADER_DIR "Shaders/shader.fs"
+#define VS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.vs"
+#define FS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.fs"
+#define VS_TEXT_SHADER_DIR "Shaders/TextShader.vs"
+#define FS_TEXT_SHADER_DIR "Shaders/TextShader.fs"
+#define FONT1_DIR "fonts/AmaticSC-Bold.ttf"
 
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
@@ -45,26 +45,26 @@
 
 //Third party libraries(OpenGL, stbi and glm)
 
-#include <glad\glad.h>
+#include "glad/glad.h"
 #define GLFW_DLL
-#include <GLFW\include\glfw3.h>
-#include <include\stb_image.h>
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
+#include <GLFW/glfw3.h>
+#include "include/stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 //Header files to be included
 #include <transforms.hpp> //contains the functions for transformations
 #include "shaders.hpp"
-#include <TextClass.hpp>
+// #include <TextClass.hpp>
 #include <RenderClass.hpp> 
 #include <PhysicsClass.hpp>
 #include <BulletClass.hpp>
-#include <Weapons\simplebullet.hpp>
+#include <Weapons/simplebullet.hpp>
 #include <WeaponClass.hpp>
-#include <Weapons\simplegun.hpp>
+#include <Weapons/simplegun.hpp>
 #include <HealthClass.hpp>
 #include <PersonClass.cpp>
 #include <HealthBarClass.cpp>

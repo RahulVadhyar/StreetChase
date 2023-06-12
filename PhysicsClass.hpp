@@ -80,34 +80,41 @@ class PhysicsObject: public RenderObject {
             collided_objects.clear();
             collision_status = {false, false, false, false};
             if(!collision_objects.empty()){
-                for(RenderObject* i : collision_objects)
+                for(RenderObject* i : collision_objects){
                     if(i != nullptr){
                         if(getCollision(i)){
                             collided_objects.push_back(i);
                         }
                     }
-            } else {
-                std::cout << "No collision objects" << std::endl;
-                exit(-1);
+                }
             }
         }
         //adds an collision object to the list of collision objects
         void addCollisionObject(RenderObject* object){
             collision_objects.push_back(object);
         }
+        void removeCollisionObject(RenderObject* object){
+            for(int i = 0; i < static_cast<int>(collision_objects.size()); ++i){
+                if(collision_objects[i] == object){
+                    collision_objects[i] = nullptr;
+                    break;
+                }
+            }
+        }
 
         //updates the coordinates of the object based on the physics variables
         virtual void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
-            delay = 200*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+            delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+            delay = 1/delay;
 
             //update the last time
             last_time = current_time;
 
             //gravity
             if(gravity)
-                acceleration_y = -0.0005;
+                acceleration_y = -0.0004;
 
             //update the coordinates and velocity based on delay
             velocity_x += acceleration_x*delay;
