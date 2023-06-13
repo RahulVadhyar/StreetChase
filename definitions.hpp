@@ -6,6 +6,12 @@
 #define SCREEN_HEIGHT 1080
 #define SCREEN_WIDTH 16*SCREEN_HEIGHT/9
 
+struct ScreenStatus{
+    float height;
+    float width;
+};
+ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
+
 //textures, might eventually move to other files as strings
 #define IMAGE1_DIR "Textures/container.jpg"
 #define STONE_TEX_DIR "Textures/stone.jpg"

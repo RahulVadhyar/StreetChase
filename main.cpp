@@ -1,6 +1,6 @@
 #include "definitions.hpp"
 
-//command:g++ main.cpp glad/glad.c -o main -lglfw -lfreetype   -I/usr/include/freetype2/ -I/home/starsystem/StreetChase/  && ./main
+//command:g++ main.cpp glad/glad.c -o main -lglfw -lfreetype -I/usr/include/freetype2/ -I/home/starsystem/StreetChase/  && ./main
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 //for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
 //lldb clang++ main.cpp glad/glad.c  -o main.exe "C:\Users\vadhy\StreetChase\GLFW\lib\glfw3dll.lib" -Wall -Wextra -g && lldb .\main.exe
@@ -55,6 +55,7 @@ int main(){
     
     
     //render and play the game
+    window.mainMenu();
     window.play();
     return 0;
 }

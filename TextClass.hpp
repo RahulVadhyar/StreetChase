@@ -10,9 +10,10 @@ class TextClass{
     Shader shader= Shader(VS_TEXT_SHADER_DIR, FS_TEXT_SHADER_DIR);
     unsigned int VAO, VBO;
     TextClass(){
-        // glEnable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCREEN_WIDTH), 0.0f, static_cast<float>(SCREEN_HEIGHT));
+        shader.use();
+        glUniformMatrix4fv(glGetUniformLocation(shader.shader_id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
         FT_Library ft;
         if (FT_Init_FreeType(&ft)){
             std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
@@ -24,11 +25,8 @@ class TextClass{
             exit(-1);
             }
         FT_Set_Pixel_Sizes(face, 0, 48);
-        if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)){
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl; 
-            exit(-1);
-            }
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // no byte-alignment restriction
+        
         for (unsigned char c = 0; c < 128; c++){
             // load character glyph
             if (FT_Load_Char(face, c, FT_LOAD_RENDER)){

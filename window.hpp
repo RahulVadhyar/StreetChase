@@ -1,9 +1,3 @@
-struct ScreenStatus{
-    float height;
-    float width;
-};
-ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
-
 //for resizing the viewport in the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
@@ -18,7 +12,6 @@ class Window{
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
     std::vector<PersonClass*> persons;
-    TextClass* text;
     float* screen_x;
     float prev_time;
     Window(){
@@ -42,6 +35,8 @@ class Window{
             std::cout << "Failed to initialize GLAD" << std::endl; 
             exit(-1);
         }
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         //tell glfw to call framebuffer_size_callback on window resize
@@ -53,7 +48,6 @@ class Window{
         #ifdef WIREFRAME_MODE
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         #endif
-        text = new TextClass();
 
     }
 
@@ -72,19 +66,50 @@ class Window{
     }
 
     void mainMenu(){
+        auto menu = MenuClass();
         while(!glfwWindowShouldClose(window)){
             show_fps();
-            clear();
-            //shit goes here
-            
+            clear(0.58,0.58,0.60);
+            processMenuInput(menu.buttons);
+            menu.draw();
             swap();
+            if(menu.start_game){
+                break;
+            }   
+        }
+    }
+
+    void processMenuInput(std::vector<HUDObject*> buttons){
+        InputStatus inputs;
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+        }
+        inputs.up = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
+        inputs.down = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+        inputs.left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
+        inputs.right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+        inputs.jump = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+        glfwGetCursorPos(window, &inputs.mouse_x, &inputs.mouse_y);
+        inputs.left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        inputs.right_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
+        if(inputs.left_click){
+        float pos_x = (inputs.mouse_x/screen_status.width)*2 - 1.0f;
+        float pos_y = -(inputs.mouse_y/screen_status.height)*2 + 1.0f;
+            if(!buttons.empty()){
+                for(int i = 0; i < static_cast<int>(buttons.size()); ++i){
+                    auto object = buttons[i];           
+                    if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y){
+                        object->isClicked = true;
+                    }
+                }
+            }
         }
     }
 
     void play(){
         while(!glfwWindowShouldClose(window)){
             show_fps();
-            clear();
+            clear(1.0, 1.0, 1.0);
             processInput();
             if(player != nullptr){
                 player->update();
@@ -114,7 +139,6 @@ class Window{
                     }
                 }
             }
-            text->draw("Hello world", 0, 0, 1, glm::vec3(1.0, 0.0, 0.0));
             swap();
         }
     }
@@ -122,8 +146,8 @@ class Window{
         mouse_callback_objects.push_back(object);
     }
     private:
-    void clear(){
-        glClearColor(1.0f, 1.0f, 1.0f, 0.0f); //state setting function
+    void clear(float r, float g, float b){
+        glClearColor(r, g, b, 0.0f); //state setting function
         glClear(GL_COLOR_BUFFER_BIT); //state using function
     }
     void swap(){
@@ -153,7 +177,9 @@ class Window{
                 for(int i = 0; i < static_cast<int>(mouse_callback_objects.size()); ++i){
                     auto object = mouse_callback_objects[i];             
                     if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y)
-                        object->mouseClick();
+                        object->isClicked = true;
+                    else
+                        object->isClicked = false;
                 }
             }
         }

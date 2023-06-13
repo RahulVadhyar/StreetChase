@@ -6,10 +6,6 @@ class HUDObject: public RenderObject{
 
     void draw(){
         if(shouldRender){
-            if(screen_x == nullptr){
-                std::cout << "Screen_x not set" << std::endl;
-                exit(-1);
-            }
             if(textures.empty()){
                 std::cout << "No textures attached" << std::endl;
                 exit(-1);
@@ -23,4 +19,5 @@ class HUDObject: public RenderObject{
         }
         
     }
+
 };

@@ -11,6 +11,7 @@ class RenderObject{
         bool shouldRender = true;
         float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         float TexScale[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+        bool isClicked = false;
         //Constructors
         //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -162,9 +163,6 @@ class RenderObject{
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
             
-        }
-        virtual void mouseClick(){
-            std::cout << "Clicked" << std::endl;
         }
         void addScreenX(float* input_screen_x){
             screen_x = input_screen_x;
