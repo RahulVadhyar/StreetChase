@@ -70,16 +70,19 @@ class Window{
         while(!glfwWindowShouldClose(window)){
             show_fps();
             clear(0.58,0.58,0.60);
-            processMenuInput(menu.buttons);
+            processMenuInput(&menu);
             menu.draw();
             swap();
             if(menu.start_game){
                 break;
             }   
+            if(menu.close_window){
+                glfwSetWindowShouldClose(window, true);
+            }
         }
     }
 
-    void processMenuInput(std::vector<HUDObject*> buttons){
+    void processMenuInput(MenuClass* menu){
         InputStatus inputs;
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
             glfwSetWindowShouldClose(window, true);
@@ -93,16 +96,21 @@ class Window{
         inputs.left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
         inputs.right_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
         if(inputs.left_click){
-        float pos_x = (inputs.mouse_x/screen_status.width)*2 - 1.0f;
-        float pos_y = -(inputs.mouse_y/screen_status.height)*2 + 1.0f;
-            if(!buttons.empty()){
-                for(int i = 0; i < static_cast<int>(buttons.size()); ++i){
-                    auto object = buttons[i];           
-                    if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y){
-                        object->isClicked = true;
+            if(!menu->isClicked){
+            float pos_x = (inputs.mouse_x/screen_status.width)*2 - 1.0f;
+            float pos_y = -(inputs.mouse_y/screen_status.height)*2 + 1.0f;
+                if(!menu->current_menu->buttons.empty()){
+                    for(int i = 0; i < static_cast<int>(menu->current_menu->buttons.size()); ++i){
+                        auto object = menu->current_menu->buttons[i];           
+                        if(object->x + object->width/2 > pos_x && object->x - object->width/2 < pos_x && object->y + object->height/2 > pos_y && object->y - object->height/2 < pos_y){
+                            object->isClicked = true;
+                        }
                     }
                 }
             }
+            menu->isClicked = true;
+        } else {
+            menu->isClicked = false;
         }
     }
 

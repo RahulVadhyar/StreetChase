@@ -2,11 +2,8 @@ this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
         -In Progress
-            -text rendering
             -multiple weapons
-            -main menu
             -death screen
-            -settings menu
             -animation
             -setting for switching between 60, 120, and 144fps(right now it is uncapped)
 
