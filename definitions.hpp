@@ -29,15 +29,25 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
+
 //debugging tools
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
-#define SHOW_FPS
-// #define SHOW_SCREEN_X
 // #define WEAPON_DEBUG
-// #define GCC //uncomment if using GCC compiler
+
+//menu debug
+// #define MENU_ALLOC_DEALLOC_DEBUG
+// #define MENU_DRAW_DEBUG
+
+//window debug
+// #define SHOW_FPS
+// #define SHOW_SCREEN_X
+// #define SINGLE_BUFFER
+// #define VIEWPORT_SIZE_DEBUG
+// #define WINDOW_INIT_DEBUG
+// #define WINDOW_VECTOR_STATUS
 
 //standard libraries
 #include <iostream>

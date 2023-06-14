@@ -22,6 +22,7 @@ class PersonClass: public PhysicsObject, public Health{
                         delete bullet;
                         bullet = nullptr;
                     } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
+                        std::cout << "Updating bullet1" << std::endl;
                         for(auto object: bullet->collided_objects){
                             if(object != nullptr && dynamic_cast<PersonClass*>(object)){
                                 PersonClass* enemy = dynamic_cast<PersonClass*>(object);
@@ -54,7 +55,6 @@ class PersonClass: public PhysicsObject, public Health{
                 for(auto object: collision_objects){
                     if(object != nullptr){
                         if(dynamic_cast<PersonClass*>(object)){
-                            
                         bullet->addCollisionObject(object); 
                         }
                    }    

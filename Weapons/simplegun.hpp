@@ -12,9 +12,6 @@ class SimpleGun: public BaseWeaponClass{
             if(current_ammo > 0){
                 current_ammo -= 1;
                 auto bullet_shader = new Shader(VS_SHADER_DIR, FS_SHADER_DIR);
-                #ifdef GCC
-                std::cout << input_x << std::endl; //for GCC only
-                #endif
                 BaseBulletClass* bullet = new SimpleBullet(input_x, input_y, bullet_shader);
                 bullet->fire(direction);
                 return bullet;

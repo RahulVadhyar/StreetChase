@@ -1,68 +1,103 @@
 //for resizing the viewport in the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
+    //update the screen status(defined in definitions.hpp)
     screen_status.height = height;
     screen_status.width = width;
+    #ifdef VIEWPORT_SIZE_DEBUG
+    std::cout << "[VIEWPORT_SIZE_DEBUG]: Viewport size changed to x: " << width << " y: " << height << std::endl;
+    #endif
 }
 
+//Handles window, input, rendering and collisions
 class Window{
     public:
     GLFWwindow* window = nullptr;
     PlayerClass *player = nullptr;
+
     std::vector<RenderObject*> render_objects;
     std::vector<RenderObject*> mouse_callback_objects;
     std::vector<PersonClass*> persons;
-    float* screen_x;
+
+    float* screen_x; //position of screen in world
     float prev_time;
+
     Window(){
         //initialize glfw
         glfwInit();
+        windowInitDebug("GLFW initialized");
+
         //tell glfw what version of opengl we are using
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        windowInitDebug("GLFW version set to 3.3");
+        
         //tell glfw we are using core profile
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+        windowInitDebug("GLFW profile set to core");
+
+        //if single buffer is defined, use single buffer
+        #ifdef SINGLE_BUFFER
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+        #endif
+        
+        //create the window
         window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Street Chase", NULL, NULL);
+        windowInitDebug("GLFW window created");
+
         if(window == NULL){
             std::cout << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
             exit(-1); }
+
         //make the window the current context
         glfwMakeContextCurrent(window);
+
         //initialize glad
         if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
             std::cout << "Failed to initialize GLAD" << std::endl; 
             exit(-1);
         }
+        windowInitDebug("GLAD initialized");
+
+        //this is for text rendering
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        //set the viewport
         glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        windowInitDebug("Viewport set to x: " + std::to_string(SCREEN_WIDTH) + " y: " + std::to_string(SCREEN_HEIGHT));
 
         //tell glfw to call framebuffer_size_callback on window resize
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        windowInitDebug("Callbacks and input mode set");
+
+        //initialize screen_x and prev time
         screen_x = new float(1.0f);
         prev_time = glfwGetTime();
+
         //debugging: wireframe mode
         #ifdef WIREFRAME_MODE
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         #endif
-
     }
 
     void addRenderObject(RenderObject* object){
         render_objects.push_back(object);
         object->addScreenX(this->screen_x);
+        windowVectorStatus("Added render object: " + std::to_string((long)object));
     }
 
     void addPlayer(PlayerClass* player){
         this->player = player;
+        windowVectorStatus("Added player: " + std::to_string((long)player));
     }
 
     void addPerson(PersonClass* person){
         persons.push_back(person);
         person->addScreenX(this->screen_x);
+        windowVectorStatus("Added person: " + std::to_string((long)person));
     }
 
     void mainMenu(){
@@ -195,6 +230,11 @@ class Window{
     bool shouldClose(){
         return glfwWindowShouldClose(window);
     }
+    public:
+    ~Window(){
+        glfwTerminate();
+        delete this->screen_x;
+    }   
     void show_fps(){
         #ifdef SHOW_FPS
         float current_time = glfwGetTime();
@@ -207,9 +247,14 @@ class Window{
         std::cout << "Screen X: " << *screen_x << std::endl;
         #endif
     }
-    public:
-    ~Window(){
-        glfwTerminate();
-        delete this->screen_x;
-    }   
+    void windowInitDebug(std::string message){
+        #ifdef WINDOW_INIT_DEBUG
+        std::cout << "[WINDOW_INIT_DEBUG]: " << message << std::endl;
+        #endif
+    }
+    void windowVectorStatus(std::string message){
+        #ifdef WINDOW_VECTOR_STATUS
+        std::cout << "[WINDOW_VECTOR_STATUS]: " << message << std::endl;
+        #endif
+    }
 };
