@@ -8,7 +8,9 @@ class PhysicsObject: public RenderObject {
     public:
         //Physics variables
         float velocity_x = 0, velocity_y = 0;
+        float old_velocity_x = 0, old_velocity_y = 0;
         float acceleration_x = 0, acceleration_y = 0;
+        float old_acceleration_x = 0, old_acceleration_y = 0;
         float last_time = 0;
         float delay;
         bool gravity = true;
@@ -106,19 +108,22 @@ class PhysicsObject: public RenderObject {
         virtual void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
-            delay = 1000*(current_time - last_time) / (double) CLOCKS_PER_SEC;
-            delay = 1/delay;
+            delay = 150*(current_time - last_time) / (double) CLOCKS_PER_SEC;
 
             //update the last time
             last_time = current_time;
 
             //gravity
             if(gravity)
-                acceleration_y = -0.0004;
+                acceleration_y = -0.01;
 
             //update the coordinates and velocity based on delay
-            velocity_x += acceleration_x*delay;
-            velocity_y += acceleration_y*delay;
+            velocity_x += (acceleration_x + old_acceleration_x)*delay/2;
+            velocity_y += (acceleration_y + old_acceleration_y)*delay/2;
+            
+            old_acceleration_x = acceleration_x;
+            old_acceleration_y = acceleration_y;
+
 
             //speed limits
             if(velocity_x > 0.3) velocity_x = 0.3;
@@ -129,8 +134,11 @@ class PhysicsObject: public RenderObject {
             prev_x = x;
             prev_y = y;
 
-            y += velocity_y*delay;
-            x += velocity_x*delay;
+            y += (velocity_y + old_acceleration_y)*delay/2;
+            x += (velocity_x + old_acceleration_x)*delay/2;
+
+            old_velocity_x = velocity_x;
+            old_velocity_y = velocity_y;
 
             //if the object is out of bounds, then set it to the edge of the screen
             if(y > 1.0f - height/2){

@@ -29,11 +29,11 @@ class PlayerClass: public PersonClass{
     //Updates the player's velocity based on inputs
     void update(){
         velocity_x = 0;
-        if(input_status.left) velocity_x = -0.005;
-        if(input_status.right) velocity_x = 0.005;
-        if(input_status.down) velocity_y = -0.005;
-        if(input_status.up) velocity_y = 0.01;
-        if(input_status.jump && collision_status.down) velocity_y = 0.025;
+        if(input_status.left) velocity_x = -0.03;
+        if(input_status.right) velocity_x = 0.03;
+        if(input_status.down) velocity_y = -0.03;
+        if(input_status.up) velocity_y = 0.03;
+        if(input_status.jump && collision_status.down) velocity_y = 0.15;
         PhysicsObject::update();
         //move the screen if the player is too far to the right or left
         if(screen_x == nullptr){

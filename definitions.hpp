@@ -34,7 +34,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define INPUT_STATUS //uncomment to enable input status debugging
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_COLLISION_STATUS
-// #define SHOW_FPS
+#define SHOW_FPS
 // #define SHOW_SCREEN_X
 // #define WEAPON_DEBUG
 // #define GCC //uncomment if using GCC compiler
