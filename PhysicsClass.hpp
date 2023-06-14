@@ -115,7 +115,7 @@ class PhysicsObject: public RenderObject {
 
             //gravity
             if(gravity)
-                acceleration_y = -0.01;
+                acceleration_y = -0.005;
 
             //update the coordinates and velocity based on delay
             velocity_x += (acceleration_x + old_acceleration_x)*delay/2;
@@ -134,8 +134,8 @@ class PhysicsObject: public RenderObject {
             prev_x = x;
             prev_y = y;
 
-            y += (velocity_y + old_acceleration_y)*delay/2;
-            x += (velocity_x + old_acceleration_x)*delay/2;
+            y += (velocity_y + old_velocity_y)*delay/2;
+            x += (velocity_x + old_velocity_x)*delay/2;
 
             old_velocity_x = velocity_x;
             old_velocity_y = velocity_y;

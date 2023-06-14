@@ -33,7 +33,7 @@ class PlayerClass: public PersonClass{
         if(input_status.right) velocity_x = 0.03;
         if(input_status.down) velocity_y = -0.03;
         if(input_status.up) velocity_y = 0.03;
-        if(input_status.jump && collision_status.down) velocity_y = 0.15;
+        if(input_status.jump && collision_status.down) velocity_y = 0.07;
         PhysicsObject::update();
         //move the screen if the player is too far to the right or left
         if(screen_x == nullptr){
