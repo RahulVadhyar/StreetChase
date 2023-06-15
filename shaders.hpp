@@ -30,6 +30,7 @@ class Shader{
 
                 vertexCode = vShaderStream.str();
                 fragmentCode = fShaderStream.str();
+                shaderInitDebug("Shader files read successfully");
             } catch(std::ifstream::failure){
                 std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
                 exit(-1);
@@ -53,6 +54,7 @@ class Shader{
                 std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
                 exit(-1);
             } 
+            shaderInitDebug("Vertex shader compiled successfully");
 
             //fragment shaders
             fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -65,6 +67,7 @@ class Shader{
                 std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
                 exit(-1);
             }
+            shaderInitDebug("Fragment shader compiled successfully");
 
             //create the program
             shader_id = glCreateProgram();
@@ -80,37 +83,53 @@ class Shader{
                 std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
                 exit(-1);
             } 
+            shaderInitDebug("Shader program linked successfully");
             glDeleteShader(vertex);
             glDeleteShader(fragment);
+            shaderInitDebug("Shaders deleted successfully");
         }
 
+    public:
         void addTextureUniform(int texture_num){
             use();
             std::string texture_name = "texture" + std::to_string(texture_num);
             setInt(texture_name, texture_num -1);
         }
 
+    public:
         //use/activate shader
         void use(){
             glUseProgram(shader_id);
         }
 
+    public:
         //utility uniform functions
         void setBool(const std::string &name, bool value) const{
             glUniform1i(glGetUniformLocation(shader_id, name.c_str()), (int)value);
         }
+    
+    public:
         void setInt(const std::string &name, int value) const{
             glUniform1i(glGetUniformLocation(shader_id, name.c_str()), value);
         }
+
+    public:
         void setFloat(const std::string &name, float value) const{
             glUniform1f(glGetUniformLocation(shader_id, name.c_str()), value);
         }
 
+    public:
         void setVec2(const std::string &name, const glm::vec2 &value) const{
             glUniform2fv(glGetUniformLocation(shader_id, name.c_str()), 1, &value[0]);
         }
 
-
+    private:
+        void shaderInitDebug(std::string message){
+            #ifdef SHADER_INIT_DEBUG
+            std::cout << "[SHADER_INIT_DEBUG]::[" << this << "] " << message << std::endl;
+            #endif
+        }
 };
+
 
 #endif

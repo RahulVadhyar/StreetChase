@@ -20,6 +20,7 @@ class PhysicsObject: public RenderObject {
         std::vector<RenderObject*> collision_objects;
         std::vector<RenderObject*> collided_objects;
         Collision collision_status = {false, false, false, false};
+
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
         PhysicsObject(float input_x, float input_y, float width, float height, Shader *shader, std::string texture_dir) : 
         RenderObject::RenderObject(input_x, input_y, width, height, shader, texture_dir){}
@@ -74,8 +75,13 @@ class PhysicsObject: public RenderObject {
                 collision_status.up = true;
                 isCollided = true;
             } 
+            physicsCollisionDebug("Down: " + std::to_string(down));
+            physicsCollisionDebug("Up: " + std::to_string(up));
+            physicsCollisionDebug("Left: " + std::to_string(left));
+            physicsCollisionDebug("Right: " + std::to_string(right));
             return isCollided;
         }
+
     public:
         //updates the collision status of the object
         void updateCollisions(){
@@ -91,25 +97,31 @@ class PhysicsObject: public RenderObject {
                 }
             }
         }
+
+    public:
         //adds an collision object to the list of collision objects
         void addCollisionObject(RenderObject* object){
             collision_objects.push_back(object);
+            physicsCollisionDebug("Added collision object: " + std::to_string((long)object));
         }
+    
+    public:
         void removeCollisionObject(RenderObject* object){
             for(int i = 0; i < static_cast<int>(collision_objects.size()); ++i){
                 if(collision_objects[i] == object){
+                    physicsCollisionDebug("Removed collision object: " + std::to_string((long)object));
                     collision_objects[i] = nullptr;
                     break;
                 }
             }
         }
-
+    public:
         //updates the coordinates of the object based on the physics variables
         virtual void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
             delay = 150*(current_time - last_time) / (double) CLOCKS_PER_SEC;
-
+            physicsUpdateDebug("Delay: " + std::to_string(delay));
             //update the last time
             last_time = current_time;
 
@@ -120,7 +132,8 @@ class PhysicsObject: public RenderObject {
             //update the coordinates and velocity based on delay
             velocity_x += (acceleration_x + old_acceleration_x)*delay/2;
             velocity_y += (acceleration_y + old_acceleration_y)*delay/2;
-            
+            physicsUpdateDebug("Velocity_X: " + std::to_string(velocity_x) + " Velocity_Y: " + std::to_string(velocity_y));
+
             old_acceleration_x = acceleration_x;
             old_acceleration_y = acceleration_y;
 
@@ -139,6 +152,7 @@ class PhysicsObject: public RenderObject {
 
             old_velocity_x = velocity_x;
             old_velocity_y = velocity_y;
+            physicsUpdateDebug("X: " + std::to_string(x) + " Y: " + std::to_string(y));
 
             //if the object is out of bounds, then set it to the edge of the screen
             if(y > 1.0f - height/2){
@@ -154,6 +168,18 @@ class PhysicsObject: public RenderObject {
                 direction = -1.0f;
             
         }
-  
-        
+    
+    private:
+        void physicsUpdateDebug(std::string message){
+            #ifdef PHYSICS_UPDATE_DEBUG
+            std::cout << "[PHYSICS_UPDATE_DEBUG]::[OBJECT:" << this << "]: " << message << std::endl;
+            #endif
+        }
+
+    private:
+        void physicsCollisionDebug(std::string message){
+            #ifdef PHYSICS_COLLISION_DEBUG
+            std::cout << "[PHYSICS_COLLISION_DEBUG]::[OBJECT:" << this << "]: " << message << std::endl;
+            #endif
+        }
 };

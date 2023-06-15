@@ -54,6 +54,7 @@ class MenuClass{
             current_menu = &main_menu;
         }
 
+    public:
         //draw call
         void draw(){
             //there should be buttons in every menu, else nuke the program.
@@ -123,6 +124,7 @@ class MenuClass{
             MenuDebug();
         }
 
+    public:
         //create each of the menu buttons as a HUDobject
         void addButton(float x, float y, std::string text, float offset_x, MenuObjects* menu){
             auto button = new HUDObject(x, y, 0.3, 0.1, hudshader, CONTAINER_TEX_DIR);
@@ -130,7 +132,8 @@ class MenuClass{
             menu->buttons.push_back(button);
             menu->texts_to_draw.push_back({text, x + offset_x, y - static_cast<float>(0.03)});
         }
-        
+    
+    public:
         //need to deallocate all the memory that we manually allocated
         ~MenuClass(){
             if(!main_menu.buttons.empty()){
@@ -151,19 +154,21 @@ class MenuClass{
             menuAllocDeallocDebug("Deleted hudshader");
         }
 
+    private:
         void menuDrawDebug(std::string message){
             #ifdef MENU_DRAW_DEBUG
             std::cout << "[MENU_DRAW_DEBUG]: " << message << std::endl;
             #endif
         }
 
+    private:
         void menuAllocDeallocDebug(std::string message){
             #ifdef MENU_ALLOC_DEALLOC_DEBUG
             std::cout << "[MENU_ALLOC_DEALLOC_DEBUG]: " << message << std::endl;
             #endif
         }
 
-        //debugging function
+    private:
         void MenuDebug(){
             #ifdef MENU_DRAW_DEBUG
             std::cout << "[MENU_DRAW_DEBUG]: Menu debug" << std::endl;

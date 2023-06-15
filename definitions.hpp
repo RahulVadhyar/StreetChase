@@ -31,10 +31,9 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #define STB_IMAGE_IMPLEMENTATION
 
 //debugging tools
-// #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define INPUT_STATUS //uncomment to enable input status debugging
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
-// #define PRINT_COLLISION_STATUS
+// #define PRINT_PLAYER_COLLISION_STATUS
 // #define WEAPON_DEBUG
 
 //menu debug
@@ -42,12 +41,49 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define MENU_DRAW_DEBUG
 
 //window debug
+// #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
 // #define SINGLE_BUFFER
 // #define VIEWPORT_SIZE_DEBUG
 // #define WINDOW_INIT_DEBUG
 // #define WINDOW_VECTOR_STATUS
+// #define WINDOW_RENDER_DEBUG
+
+//HealthBarClass debug
+// #define HEALTHBAR_DEBUG
+
+//PhysicsClass debug
+// #define PHYSICS_UPDATE_DEBUG
+// #define PHYSICS_COLLISION_DEBUG
+
+//RenderClass debug
+// #define RENDER_DRAW_DEBUG
+// #define RENDER_INIT_DEBUG
+
+//BulletClass debug
+// #define BULLET_DEBUG
+
+//PersonClass debug
+// #define PERSON_UPDATE_BULLET_DEBUG
+// #define PERSON_FIRE_WEAPON_DEBUG
+// #define PERSON_ADD_WEAPON_DEBUG
+
+//EnemyClass debug
+// #define ENEMY_DEBUG
+
+//HUDClass debug
+// #define HUD_DEBUG
+
+//HealthClass debug
+// #define HEALTH_DEBUG
+
+//need to implement
+//Shaders debug
+// #define SHADER_INIT_DEBUG
+
+//WeaponClass debug
+//TextClass debug
 
 //standard libraries
 #include <iostream>

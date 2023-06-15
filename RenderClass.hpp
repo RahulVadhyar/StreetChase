@@ -12,6 +12,7 @@ class RenderObject{
         float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         float TexScale[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         bool isClicked = false;
+
         //Constructors
         //if x, y are not provided, else use the other one
         RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -26,9 +27,13 @@ class RenderObject{
                 -width/2,  height/2, 0.0f,  0.0f, 1.0f 
                     };
             shader = input_shader;
+            renderInitDebug("Shader initialized");
             generateVertices(vertices, sizeof(vertices));
+            renderInitDebug("Vertices generated");
             attachTexture(texture_dir);
-            Transform_func = &Transform::Default; 
+            renderInitDebug("Texture attached");
+            Transform_func = &Transform::Default;
+            renderInitDebug("Transform function set"); 
         };
 
         RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
@@ -43,16 +48,22 @@ class RenderObject{
                 -width/2,  height/2, 0.0f,  0.0f, 1.0f 
                     };
             shader = input_shader;
+            renderInitDebug("Shader initialized");
             generateVertices(vertices, sizeof(vertices));
+            renderInitDebug("Vertices generated");
             attachTexture(texture_dir);
-            Transform_func = &Transform::Default; 
+            renderInitDebug("Texture attached");
+            Transform_func = &Transform::Default;
+            renderInitDebug("Transform function set"); 
             x = input_x; y= input_y;
+            renderInitDebug("x set to " + std::to_string(x) + " y set to " + std::to_string(y));
         };
 
 
-        private:
+    private:
         //generates the vertices and binds them to the VAO(sends to GPU)
         void generateVertices(float vertices[], int vertices_size){
+            renderInitDebug("Generating vertices");
             glGenVertexArrays(1, &VAO);
             glGenBuffers(1, &VBO);
             glGenBuffers(1, &EBO);
@@ -77,7 +88,8 @@ class RenderObject{
             glBindBuffer(GL_ARRAY_BUFFER, 0); 
             glBindVertexArray(0); 
         }
-        public:
+        
+    public:
         //attaches the texture to the object
         void attachTexture(std::string image_dir){
             //texture1
@@ -111,6 +123,8 @@ class RenderObject{
             stbi_image_free(data);
             shader->addTextureUniform(textures.size());
         }
+    
+    public:
         void removeLastTexture(){
             if(!textures.empty()){
             glDeleteTextures(1, &textures.back());
@@ -120,7 +134,8 @@ class RenderObject{
                 exit(-1);
             }
         }
-        public:
+
+    public:
         //draws the object when called
         virtual void draw(){
             if(shouldRender){
@@ -132,16 +147,16 @@ class RenderObject{
                     std::cout << "No textures attached" << std::endl;
                     exit(-1);
                 }
-                Transform_func(x - *screen_x, y);
                 glm::mat4 trans = Transform_func(x - *screen_x, y);
                 shader->use();
                 unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
-                glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       
+                glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));  
+                renderDrawDebug("Set transform uniform");     
                 justDraw();
             }
         }
 
-        public:
+    protected:
         void justDraw(){
             shader->setFloat("mixValue2", mixValue[0]);
             shader->setFloat("mixValue3", mixValue[1]);
@@ -152,20 +167,36 @@ class RenderObject{
             shader->setFloat("TexScale3", TexScale[1]);
             shader->setFloat("TexScale4", TexScale[2]);
             shader->setFloat("TexScale5", TexScale[3]);
+            renderDrawDebug("Set mixValue uniform");
             //draw triangle
             for(int i = 0; i < static_cast<int>(textures.size()); i++){
                 shader->use();
                 glActiveTexture(GL_TEXTURE0 + i);
                 glBindTexture(GL_TEXTURE_2D, textures[i]);
             }
-
+            renderDrawDebug("Bound textures");
             shader->use();
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
-            
+            renderDrawDebug("Drew object");
         }
+    
+    public:
         void addScreenX(float* input_screen_x){
             screen_x = input_screen_x;
         }
 
+    private:
+        void renderDrawDebug(std::string message){
+            #ifdef RENDER_DRAW_DEBUG
+                std::cout<<"[RENDER_DRAW_DEBUG]::[" << this <<"] " << message << std::endl;
+            #endif
+        }
+    
+    private:
+        void renderInitDebug(std::string message){
+            #ifdef RENDER_INIT_DEBUG
+                std::cout<<"[RENDER_INIT_DEBUG]::[" << this <<"] " << message << std::endl;
+            #endif
+        }
 };

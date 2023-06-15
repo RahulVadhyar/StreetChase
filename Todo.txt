@@ -3,22 +3,11 @@ Things to be done
     -Things I can do right now
         -In Progress
             -Need to add more debugging and comments to this. I need more debug when trying to solve issues
-                -BulletClass.hpp
-                -EnemyClass.hpp
-                -HUDClass.hpp
-                -HealthBarClass.cpp
-                -HealthClass.hpp
-                -PersonClass.cpp
-                -PhysicsClass.hpp
-                -PlayerClass.hpp
-                -RenderClass.hpp
+                -WeaponClass.hpp                
                 -TextClass.hpp
-                -WeaponClass.hpp
-                -Weapons/simplebullet.hpp
-                -Weapons/simplegun.hpp
-                -shaders.hpp
-                -transforms.hpp
-                -window.hpp
+
+            -Need more comments
+                
             -multiple weapons
             -death screen
             -animation
@@ -33,8 +22,8 @@ Things to be done
         -Enemy AI
 
 Optimizations I want to do
+    - Multithreading(big one MIght have to implement soon in order to make physics consistent)
     - seperate textures from the RenderClass. TextureClass maybe?
-    - Multithreading(big one)
     - Optimize the shaders
     - Multi instanced rendering
 
