@@ -6,6 +6,7 @@
 #define SCREEN_HEIGHT 1080
 #define SCREEN_WIDTH 16*SCREEN_HEIGHT/9
 
+//screen height and width
 struct ScreenStatus{
     float height;
     float width;
@@ -19,22 +20,28 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #define CONTAINER_TEX_DIR "Textures/container.jpg"
 #define GUN_TEX_DIR "Textures/gun.png"
 #define BULLET_TEX_DIR "Textures/bullet.png"
+
+//shaders
 #define VS_SHADER_DIR "Shaders/shader.vs"
 #define FS_SHADER_DIR "Shaders/shader.fs"
 #define VS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.vs"
 #define FS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.fs"
 #define VS_TEXT_SHADER_DIR "Shaders/TextShader.vs"
 #define FS_TEXT_SHADER_DIR "Shaders/TextShader.fs"
+
+//fonts
 #define FONT1_DIR "fonts/AmaticSC-Bold.ttf"
 
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
 
-//debugging tools
+//DEBUGGING tools
+
+//person class
 // #define INPUT_STATUS //uncomment to enable input status debugging
 // #define PRINT_PLAYER_STATUS //uncomment to enable player status debugging
 // #define PRINT_PLAYER_COLLISION_STATUS
-// #define WEAPON_DEBUG
+// #define PLAYER_UPDATE_DEBUG
 
 //menu debug
 // #define MENU_ALLOC_DEALLOC_DEBUG
@@ -78,11 +85,13 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 //HealthClass debug
 // #define HEALTH_DEBUG
 
-//need to implement
 //Shaders debug
 // #define SHADER_INIT_DEBUG
 
 //WeaponClass debug
+// #define WEAPON_DEBUG
+
+//need to implement
 //TextClass debug
 
 //standard libraries

@@ -103,6 +103,7 @@ class Window{
             windowVectorStatus("Added person: " + std::to_string((long)person));
         }
 
+    //Menu loop
     public:
         void mainMenu(){
             auto menu = MenuClass();
@@ -112,15 +113,18 @@ class Window{
                 processMenuInput(&menu);
                 menu.draw();
                 swap();
+                //if menu says to start the game, quit the menu loop
                 if(menu.start_game){
                     break;
                 }   
+                //if menu says to close window, close the window
                 if(menu.close_window){
                     glfwSetWindowShouldClose(window, true);
                 }
             }
         }
 
+    //same as processInput but for menu
     private:
         void processMenuInput(MenuClass* menu){
             InputStatus inputs;
@@ -178,6 +182,7 @@ class Window{
 
                 for(auto &object : persons){
                     if(object != nullptr){
+                        //if person is dead, remove him from the game
                         if(object->is_dead){
                             delete object;
                             windowRenderDebug("Deleting object: " + std::to_string((long)object));
@@ -216,12 +221,15 @@ class Window{
     private:
         void swap(){
             glfwSwapBuffers(window);
-            // glFlush();
+            #ifdef SINGLE_BUFFER
+            glFlush();
+            #endif
             glfwPollEvents();
         }
 
     private:
         void processInput(){
+            //store inputs from opengl in the struct and call the necessary callbacks and give struct to player
             InputStatus inputs;
             if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
                 glfwSetWindowShouldClose(window, true);

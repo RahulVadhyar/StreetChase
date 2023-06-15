@@ -55,7 +55,7 @@ int main(){
     
     
     //render and play the game
-    window.mainMenu();
+    // window.mainMenu();
     window.play();
     return 0;
 }

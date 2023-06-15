@@ -1,21 +1,21 @@
 //This is the menu class which fully handles input processing and rendering of the menu
 class MenuClass{
     public:
-        //This is for storing the text info when entered
+        //Storing text info
         struct Text{
             std::string text;
             float x;
             float y;
         };
 
-        //This is for storing the menu objects in a particular menu
+        //Storing menu objects
         struct MenuObjects{
             std::vector<HUDObject*> buttons;
             std::vector<Text> texts_to_draw;
             int menu_no;
         };
         
-        //create main menu and options menu, also create the current menu pointer so that we know which is the current menu we are on.
+        //create main menu and options menu, and a pointer to the current menu
         MenuObjects main_menu;
         MenuObjects options_menu;
         MenuObjects* current_menu;

@@ -1,31 +1,27 @@
+//This is the base class from which bullets of all types inherit from
 class BaseBulletClass: public PhysicsObject{
     public:
+        //Bullet properties
         float damage = 0;
-        float max_speed = 0;
-        float current_speed = 0;
         float height = 0.1;
         float width = 0.1;
         float initial_velocity = 0;
         float start_time = 0;
-        float max_time = 5;
+        float max_time = 5; //max time before bullet is destroyed
+        Shader bullet_shader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
     
-        BaseBulletClass(float x, float y, float input_width, float input_height, Shader *shader, std::string texture_dir):
-        PhysicsObject::PhysicsObject(x, y, input_width, input_height, shader, texture_dir){
+        BaseBulletClass(float x, float y, float input_width, float input_height, std::string texture_dir):
+        PhysicsObject::PhysicsObject(x, y, input_width, input_height, &bullet_shader, texture_dir){
+            bulletDebug("Initializing bullet");
             width = input_width;
             height = input_height;
-            gravity = false;
-            snap_collisions = false;
-            bulletDebug("Bullet initialized");
+            gravity = false; //turn off gravity for bullets
+            snap_collisions = false; //turn off snapping for bullets
         }
 
     public:
-        virtual ~BaseBulletClass(){
-            delete shader;
-            bulletDebug("Bullet deleted along with shader: " + std::to_string((long)shader));
-        };
-
-    public:
         void fire(float direction){
+            //when bullet is fired, start the clock so that we know when to destroy the bullet and give it initial velcoity
             start_time = std::clock();
             velocity_x = initial_velocity*direction;
             bulletDebug("Bullet fired with velocity_x: " + std::to_string(velocity_x));
@@ -33,12 +29,14 @@ class BaseBulletClass: public PhysicsObject{
 
     public:
         bool isTimeOver(){
+            //check if the bullet has been alive for more than max_time
             auto time_elapsed = (std::clock() - start_time) / (double) CLOCKS_PER_SEC;
             return time_elapsed > max_time;
         }
         
     public:
         void update(){
+            //update the bullet physics, collisions and draw the bullet
             PhysicsObject::update();
             bulletDebug("Bullet physics updated");
             updateCollisions();

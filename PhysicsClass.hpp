@@ -15,8 +15,9 @@ class PhysicsObject: public RenderObject {
         float delay;
         bool gravity = true;
         float direction = 1.0f;
-        bool snap_collisions = true;
+        
         //collision variables
+        bool snap_collisions = true;
         std::vector<RenderObject*> collision_objects;
         std::vector<RenderObject*> collided_objects;
         Collision collision_status = {false, false, false, false};
@@ -83,7 +84,7 @@ class PhysicsObject: public RenderObject {
         }
 
     public:
-        //updates the collision status of the object
+        //updates the collision status of the object based on the collision objects set for the object
         void updateCollisions(){
             collided_objects.clear();
             collision_status = {false, false, false, false};
@@ -106,6 +107,7 @@ class PhysicsObject: public RenderObject {
         }
     
     public:
+        //removes a collision object from the list of collision objects
         void removeCollisionObject(RenderObject* object){
             for(int i = 0; i < static_cast<int>(collision_objects.size()); ++i){
                 if(collision_objects[i] == object){

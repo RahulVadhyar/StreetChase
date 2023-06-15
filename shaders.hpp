@@ -90,6 +90,7 @@ class Shader{
         }
 
     public:
+        //add a texture uniform to the shader
         void addTextureUniform(int texture_num){
             use();
             std::string texture_name = "texture" + std::to_string(texture_num);
@@ -102,8 +103,8 @@ class Shader{
             glUseProgram(shader_id);
         }
 
+    //utility uniform functions
     public:
-        //utility uniform functions
         void setBool(const std::string &name, bool value) const{
             glUniform1i(glGetUniformLocation(shader_id, name.c_str()), (int)value);
         }

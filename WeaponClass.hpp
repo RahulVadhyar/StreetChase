@@ -36,4 +36,11 @@ class BaseWeaponClass:public RenderObject{
         void take_damage(float damage){
             weapon_health -= damage;
         }
+    
+    protected:
+        void weaponDebug(std::string message){
+            #ifdef WEAPON_DEBUG
+            std::cout << "[WEAPON DEBUG][" << this << "] " << message << std::endl;
+            #endif
+        }
 };

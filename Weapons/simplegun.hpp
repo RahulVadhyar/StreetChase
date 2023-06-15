@@ -11,9 +11,11 @@ class SimpleGun: public BaseWeaponClass{
         BaseBulletClass* fire(float input_x, float input_y, float direction){
             if(current_ammo > 0){
                 current_ammo -= 1;
-                auto bullet_shader = new Shader(VS_SHADER_DIR, FS_SHADER_DIR);
-                BaseBulletClass* bullet = new SimpleBullet(input_x, input_y, bullet_shader);
+                weaponDebug("Ammo decreased, creating bullet");
+                BaseBulletClass* bullet = new SimpleBullet(input_x, input_y);
+                weaponDebug("Bullet " + std::to_string((long)bullet) + " created");
                 bullet->fire(direction);
+                weaponDebug("Bullet fired");
                 return bullet;
             }
             else{

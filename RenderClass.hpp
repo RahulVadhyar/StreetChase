@@ -1,17 +1,23 @@
 class RenderObject{
     public:
-        //opengl variables
+        unsigned int VBO, VAO, EBO; //for opengl vertices
+
+        //textueres
+        float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        float TexScale[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         std::vector<unsigned int> textures;
-        unsigned int VBO, VAO, EBO;
+
+        //position and size
         glm::mat4 (*Transform_func)(float, float) = nullptr;
-        Shader* shader;
+        Shader* shader; //shader to use
         float x = 0, y = 0, width, height;
         float prev_x = 0, prev_y = 0;
         float* screen_x = nullptr;
+
+        //some flags
         bool shouldRender = true;
-        float mixValue[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-        float TexScale[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         bool isClicked = false;
+        
 
         //Constructors
         //if x, y are not provided, else use the other one

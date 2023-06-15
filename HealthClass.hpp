@@ -1,3 +1,4 @@
+//Handles health
 class Health{
     public:
         float max_health = 1.0f;
@@ -17,6 +18,7 @@ class Health{
 
     public:
         void takeDamage(float damage){
+            //take damage and check if the player is dead
             this->current_health -= damage;
             if(current_health <= 0){
                 is_dead = true;
@@ -26,6 +28,7 @@ class Health{
 
     public:
         void regen(){
+            //regenerate health based on time passed
             if(std::clock() - last_time >= regen_rate){
                 current_health += regen_rate;
                 if(current_health > max_health){

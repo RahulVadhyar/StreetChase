@@ -3,7 +3,7 @@ class HealthBarClass{
         PersonClass *person;
         float width = 0.1;
         float height = 0.01;
-        Shader shader = Shader(VS_HEALTHBAR_SHADER_DIR, FS_HEALTHBAR_SHADER_DIR);
+        Shader shader = Shader(VS_HEALTHBAR_SHADER_DIR, FS_HEALTHBAR_SHADER_DIR); //custom shaders for the health bar
         unsigned int VBO, VAO, EBO;
         bool shouldRender = true;
         glm::mat4(*Transform_func)(float, float) = Transform::Default;
@@ -12,7 +12,7 @@ class HealthBarClass{
         HealthBarClass(PersonClass *input_player){
             person = input_player;
             float vertices[] = {
-                //verticies         texture coords
+                //verticies 
                 width/2,  height/2, 
                 width/2, -height/2, 
                 -width/2, -height/2, 
@@ -23,6 +23,7 @@ class HealthBarClass{
         }
     private:
         void generateVertices(float vertices[], int vertices_size){
+            //generate the vertices for the health bar(it is just a rectangle)
             glGenVertexArrays(1, &VAO);
             glGenBuffers(1, &VBO);
             glGenBuffers(1, &EBO);
@@ -47,15 +48,21 @@ class HealthBarClass{
 
     public:
         void draw(){
+            //draw the health bar
             if(shouldRender){
+                //set the health percent uniform
                 shader.use();
                 shader.setFloat("health_percent", person->current_health);
                 debug("Set health_percent uniform");
+
+                //set the transform uniform
                 glm::mat4 trans = Transform_func(person->x - *person->screen_x, person->y + offset_y);
                 shader.use();
                 unsigned int transformLoc = glGetUniformLocation(shader.shader_id, "transform");
                 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));      
                 debug("Set transform uniform");
+
+                //draw the health bar
                 shader.use();
                 glBindVertexArray(VAO);
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

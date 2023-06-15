@@ -1,10 +1,11 @@
+//Common things with player and enemy(weapons and bullets)
 class PersonClass: public PhysicsObject, public Health{
     public:
+        //weapons and bullets
         BaseWeaponClass* weapon = nullptr;
         std::vector<BaseBulletClass*> bullets;
         int current_weapon = 0;
 
-        //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
         PersonClass(float input_x, float input_y, float width, float height, Shader *o_shader, std::string texture_dir) : 
         PhysicsObject::PhysicsObject(input_x, input_y, width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){}
 
@@ -17,18 +18,25 @@ class PersonClass: public PhysicsObject, public Health{
     protected:
         void updateBullets(){
             if(bullets.size() > 0){
+                //for each bullet update physics, collisions, and check if the bullet is out of time or has collided with an enemy and perform appropriate actions
                 for(auto &bullet: bullets){
                     if(bullet != nullptr){
+                        //physics and collisons
                         bullet->update();
                         personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " updated");
                         bullet->updateCollisions();
                         personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " collisions updated");
+
+                        //is out of time delete bullet
                         if(bullet->isTimeOver()){
                             personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " deleting");
                             delete bullet;
                             bullet = nullptr;
+
+                        //has collided with an enemy
                         } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
                             personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " collided");
+                            //make the enemy(other person) take damage
                             for(auto object: bullet->collided_objects){
                                 if(object != nullptr && dynamic_cast<PersonClass*>(object)){
                                     PersonClass* enemy = dynamic_cast<PersonClass*>(object);
@@ -36,6 +44,7 @@ class PersonClass: public PhysicsObject, public Health{
                                     personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " collided with " + std::to_string((long)enemy) + " and dealt " + std::to_string(bullet->damage) + " damage");
                                 }
                             }
+                            //delete the bullet
                             delete bullet;
                             bullet = nullptr;
                             personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " deleted");                      
@@ -52,6 +61,7 @@ class PersonClass: public PhysicsObject, public Health{
                 exit(-1);
             };
             if(weapon->current_ammo > 0){
+                    //fire the weapon and add the bullet to the bullets vector
                     BaseBulletClass* bullet = weapon->fire(x, y, direction);
                     personFireWeaponDebug("Bullet " + std::to_string((long)bullet) + " fired");
                     bullets.push_back(bullet);
@@ -60,6 +70,7 @@ class PersonClass: public PhysicsObject, public Health{
                         std::cout << "Collision objects is empty" << std::endl;
                         exit(-1);
                     }
+                    //add the collision objects to the bullet
                     for(auto object: collision_objects){
                         if(object != nullptr){
                             if(dynamic_cast<PersonClass*>(object)){

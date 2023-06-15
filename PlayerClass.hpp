@@ -14,7 +14,7 @@ struct InputStatus{
 //main player class
 class PlayerClass: public PersonClass{
     public:
-        //input status struct
+
         InputStatus input_status = {false, false, false, false, false, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false, false};
         bool fired = false;
         HealthBarClass health_bar = NULL;
@@ -29,13 +29,19 @@ class PlayerClass: public PersonClass{
     public:
         //Updates the player's velocity based on inputs
         void update(){
+            //process inputs
             velocity_x = 0;
             if(input_status.left) velocity_x = -0.03;
             if(input_status.right) velocity_x = 0.03;
             if(input_status.down) velocity_y = -0.03;
             if(input_status.up) velocity_y = 0.03;
             if(input_status.jump && collision_status.down) velocity_y = 0.07;
+            playerUpdateDebug("Inputs processed");
+
+            //update physics
             PhysicsObject::update();
+            playerUpdateDebug("Physics updated");
+            
             //move the screen if the player is too far to the right or left
             if(screen_x == nullptr){
                 std::cout << "Screen x is null" << std::endl;
@@ -43,15 +49,29 @@ class PlayerClass: public PersonClass{
             }
             if(std::abs(x - *screen_x) > 0.3)
                 *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
+            playerUpdateDebug("Screen moved"); 
+
+            //update the collisions, weapons, bullets and health bar, regen, and fire bullets
             updateCollisions();
+            playerUpdateDebug("Collisions updated");
+
             //update the weapons
             weapon->update(x, y);
+            playerUpdateDebug("Weapon updated");
+
             regen();
             updateBullets();
+            playerUpdateDebug("Bullets updated");
+
             health_bar.draw();
+            playerUpdateDebug("Health bar updated");
+
+
             if(input_status.left_click){
                 if(!fired){
-                    fireWeapon();  
+                    playerUpdateDebug("Firing weapon");
+                    fireWeapon();
+                    playerUpdateDebug("Weapon fired");  
                     fired = true;
                 }
             } else if(fired){
@@ -60,7 +80,13 @@ class PlayerClass: public PersonClass{
             printKeystrokes();
             printPlayerStatus("Update");
             printPlayerCollisionStatus();
-            // std::cout << fired << std::endl;
+        }
+
+    private:
+        void playerUpdateDebug(std::string message){
+        #ifdef PLAYER_UPDATE_DEBUG
+        std::cout << "[PLAYER UPDATE DEBUG]: " << message << std::endl;
+        #endif
         }
 
     private:

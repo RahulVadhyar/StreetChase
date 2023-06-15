@@ -6,6 +6,7 @@ class HUDObject: public RenderObject{
 
     public:
         void draw(){
+            //same as render object, just not using screen_X
             if(shouldRender){
                 if(textures.empty()){
                     std::cout << "No textures attached" << std::endl;
