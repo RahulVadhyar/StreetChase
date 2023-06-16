@@ -1,32 +1,30 @@
 this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
-        -In Progress
-            -Need to add more debugging and comments to this.
-                -WeaponClass.hpp                
-                -TextClass.hpp
-            
-            -multiple weapons
-            -death screen
-            -animation
-            -setting for switching between 60, 120, and 144fps(right now it is uncapped)
+        -ANIMATION(BIG ONE HUGE PRIORITY)
+            -Need to implement frame rate independent physics
+            -Need to seperate renderobject from physics class
+            -Need to find a way to store animations
+            -Design the animation class to be as simple as possible
+        
+
+    -Later
+        -death screen
+        -level design
+        -Enemy AI
+        -particle effects
+        -Need a better collision system
+        -multiple weapons
 
     -Paused for now as other things are needed before we can further work on this
         -Level editor class and cpp file
         -Level File system
           
-    -Things I need to wait for drawings
-        -level design
-        -Enemy AI
-
 Optimizations I want to do
-    - Multithreading(big one MIght have to implement soon in order to make physics consistent)
     - seperate textures from the RenderClass. TextureClass maybe?
     - Optimize the shaders
     - Multi instanced rendering
 
 If time permits
     -Add ability in level editor to import your own textures
-
-
 ---more as progress moves on

@@ -16,7 +16,7 @@ class BaseBulletClass: public PhysicsObject{
             width = input_width;
             height = input_height;
             gravity = false; //turn off gravity for bullets
-            snap_collisions = false; //turn off snapping for bullets
+            snap_collisions = true; //turn off snapping for bullets
         }
 
     public:
@@ -43,6 +43,7 @@ class BaseBulletClass: public PhysicsObject{
             bulletDebug("Bullet collisions updated");
             draw();
             bulletDebug("Bullet drawn");
+            bulletDebug("posX: " + std::to_string(x) + " posY: " + std::to_string(y));
         }
 
     private:

@@ -128,6 +128,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include <Weapons/simplegun.hpp>
 #include <HealthClass.hpp>
 #include <PersonClass.cpp>
+#include <AnimationClass.hpp>
 #include <HealthBarClass.cpp>
 #include <EnemyClass.hpp>
 #include <PlayerClass.hpp>
