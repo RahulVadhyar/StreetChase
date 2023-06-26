@@ -2,28 +2,43 @@ this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
         -ANIMATION(BIG ONE HUGE PRIORITY)
-            -Need to implement frame rate independent physics
-            -Need to seperate renderobject from physics class
-            -Need to find a way to store animations
-            -Design the animation class to be as simple as possible
+            -Custom pipeline for loading multiple images
+            -Implement array textures for this
+            -optimize the animatiosn to reduce as much images as possible
+            -update function to be written
+
+        -multiple weapons
+            -can be changed using the keys 1-9
+            -Need to display on the HUD, need a system for that
+            -Need to display weapons on the ground and need a pick up system for it
         
 
+        -particle effects
+            -optimize it to maximize performance
+        
     -Later
-        -death screen
         -level design
         -Enemy AI
-        -particle effects
-        -Need a better collision system
-        -multiple weapons
+            -Enemy will go towards player
+            -if player has a gun and is staring in his direction, then look out for bullets
+            -if player has fired bullets in last 1 sec then go out of the way of bullets
+            -Try to go in range of player slowly if near and fast if not near
+            -If within range, fire Bullet
+            -Add a little bit of randomness to all of this for not predictable behaviour
+        -death screen
+        -sound effects
+        -main menu design
+        
 
     -Paused for now as other things are needed before we can further work on this
         -Level editor class and cpp file
         -Level File system
           
 Optimizations I want to do
-    - seperate textures from the RenderClass. TextureClass maybe?
+    
     - Optimize the shaders
     - Multi instanced rendering
+    - Need a better collision system
 
 If time permits
     -Add ability in level editor to import your own textures

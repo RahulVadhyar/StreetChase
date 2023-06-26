@@ -1,13 +1,15 @@
 //Common things with player and enemy(weapons and bullets)
-class PersonClass: public PhysicsObject, public Health{
+class PersonClass: public PhysicsObject, public Health, public AnimationClass{
     public:
         //weapons and bullets
         BaseWeaponClass* weapon = nullptr;
         std::vector<BaseBulletClass*> bullets;
         int current_weapon = 0;
 
-        PersonClass(float input_x, float input_y, float width, float height, Shader *o_shader, std::string texture_dir) : 
-        PhysicsObject::PhysicsObject(input_x, input_y, width, height, o_shader, texture_dir), Health::Health(1.0, 0.01){}
+        PersonClass(float input_x, float input_y, float width, float height) : 
+        PhysicsObject::PhysicsObject(input_x, input_y, width, height),
+        Health::Health(1.0, 0.01),
+        AnimationClass(input_x, input_y, width, height){}
 
     public:
         void addWeapon(BaseWeaponClass* input_weapon){
@@ -36,8 +38,7 @@ class PersonClass: public PhysicsObject, public Health{
                         //has collided with an enemy
                         } else if(bullet->collision_status.down || bullet->collision_status.up || bullet->collision_status.left || bullet->collision_status.right){
                             personUpdateBulletDebug("Bullet " + std::to_string((long)bullet) + " collided");
-                            //make the enemy(other person) take damage
-                            for(auto object: bullet->collided_objects){
+                            for(auto object: bullet->animation_collided){
                                 if(object != nullptr && dynamic_cast<PersonClass*>(object)){
                                     PersonClass* enemy = dynamic_cast<PersonClass*>(object);
                                     enemy->takeDamage(bullet->damage);
@@ -62,21 +63,28 @@ class PersonClass: public PhysicsObject, public Health{
             };
             if(weapon->current_ammo > 0){
                     //fire the weapon and add the bullet to the bullets vector
-                    BaseBulletClass* bullet = weapon->fire(x, y, direction);
+                    BaseBulletClass* bullet = weapon->fire(AnimationClass::x, AnimationClass::y, direction);
                     personFireWeaponDebug("Bullet " + std::to_string((long)bullet) + " fired");
                     bullets.push_back(bullet);
                     bullet->screen_x = screen_x;
-                    if(collision_objects.empty()){
+                    if(render_object_collision.empty() && animation_collision.empty()){
                         std::cout << "Collision objects is empty" << std::endl;
                         exit(-1);
                     }
                     //add the collision objects to the bullet
-                    for(auto object: collision_objects){
+                    for(auto object: render_object_collision){
                         if(object != nullptr){
                             if(dynamic_cast<PersonClass*>(object)){
                             bullet->addCollisionObject(object); 
                             }
-                    }    
+                        }    
+                    }
+                    for(auto object: animation_collision){
+                        if(object != nullptr){
+                            if(dynamic_cast<PersonClass*>(object)){
+                            bullet->addCollisionObject(object); 
+                            }
+                        }    
                     }
                     personFireWeaponDebug("Bullet " + std::to_string((long)bullet) + " collision objects added");
             }

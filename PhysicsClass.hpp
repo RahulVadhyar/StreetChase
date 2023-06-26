@@ -4,7 +4,7 @@ struct Collision {
     bool right;
     bool up;
 };
-class PhysicsObject: public RenderObject {
+class PhysicsObject{
     public:
         //Physics variables
         float velocity_x = 0, velocity_y = 0;
@@ -15,19 +15,30 @@ class PhysicsObject: public RenderObject {
         float delay;
         bool gravity = true;
         float direction = 1.0f;
-        
+        float prev_x = 0, prev_y = 0;
+        float x = 0, y = 0, width, height;
         //collision variables
         bool snap_collisions = true;
-        std::vector<RenderObject*> collision_objects;
-        std::vector<RenderObject*> collided_objects;
+        std::vector<RenderObject*> render_object_collision;
+        std::vector<RenderObject*> render_object_collided;
+        std::vector<AnimationClass*> animation_collision;
+        std::vector<AnimationClass*> animation_collided;
         Collision collision_status = {false, false, false, false};
 
         //Constructor, sends the attributes to the parent class and initalizes the physics variables with default values
-        PhysicsObject(float input_x, float input_y, float width, float height, Shader *shader, std::string texture_dir) : 
-        RenderObject::RenderObject(input_x, input_y, width, height, shader, texture_dir){}
-        PhysicsObject(bool input_snap_collisions, float input_x, float input_y, float width, float height, Shader *shader, std::string texture_dir) : 
-        RenderObject::RenderObject(input_x, input_y, width, height, shader, texture_dir){
+        PhysicsObject(float input_x, float input_y, float input_width, float input_height){
+            x = input_x;
+            y = input_y;
+            width = input_width;
+            height = input_height;
+
+        }
+        PhysicsObject(bool input_snap_collisions, float input_x, float input_y, float input_width, float input_height){
             snap_collisions = input_snap_collisions;
+            x = input_x;
+            y = input_y;
+            width = input_width;
+            height = input_height;
         }
 
     private: 
@@ -83,16 +94,79 @@ class PhysicsObject: public RenderObject {
             return isCollided;
         }
 
+    private: 
+        //gets the collision between the object and another object
+        bool getCollision(AnimationClass* other){
+            bool isCollided = false;
+            auto distance_x = (other->width + width + std::abs(x - prev_x))/2 - std::abs(other->x - x);
+            auto distance_y = (other->height + height + std::abs(y - prev_y))/2 - std::abs(other->y - y);
+            auto side_x = other->x - x;
+            auto side_y = other->y - y;
+
+            auto down = distance_y >= 0 && side_y <= 0;
+            auto up = distance_y >= 0 && side_y >= 0;
+            auto left = distance_x > 0 && side_x <= 0;
+            auto right = distance_x >= 0 && side_x >= 0;
+
+            auto mag = distance_y - distance_x;
+
+            //when there is a collision
+            if((down||up) && left && mag >= 0){
+                //go left
+                if(snap_collisions)
+                    x = other->x + other->width/2 + width/2;
+                if(velocity_x < 0) velocity_x = 0;
+                collision_status.left = true;
+                isCollided = true;
+            } else if((left||right) && down && mag <= 0){
+                //go up
+                if(snap_collisions)
+                    y = other->y + other->height/2 + height/2;
+                if(velocity_y < 0) velocity_y = 0;
+                collision_status.down = true;
+                isCollided = true;
+            } else if((down||up) && right && mag >= 0){
+                //go right
+                if(snap_collisions)
+                    x = other->x - other->width/2 - width/2;
+                if(velocity_x > 0) velocity_x = 0;
+                collision_status.right = true;
+                isCollided = true;
+            } else if((left||right) && up && mag <= 0){
+                //go down
+                if(snap_collisions)
+                    y = other->y - other->height/2 - height/2;
+                if(velocity_y > 0) velocity_y = 0;
+                collision_status.up = true;
+                isCollided = true;
+            } 
+            physicsCollisionDebug("Down: " + std::to_string(down));
+            physicsCollisionDebug("Up: " + std::to_string(up));
+            physicsCollisionDebug("Left: " + std::to_string(left));
+            physicsCollisionDebug("Right: " + std::to_string(right));
+            return isCollided;
+        }
+
     public:
         //updates the collision status of the object based on the collision objects set for the object
         void updateCollisions(){
-            collided_objects.clear();
+            render_object_collided.clear();
+            animation_collided.clear();
             collision_status = {false, false, false, false};
-            if(!collision_objects.empty()){
-                for(RenderObject* i : collision_objects){
+            if(!render_object_collision.empty()){
+                for(RenderObject* i : render_object_collision){
                     if(i != nullptr){
                         if(getCollision(i)){
-                            collided_objects.push_back(i);
+                            render_object_collided.push_back(i);
+                        }
+                    }
+                }
+            }
+            if(!animation_collision.empty()){
+                for(AnimationClass* i : animation_collision){
+                    if(i != nullptr){
+                        if(getCollision(i)){
+                            animation_collided.push_back(i);
                         }
                     }
                 }
@@ -102,27 +176,47 @@ class PhysicsObject: public RenderObject {
     public:
         //adds an collision object to the list of collision objects
         void addCollisionObject(RenderObject* object){
-            collision_objects.push_back(object);
+            render_object_collision.push_back(object);
             physicsCollisionDebug("Added collision object: " + std::to_string((long)object));
         }
     
     public:
+        //adds an collision object to the list of collision objects
+        void addCollisionObject(AnimationClass* object){
+            animation_collision.push_back(object);
+            physicsCollisionDebug("Added collision object: " + std::to_string((long)object));
+        }   
+
+    public:
         //removes a collision object from the list of collision objects
         void removeCollisionObject(RenderObject* object){
-            for(int i = 0; i < static_cast<int>(collision_objects.size()); ++i){
-                if(collision_objects[i] == object){
+            for(int i = 0; i < static_cast<int>(render_object_collision.size()); ++i){
+                if(render_object_collision[i] == object){
                     physicsCollisionDebug("Removed collision object: " + std::to_string((long)object));
-                    collision_objects[i] = nullptr;
+                    render_object_collision[i] = nullptr;
                     break;
                 }
             }
         }
+    
+    public:
+        //removes a collision object from the list of collision objects
+        void removeCollisionObject(AnimationClass* object){
+            for(int i = 0; i < static_cast<int>(animation_collision.size()); ++i){
+                if(animation_collision[i] == object){
+                    physicsCollisionDebug("Removed collision object: " + std::to_string((long)object));
+                    animation_collision[i] = nullptr;
+                    break;
+                }
+            }
+        }
+
     public:
         //updates the coordinates of the object based on the physics variables
         virtual void update(){
             //use the time to calculate the delay between frames and use it to calculate the new coordinates
             auto current_time = std::clock();
-            delay = 150*(current_time - last_time) / (double) CLOCKS_PER_SEC;
+            delay = 75*(current_time - last_time) / (double) CLOCKS_PER_SEC;
             physicsUpdateDebug("Delay: " + std::to_string(delay));
             //update the last time
             last_time = current_time;

@@ -16,10 +16,13 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 //textures, might eventually move to other files as strings
 #define IMAGE1_DIR "Textures/container.jpg"
 #define STONE_TEX_DIR "Textures/stone.jpg"
-#define PLAYER_TEX_DIR "Textures/player.png"
+#define PLAYER_TEX_DIR "test/characterwalk_00000.png"
 #define CONTAINER_TEX_DIR "Textures/container.jpg"
 #define GUN_TEX_DIR "Textures/gun.png"
 #define BULLET_TEX_DIR "Textures/bullet.png"
+
+//sound
+#define MUSIC_DIR "Music/music1.mp3"
 
 //shaders
 #define VS_SHADER_DIR "Shaders/shader.vs"
@@ -28,6 +31,9 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #define FS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.fs"
 #define VS_TEXT_SHADER_DIR "Shaders/TextShader.vs"
 #define FS_TEXT_SHADER_DIR "Shaders/TextShader.fs"
+#define FS_ANIMATION_SHADER_DIR "Shaders/AnimationShader.fs"
+#define VS_ANIMATION_SHADER_DIR "Shaders/AnimationShader.vs"
+
 
 //fonts
 #define FONT1_DIR "fonts/AmaticSC-Bold.ttf"
@@ -65,8 +71,12 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define PHYSICS_COLLISION_DEBUG
 
 //RenderClass debug
-// #define RENDER_DRAW_DEBUG
+#define RENDER_DRAW_DEBUG
 // #define RENDER_INIT_DEBUG
+
+//AnimationClass debug
+#define ANIMATION_DRAW_DEBUG
+// #define ANIMATION_INIT_DEBUG
 
 //BulletClass debug
 // #define BULLET_DEBUG
@@ -103,37 +113,40 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include <ctime>
 #include <vector>
 #include <map>
+#include <thread>
 
-//Third party libraries(OpenGL, stbi and glm)
+//Third party libraries(OpenGL, stbi, glm, freetype and irrKlang)
 
 #include "glad/glad.h"
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 #include "include/stb_image.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include "SoundEngine/irrKlang-64bit-1.6.0/include/irrKlang.h"
 
 //Header files to be included
-#include <transforms.hpp> //contains the functions for transformations
+#include "transforms.hpp" //contains the functions for transformations
 #include "shaders.hpp"
-#include <TextClass.hpp>
-#include <RenderClass.hpp> 
-#include <PhysicsClass.hpp>
-#include <BulletClass.hpp>
-#include <Weapons/simplebullet.hpp>
-#include <WeaponClass.hpp>
-#include <Weapons/simplegun.hpp>
-#include <HealthClass.hpp>
-#include <PersonClass.cpp>
-#include <AnimationClass.hpp>
-#include <HealthBarClass.cpp>
-#include <EnemyClass.hpp>
-#include <PlayerClass.hpp>
-#include <HUDClass.hpp>
-#include <MenuClass.hpp>
-#include <window.hpp> //contains the functions for initalizing and terminating glfw and inputs processing
+#include "TextClass.hpp"
+#include "RenderClass.hpp"
+// #include "AnimationRenderClass.hpp"
+#include "AnimationClass.hpp"
+#include "PhysicsClass.hpp"
+#include "BulletClass.hpp"
+#include "Weapons/simplebullet.hpp"
+#include "WeaponClass.hpp"
+#include "Weapons/simplegun.hpp"
+#include "HealthClass.hpp"
+#include "PersonClass.cpp"
+#include "HealthBarClass.cpp"
+#include "EnemyClass.hpp"
+#include "PlayerClass.hpp"
+#include "HUDClass.hpp"
+#include "MenuClass.hpp"
+#include "window.hpp" //contains the functions for initalizing and terminating glfw and inputs processing
 
 #endif

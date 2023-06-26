@@ -6,7 +6,7 @@ class HealthBarClass{
         Shader shader = Shader(VS_HEALTHBAR_SHADER_DIR, FS_HEALTHBAR_SHADER_DIR); //custom shaders for the health bar
         unsigned int VBO, VAO, EBO;
         bool shouldRender = true;
-        glm::mat4(*Transform_func)(float, float) = Transform::Default;
+        glm::mat4(*Transform_func)(float, float, float) = Transform::Default;
         float offset_y = 0.13;
 
         HealthBarClass(PersonClass *input_player){
@@ -56,7 +56,7 @@ class HealthBarClass{
                 debug("Set health_percent uniform");
 
                 //set the transform uniform
-                glm::mat4 trans = Transform_func(person->x - *person->screen_x, person->y + offset_y);
+                glm::mat4 trans = Transform_func(person->AnimationClass::x - *person->screen_x, person->AnimationClass::y + offset_y, 0);
                 shader.use();
                 unsigned int transformLoc = glGetUniformLocation(shader.shader_id, "transform");
                 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));      

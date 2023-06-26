@@ -20,8 +20,8 @@ class PlayerClass: public PersonClass{
         HealthBarClass health_bar = NULL;
 
         //Constructor, sends the attributes to the parent class and initalizes the input status and default y position
-        PlayerClass(float input_x, float input_y, float width, float height, Shader *o_shader, std::string texture_dir) : 
-        PersonClass(input_x, input_y, width, height, o_shader, texture_dir){
+        PlayerClass(float input_x, float input_y, float width, float height) : 
+        PersonClass(input_x, input_y, width, height){
             PersonClass* player_ptr = dynamic_cast<PersonClass*>(this);
             health_bar = HealthBarClass(player_ptr);
         }
@@ -31,8 +31,12 @@ class PlayerClass: public PersonClass{
         void update(){
             //process inputs
             velocity_x = 0;
+            state = 0;
             if(input_status.left) velocity_x = -0.03;
-            if(input_status.right) velocity_x = 0.03;
+            if(input_status.right){ 
+                velocity_x = 0.03;
+                state = 1;
+            }
             if(input_status.down) velocity_y = -0.03;
             if(input_status.up) velocity_y = 0.03;
             if(input_status.jump && collision_status.down) velocity_y = 0.07;
@@ -40,6 +44,7 @@ class PlayerClass: public PersonClass{
 
             //update physics
             PhysicsObject::update();
+
             playerUpdateDebug("Physics updated");
             
             //move the screen if the player is too far to the right or left
@@ -47,23 +52,26 @@ class PlayerClass: public PersonClass{
                 std::cout << "Screen x is null" << std::endl;
                 exit(-1);
             }
-            if(std::abs(x - *screen_x) > 0.3)
-                *screen_x +=  (x - *screen_x) * delay * 0.01 * std::exp(std::abs(x - *screen_x));
+            if(std::abs(AnimationClass::x - *screen_x) > 0.3)
+                *screen_x +=  (AnimationClass::x - *screen_x) * delay * 0.01 * std::exp(std::abs(AnimationClass::x - *screen_x));
             playerUpdateDebug("Screen moved"); 
 
             //update the collisions, weapons, bullets and health bar, regen, and fire bullets
             updateCollisions();
             playerUpdateDebug("Collisions updated");
 
+            AnimationClass::x = PhysicsObject::x;
+            AnimationClass::y = PhysicsObject::y;
+            playerUpdateDebug("Animation updated X: " + std::to_string(AnimationClass::x)  + " Y: " + std::to_string(AnimationClass::y));
+
             //update the weapons
-            weapon->update(x, y);
+            weapon->update(AnimationClass::x, AnimationClass::y);
             playerUpdateDebug("Weapon updated");
 
             regen();
             updateBullets();
             playerUpdateDebug("Bullets updated");
 
-            health_bar.draw();
             playerUpdateDebug("Health bar updated");
 
 
@@ -110,7 +118,8 @@ class PlayerClass: public PersonClass{
         #ifdef PRINT_PLAYER_STATUS
             std::cout << "DEBUG: Current Player Status" << std::endl;
             std::cout << "Function name: " << function_name << std::endl;
-            std::cout << "x: " << x << " y: " << y << std::endl;
+            std::cout << "AnimationClass::x: " << AnimationClass::x << " AnimationClass::y: " << AnimationClass::y << std::endl;
+            std::cout << "PhysicsObject::x: " << PhysicsObject::x << " PhysicsObject::y: " << PhysicsObject::y << std::endl;
             std::cout << "velocity_x: " << velocity_x << " velocity_y: " << velocity_y << std::endl;
             std::cout << "acceleration_x: " << acceleration_x << " acceleration_y: " << acceleration_y << std::endl << std::endl;
             

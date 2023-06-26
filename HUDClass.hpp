@@ -12,7 +12,7 @@ class HUDObject: public RenderObject{
                     std::cout << "No textures attached" << std::endl;
                     exit(-1);
                 }
-                glm::mat4 trans = Transform_func(x , y);
+                glm::mat4 trans = Transform_func(x , y, 0);
                 shader->use();
                 unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
                 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));       

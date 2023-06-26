@@ -1,5 +1,5 @@
 //This is the base class from which bullets of all types inherit from
-class BaseBulletClass: public PhysicsObject{
+class BaseBulletClass: public PhysicsObject, public RenderObject{
     public:
         //Bullet properties
         float damage = 0;
@@ -11,20 +11,20 @@ class BaseBulletClass: public PhysicsObject{
         Shader bullet_shader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
     
         BaseBulletClass(float x, float y, float input_width, float input_height, std::string texture_dir):
-        PhysicsObject::PhysicsObject(x, y, input_width, input_height, &bullet_shader, texture_dir){
+        PhysicsObject::PhysicsObject(x, y, input_width, input_height), RenderObject::RenderObject(input_width, input_height, &bullet_shader, texture_dir){
             bulletDebug("Initializing bullet");
             width = input_width;
             height = input_height;
-            gravity = false; //turn off gravity for bullets
-            snap_collisions = true; //turn off snapping for bullets
+            PhysicsObject::gravity = false; //turn off gravity for bullets
+            PhysicsObject::snap_collisions = true; //turn off snapping for bullets
         }
 
     public:
         void fire(float direction){
             //when bullet is fired, start the clock so that we know when to destroy the bullet and give it initial velcoity
             start_time = std::clock();
-            velocity_x = initial_velocity*direction;
-            bulletDebug("Bullet fired with velocity_x: " + std::to_string(velocity_x));
+            PhysicsObject::velocity_x = initial_velocity*PhysicsObject::direction;
+            bulletDebug("Bullet fired with velocity_x: " + std::to_string(PhysicsObject::velocity_x));
         }
 
     public:
@@ -41,9 +41,11 @@ class BaseBulletClass: public PhysicsObject{
             bulletDebug("Bullet physics updated");
             updateCollisions();
             bulletDebug("Bullet collisions updated");
+            RenderObject::x = PhysicsObject::x;
+            RenderObject::y = PhysicsObject::y;
             draw();
             bulletDebug("Bullet drawn");
-            bulletDebug("posX: " + std::to_string(x) + " posY: " + std::to_string(y));
+            bulletDebug("posX: " + std::to_string(PhysicsObject::x) + " posY: " + std::to_string(PhysicsObject::y));
         }
 
     private:

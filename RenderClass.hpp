@@ -8,10 +8,10 @@ class RenderObject{
         std::vector<unsigned int> textures;
 
         //position and size
-        glm::mat4 (*Transform_func)(float, float) = nullptr;
+        glm::mat4 (*Transform_func)(float, float, float) = nullptr;
         Shader* shader; //shader to use
         float x = 0, y = 0, width, height;
-        float prev_x = 0, prev_y = 0;
+        float rotation = 0; //rotation in radians
         float* screen_x = nullptr;
 
         //some flags
@@ -153,7 +153,7 @@ class RenderObject{
                     std::cout << "No textures attached" << std::endl;
                     exit(-1);
                 }
-                glm::mat4 trans = Transform_func(x - *screen_x, y);
+                glm::mat4 trans = Transform_func(x - *screen_x, y, rotation);
                 shader->use();
                 unsigned int transformLoc = glGetUniformLocation(shader->shader_id, "transform");
                 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));  

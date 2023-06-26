@@ -17,7 +17,7 @@ class Window{
 
         std::vector<RenderObject*> render_objects;
         std::vector<RenderObject*> mouse_callback_objects;
-        std::vector<PersonClass*> persons;
+        std::vector<EnemyClass*> persons;
 
         float* screen_x; //position of screen in world
         float prev_time;
@@ -93,11 +93,13 @@ class Window{
     public:
         void addPlayer(PlayerClass* player){
             this->player = player;
+            player->addScreenX(this->screen_x);
+            player->weapon->addScreenX(this->screen_x);
             windowVectorStatus("Added player: " + std::to_string((long)player));
         }
 
     public:
-        void addPerson(PersonClass* person){
+        void addEnemy(EnemyClass* person){
             persons.push_back(person);
             person->addScreenX(this->screen_x);
             windowVectorStatus("Added person: " + std::to_string((long)person));
@@ -159,49 +161,52 @@ class Window{
         }
 
     public:
+        void updatePersons(){
+            for(auto &object : persons){
+                if(object != nullptr){
+                    //if person is dead, remove him from the game
+                    if(object->is_dead){
+                        delete object;
+                        windowRenderDebug("Deleting object: " + std::to_string((long)object));
+                        for(auto object2: persons){
+                            if(object2 != nullptr){
+                                object2->removeCollisionObject(object);
+                                windowRenderDebug("Removing object: " + std::to_string((long)object) + " from object: " + std::to_string((long)object2));
+                            }
+                        }
+                        player->removeCollisionObject(object);
+                        windowRenderDebug("Removing object: " + std::to_string((long)object) + " from player");
+                        object = nullptr;
+                    } else{
+                        object->update();
+                        windowRenderDebug("Updated " + std::to_string((long)object));
+                    }
+                }
+            }
+        }
+
+    public:
         void play(){
             while(!glfwWindowShouldClose(window)){
                 show_fps();
                 clear(1.0, 1.0, 1.0);
                 windowRenderDebug("Cleared screen");
-                processInput();
-                windowRenderDebug("Processed input");
-                if(player != nullptr){
-                    player->update();
-                    windowRenderDebug("Updated player");
-                } else {
-                    std::cout << "No player" << std::endl;
-                    exit(-1);
-                }
                 for(auto object : render_objects){
                     if(object != nullptr){
                         object->draw();
                         windowRenderDebug("Drew object: " + std::to_string((long)object));
                     }
                 }
-
                 for(auto &object : persons){
                     if(object != nullptr){
-                        //if person is dead, remove him from the game
-                        if(object->is_dead){
-                            delete object;
-                            windowRenderDebug("Deleting object: " + std::to_string((long)object));
-                            for(auto object2: persons){
-                                if(object2 != nullptr){
-                                    object2->removeCollisionObject(object);
-                                    windowRenderDebug("Removing object: " + std::to_string((long)object) + " from object: " + std::to_string((long)object2));
-                                }
-                            }
-                            player->removeCollisionObject(object);
-                            windowRenderDebug("Removing object: " + std::to_string((long)object) + " from player");
-                            object = nullptr;
-                        } else{
-                            object->update();
-                            object->draw();
-                            windowRenderDebug("Updated and drew object: " + std::to_string((long)object));
-                        }
+                        object->draw();
+                        object->health_bar.draw();
+                        windowRenderDebug("Drew object: " + std::to_string((long)object));
                     }
                 }
+                player->draw();
+                player->weapon->draw();
+                player->health_bar.draw();
                 swap();
                 windowRenderDebug("Swapped buffers");
             }
@@ -227,7 +232,7 @@ class Window{
             glfwPollEvents();
         }
 
-    private:
+    public:
         void processInput(){
             //store inputs from opengl in the struct and call the necessary callbacks and give struct to player
             InputStatus inputs;

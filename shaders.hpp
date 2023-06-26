@@ -30,7 +30,7 @@ class Shader{
 
                 vertexCode = vShaderStream.str();
                 fragmentCode = fShaderStream.str();
-                shaderInitDebug("Shader files read successfully");
+                shaderInitDebug("Shader files " + std::to_string((long)vertexPath) + " and " + std::to_string((long)fragmentPath) + " read successfully");
             } catch(std::ifstream::failure){
                 std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
                 exit(-1);
