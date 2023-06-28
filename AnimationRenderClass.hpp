@@ -90,35 +90,41 @@ class AnimationRenderObject{
         
     public:
         //attaches the texture to the object
-        void attachTexture(std::string image_dir){
-            //texture1
+        void attachTexture(std::vector<std::string> image_dirs){
             shader->use();
             glGenTextures(1, &texture_array);
             glBindTexture(GL_TEXTURE_2D_ARRAY, texture_array);
-            glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA, );
+
             //texture wrapping and filtering options
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            //load the texture
+
             int width, height, nrChannels;
-            stbi_set_flip_vertically_on_load(true);
-            unsigned char *data = stbi_load(image_dir.c_str(), &width, &height, &nrChannels, 0);
-            if(data){
-                if(nrChannels == 4)
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                else{
-                    std::cout << "Unsupported number of channels: " << nrChannels << "for "<< image_dir << std::endl;
+            stbi_load(image_dirs[0].c_str(), &width, &height, &nrChannels, 0);
+            glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA, width, height, image_dirs.size());
+
+            //load the texture
+            for(int i = 0; i < image_dirs.size(); ++i){
+                int width, height, nrChannels;
+                stbi_set_flip_vertically_on_load(true);
+                unsigned char *data = stbi_load(image_dirs[i].c_str(), &width, &height, &nrChannels, 0);
+                if(data){
+                    if(nrChannels == 4)
+                        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GLRGBA, GL_UNSIGNED_BYTE, data);
+                    else{
+                        std::cout << "Unsupported number of channels: " << nrChannels << "for "<< image_dirs[i] << std::endl;
+                        exit(-1);
+                    }
+                glGenerateMipmap(GL_TEXTURE_2D_ARRAY); 
+                } else {
+                    std::cout << "Failed to load texture" << std::endl;
                     exit(-1);
                 }
-            glGenerateMipmap(GL_TEXTURE_2D);   
-            } else {
-                std::cout << "Failed to load texture" << std::endl;
-                exit(-1);
+                stbi_image_free(data);
+                shader->addTextureUniform(image_dirs.size());
             }
-            stbi_image_free(data);
-            shader->addTextureUniform(textures.size());
         }
     
     public:
