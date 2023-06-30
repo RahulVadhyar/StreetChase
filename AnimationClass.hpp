@@ -21,7 +21,7 @@ class AnimationClass{
         float width = 0, height = 0;
         Shader commonshader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
         float* screen_x = nullptr;
-        std::vector<RenderObject*> animation_states;
+        AnimationRenderObject* animation_object = nullptr;
         int current_animation_state = 0;
         bool shouldRender = true;
 
@@ -30,36 +30,27 @@ class AnimationClass{
             y = input_y;
             width = input_width;
             height = input_height;
-            animation_init_debug("Variables initalized, adding animation states");
-            for(int i = 0; i < 10; i++){
-                animation_init_debug("Adding animation state characterwalk_0000" + std::to_string(i) + ".png");
-                addAnimationState("test/characterwalk_0000" + std::to_string(i) + ".png");
-            }
-            for(int i = 10; i < 100; i++){
-                animation_init_debug("Adding animation state characterwalk_000" + std::to_string(i) + ".png");
-                addAnimationState("test/characterwalk_000" + std::to_string(i) + ".png");
-            }
-            for(int i = 100; i < 232; i++){
-                animation_init_debug("Adding animation state characterwalk_00" + std::to_string(i) + ".png");
-                addAnimationState("test/characterwalk_00" + std::to_string(i) + ".png");
-            }
 
-
+            animation_init_debug("Initializing animation states");
+            std::vector<std::string> animation_states;
+            for(int i = 23; i < 99; i++){
+                animation_init_debug("Adding animation state Art/Main Character/Animations/Running/main_character_running_0" + std::to_string(i) + ".png");
+                animation_states.push_back("Art/Main Character/Animations/Running/main_character_running_0" + std::to_string(i) + ".png");
+            }
+            for(int i = 100; i < 107; i++){
+                animation_init_debug("Adding animation state Art/Main Character/Animations/Running/main_character_running_" + std::to_string(i) + ".png");
+                animation_states.push_back("Art/Main Character/Animations/Running/main_character_running_" + std::to_string(i) + ".png");
+            }
             animation_init_debug("Animation states added");
-        }
-
-    public:
-        void addAnimationState(std::string image_dir){
-            RenderObject* temp = new RenderObject(x, y, width, height, &commonshader, image_dir);
-            temp->screen_x = screen_x;
-            animation_states.push_back(temp);
+            animation_object = new AnimationRenderObject(width, height, animation_states);
+            animation_init_debug("Animation object created");
         }
 
     public:
         void draw(){
             if(shouldRender){
                 update();
-                animation_states[current_animation_state]->draw();
+                animation_object->draw();
                 animation_draw_debug("Drawing animation" + std::to_string((long)current_animation_state));
             }
         }
@@ -72,29 +63,28 @@ class AnimationClass{
                     break;
                 case 1:
                     current_animation_state += 1;
-                    if(current_animation_state > 231){
+                    if(current_animation_state > 9){
                         current_animation_state = 0;
                     }
                     break;
                 
             }
-            animation_states[current_animation_state]->x = x;
-            animation_states[current_animation_state]->y = y;
+            animation_object->flip = 0;
+            animation_object->x = x;
+            animation_object->y = y;
+            animation_object->current_texture = current_animation_state;
+            animation_draw_debug("Updating animation. Current state: " + std::to_string((long)current_animation_state) + " X:" +std::to_string(x) + " Y:" + std::to_string(y));
         }
 
     public:
         virtual ~AnimationClass(){
-            for(auto &animation_state: animation_states){
-                delete animation_state;
-            }
+            delete animation_object;
         }
     
     public:
         void addScreenX(float* input_screen_x){
             screen_x = input_screen_x;
-            for(auto &animation_state: animation_states){
-                animation_state->screen_x = screen_x;
-            }
+            animation_object->addScreenX(screen_x);
         }
 
     private:

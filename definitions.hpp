@@ -71,12 +71,16 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define PHYSICS_COLLISION_DEBUG
 
 //RenderClass debug
-#define RENDER_DRAW_DEBUG
+// #define RENDER_DRAW_DEBUG
 // #define RENDER_INIT_DEBUG
 
 //AnimationClass debug
-#define ANIMATION_DRAW_DEBUG
-// #define ANIMATION_INIT_DEBUG
+// #define ANIMATION_DRAW_DEBUG
+#define ANIMATION_INIT_DEBUG
+
+//AnimationRenderClass debug
+// #define ANIMATION_RENDER_DRAW_DEBUG
+// #define ANIMATION_RENDER_INIT_DEBUG
 
 //BulletClass debug
 // #define BULLET_DEBUG
@@ -133,7 +137,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include "shaders.hpp"
 #include "TextClass.hpp"
 #include "RenderClass.hpp"
-// #include "AnimationRenderClass.hpp"
+#include "AnimationRenderClass.hpp"
 #include "AnimationClass.hpp"
 #include "PhysicsClass.hpp"
 #include "BulletClass.hpp"
