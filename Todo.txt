@@ -2,9 +2,6 @@ this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
         -ANIMATION(BIG ONE HUGE PRIORITY)
-            -Custom pipeline for loading multiple images
-            -Implement array textures for this
-            -optimize the animatiosn to reduce as much images as possible
             -update function to be written
 
         -multiple weapons

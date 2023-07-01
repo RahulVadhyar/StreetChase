@@ -23,6 +23,7 @@ class AnimationClass{
         float* screen_x = nullptr;
         AnimationRenderObject* animation_object = nullptr;
         int current_animation_state = 0;
+        int num_textures;
         bool shouldRender = true;
 
         AnimationClass(float input_x, float input_y, float input_width, float input_height){ 
@@ -32,17 +33,10 @@ class AnimationClass{
             height = input_height;
 
             animation_init_debug("Initializing animation states");
-            std::vector<std::string> animation_states;
-            for(int i = 23; i < 99; i++){
-                animation_init_debug("Adding animation state Art/Main Character/Animations/Running/main_character_running_0" + std::to_string(i) + ".png");
-                animation_states.push_back("Art/Main Character/Animations/Running/main_character_running_0" + std::to_string(i) + ".png");
-            }
-            for(int i = 100; i < 107; i++){
-                animation_init_debug("Adding animation state Art/Main Character/Animations/Running/main_character_running_" + std::to_string(i) + ".png");
-                animation_states.push_back("Art/Main Character/Animations/Running/main_character_running_" + std::to_string(i) + ".png");
-            }
+            const std::string tex_dir = "Tools/texture_atlas.png";
             animation_init_debug("Animation states added");
-            animation_object = new AnimationRenderObject(width, height, animation_states);
+            animation_object = new AnimationRenderObject(width, height, tex_dir, 4, 22);
+            num_textures = 85;
             animation_init_debug("Animation object created");
         }
 
@@ -63,7 +57,7 @@ class AnimationClass{
                     break;
                 case 1:
                     current_animation_state += 1;
-                    if(current_animation_state > 9){
+                    if(current_animation_state > num_textures){
                         current_animation_state = 0;
                     }
                     break;

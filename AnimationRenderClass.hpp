@@ -3,7 +3,7 @@ class AnimationRenderObject{
         unsigned int VBO, VAO, EBO; //for opengl vertices
 
         //textueres
-        unsigned int texture_array = 0;
+        unsigned int texture = 0;
 
         //position and size
         glm::mat4 (*Transform_func)(float, float, float) = nullptr;
@@ -11,8 +11,10 @@ class AnimationRenderObject{
         float x = 0, y = 0, width, height;
         float rotation = 0; //rotation in radians
         float* screen_x = nullptr;
-        int current_texture = 0;
         int flip = 0;
+        int current_texture = 0;
+        int num_rows;
+        int num_cols;
         //some flags
         bool shouldRender = true;
         bool isClicked = false;
@@ -20,10 +22,12 @@ class AnimationRenderObject{
 
         //Constructors
         //if x, y are not provided, else use the other one
-        AnimationRenderObject(float input_width, float input_height, std::vector<std::string> texture_dirs)
+        AnimationRenderObject(float input_width, float input_height, std::string texture_dir, int input_num_rows, int input_num_cols)
         {   
             width = input_width;
             height = input_height;
+            num_rows = input_num_rows;
+            num_cols = input_num_cols;
             float vertices[] = {
                 //verticies         texture coords
                 width/2,  height/2, 0.0f,  1.0f, 1.0f, 
@@ -35,7 +39,7 @@ class AnimationRenderObject{
             renderInitDebug("Shader initialized");
             generateVertices(vertices, sizeof(vertices));
             renderInitDebug("Vertices generated");
-            attachTexture(texture_dirs);
+            attachTexture(texture_dir);
             renderInitDebug("Texture attached");
             Transform_func = &Transform::Default;
             renderInitDebug("Transform function set"); 
@@ -71,48 +75,39 @@ class AnimationRenderObject{
         
     public:
         //attaches the texture to the object
-        void attachTexture(std::vector<std::string> image_dirs){
+        void attachTexture(std::string image_dir){
+            //texture1
             shader->use();
-            glGenTextures(1, &texture_array);
-            glBindTexture(GL_TEXTURE_2D_ARRAY, texture_array);
-            renderInitDebug("Texture array generated: " + std::to_string(texture_array));
-
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
             //texture wrapping and filtering options
-            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            renderInitDebug("Texture wrapping and filtering options set");
-
-
-            int width, height, nrChannels;
-            stbi_load(image_dirs[0].c_str(), &width, &height, &nrChannels, 0);
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, width, height, image_dirs.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-            renderInitDebug("Texture array initialized");
-
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             //load the texture
-            for(int i = 0; i < image_dirs.size(); ++i){
-                int width, height, nrChannels;
-                stbi_set_flip_vertically_on_load(true);
-                unsigned char *data = stbi_load(image_dirs[i].c_str(), &width, &height, &nrChannels, 0);
-                if(data){
-                    if(nrChannels == 4){
-                        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                        
-                        renderInitDebug("Texture loaded: " + image_dirs[i]);
-                    } else{
-                        std::cout << "Unsupported number of channels: " << nrChannels << "for "<< image_dirs[i] << std::endl;
-                        exit(-1);
-                    }
-                
-                } else {
-                    std::cout << "Failed to load texture" << std::endl;
+            int width, height, nrChannels;
+            stbi_set_flip_vertically_on_load(true);
+            unsigned char *data = stbi_load(image_dir.c_str(), &width, &height, &nrChannels, 0);
+            if(data){
+                if(nrChannels == 3)
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                else if(nrChannels == 4)
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                else{
+                    std::cout << "Unsupported number of channels: " << nrChannels << "for "<< image_dir << std::endl;
                     exit(-1);
                 }
-                stbi_image_free(data);
+            glGenerateMipmap(GL_TEXTURE_2D);   
+            } else {
+                std::cout << "Failed to load texture" << std::endl;
+                exit(-1);
             }
-            glGenerateMipmap(GL_TEXTURE_2D_ARRAY); 
+            stbi_image_free(data);
+            shader->addTextureUniform(1);
+            shader->setInt("textures", 0);
+            shader->setFloat("num_rows", num_rows);
+            shader->setFloat("num_cols", num_cols);
         }
 
     public:
@@ -123,10 +118,6 @@ class AnimationRenderObject{
                     std::cout << "Screen_x not set" << std::endl;
                     exit(-1);
                 }
-                if(texture_array == 0){
-                    std::cout << "No textures attached" << std::endl;
-                    exit(-1);
-                }
 
                 glm::mat4 trans = Transform_func(x - *screen_x, y, rotation);
                 shader->use();
@@ -134,16 +125,14 @@ class AnimationRenderObject{
                 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));  
                 renderDrawDebug("Set transform uniform");     
 
+                shader->setInt("current_texture", current_texture);
                 //draw triangle
                 shader->use();
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D_ARRAY, texture_array);
-                shader->setInt("textures", 0);
+                glBindTexture(GL_TEXTURE_2D, texture);
                 renderDrawDebug("Bound textures");
-
-                shader->setInt("activeTexture", current_texture);
                 shader->setInt("flip", flip);
-                renderDrawDebug("Set active texture and flip to values: " + std::to_string(current_texture) + " " + std::to_string(flip));
+                renderDrawDebug("Set flip to values: " + std::to_string(flip));
 
                 shader->use();
                 glBindVertexArray(VAO);

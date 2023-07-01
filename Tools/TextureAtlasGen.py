@@ -28,5 +28,7 @@ def create_texture_atlas():
         print(f"Added image {i}/{len(output)} to atlas")
     print(f"Saving atlas to texture_atlas.png the shape is {atlas.shape}")
     Image.fromarray(atlas, 'RGBA').save('texture_atlas.png')
+    print(f"The number of rows is {rows} and the number of columns is {columns}")
+    print(f"The number of images is {len(output)}")
 
 create_texture_atlas()
