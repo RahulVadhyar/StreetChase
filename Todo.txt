@@ -1,18 +1,33 @@
 this is a todo file, will be deleted.
 Things to be done
     -Things I can do right now
-        -ANIMATION(BIG ONE HUGE PRIORITY)
+        -animation
             -update function to be written
+            -finalize animations for main player
 
         -multiple weapons
             -can be changed using the keys 1-9
             -Need to display on the HUD, need a system for that
             -Need to display weapons on the ground and need a pick up system for it
         
+        -Game mechanics and objectives and stuff
+            -Moving vehicles
+            -power ups
+            -underground tunnels
+            -steath - hiding and distract them
+            -upgrades - stregnth abilites
+            -boss battles
+            -wepons can be destroyed
+            -
 
-        -particle effects
-            -optimize it to maximize performance
-        
+        -death screen
+            -Background needed
+        -sound effects and music
+        -main menu design
+            -Background neeeded
+        -HUD
+            -allow displaying of inventory and selection of weapons and ammo left
+
     -Later
         -level design
         -Enemy AI
@@ -22,9 +37,9 @@ Things to be done
             -Try to go in range of player slowly if near and fast if not near
             -If within range, fire Bullet
             -Add a little bit of randomness to all of this for not predictable behaviour
-        -death screen
-        -sound effects
-        -main menu design
+        -particle effects
+            -shaders to be written
+        
         
 
     -Paused for now as other things are needed before we can further work on this
@@ -36,7 +51,54 @@ Optimizations I want to do
     - Optimize the shaders
     - Multi instanced rendering
     - Need a better collision system
+    - antialiasing
+    - Reduce number of textures as much as possible
+    - Intense parallelization(multithreading)
+    - Caching of shader compilation if possible
+
+Title : The Chase: Streets of Truth
+Corrupt City Chronicles
+Rogue Pursuit
+Runner of Justice
+Infiltration Escape
+
+In the bustling streets of New York City, corruption runs deep. Our protagonist, Jake Thompson,
+a former police officer, finds himself framed for a crime he didn't commit. Fueled by a desire
+for justice and redemption, Jake embarks on a perilous journey, running from the very force he
+once served— the NYPD. With the city as his playground, he must evade capture, uncover the
+truth, and expose the web of corruption that has ensnared the police department.
+
+In the bustling streets of New York City, an ordinary citizen named Max finds himself in an
+extraordinary situation. While innocently strolling through the park, he witnesses a corrupt
+police officer accepting a bribe from a notorious gang leader. Realizing he holds crucial evidence,
+Max becomes a target.
+
+With the police and gang members hot on his heels, Max must navigate the city's chaotic streets, 
+using his wit and agility to evade capture. Along the way, he encounters other citizens who have 
+fallen victim to the corrupt system and are willing to aid him in his quest for justice.
+
+As Max collects evidence scattered throughout the levels, he uncovers a deeper conspiracy involving 
+high-ranking officials and criminal organizations. The story unfolds through simple cutscenes and 
+dialogue sequences, highlighting the growing determination within Max to expose the truth and bring 
+the corrupt to justice.
+
+The gameplay focuses on tight platforming and quick reflexes as Max jumps, slides, and climbs through 
+various obstacles and hazards. He can collect power-ups and tools to aid his escape, such as a smoke 
+bomb to confuse pursuers or a grappling hook to reach otherwise inaccessible areas.
+
+To add variety and challenge, Max will encounter different enemy types, each with their own behaviors 
+and abilities. Some enemies may require clever strategies or the use of collected weapons to overcome. 
+Players must carefully manage their resources and make split-second decisions to outsmart their pursuers.
+
+Throughout the game, Max's interactions with the citizens he meets influence the outcome of the story. 
+Players can choose to help those in need, gather information from informants, or even confront corrupt 
+officials. These choices impact Max's reputation and alliances, leading to multiple endings that reflect 
+his path to justice.
+
+In this scaled-down version, the focus is on delivering a compact and engaging narrative within a 
+simplified gameplay experience. By emphasizing core mechanics and a concise story, players can enjoy a 
+fast-paced, exciting adventure through the streets of New York City while rooting for Max as he fights 
+against corruption.
 
 If time permits
-    -Add ability in level editor to import your own textures
 ---more as progress moves on
