@@ -56,6 +56,7 @@ Things to be done
             -Try to go in range of player slowly if near and fast if not near
             -If within range, fire Bullet
             -Add a little bit of randomness to all of this for not predictable behaviour
+            -boss battle aid
         
         -boss battles
         -death screen
@@ -69,11 +70,12 @@ Things to be done
             -finalize animations for main player
 
     -Paused for now as other things are needed before we can further work on this
+        This is most likely cancelled at this point as there is little point and will be too complicated
         -Level editor class and cpp file
         -Level File system
           
 Optimizations I want to do
-    
+    OPTIMIZE EVERYTHING UNTILL THERE IS NOTHING TO OPTIMIZE
     - Optimize the shaders
     - Multi instanced rendering
     - Need a better collision system
