@@ -189,7 +189,7 @@ class Window{
         void play(){
             while(!glfwWindowShouldClose(window)){
                 show_fps();
-                clear(1.0, 1.0, 1.0);
+                clear(9.0, 2.0, 79.0); //9, 2, 79 background color
                 windowRenderDebug("Cleared screen");
                 for(auto object : render_objects){
                     if(object != nullptr){
@@ -219,7 +219,7 @@ class Window{
 
     private:
         void clear(float r, float g, float b){
-            glClearColor(r, g, b, 0.0f); //state setting function
+            glClearColor(r, g, b, 1.0f); //state setting function
             glClear(GL_COLOR_BUFFER_BIT); //state using function
         }
     
