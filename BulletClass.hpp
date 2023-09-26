@@ -11,7 +11,7 @@ class BaseBulletClass: public PhysicsObject, public RenderObject{
         Shader bullet_shader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
     
         BaseBulletClass(float x, float y, float input_width, float input_height, std::string texture_dir):
-        PhysicsObject::PhysicsObject(x, y, input_width, input_height), RenderObject::RenderObject(input_width, input_height, &bullet_shader, texture_dir){
+        PhysicsObject::PhysicsObject(x, y, input_width, input_height), RenderObject::RenderObject(x, y, input_width, input_height, &bullet_shader, texture_dir){
             bulletDebug("Initializing bullet");
             width = input_width;
             height = input_height;

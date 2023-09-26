@@ -20,28 +20,6 @@ class RenderObject{
         
 
         //Constructors
-        //if x, y are not provided, else use the other one
-        RenderObject(float input_width, float input_height, Shader *input_shader, std::string texture_dir)
-        {   
-            width = input_width;
-            height = input_height;
-            float vertices[] = {
-                //verticies         texture coords
-                width/2,  height/2, 0.0f,  1.0f, 1.0f, 
-                width/2, -height/2, 0.0f,  1.0f, 0.0f, 
-                -width/2, -height/2, 0.0f,  0.0f, 0.0f, 
-                -width/2,  height/2, 0.0f,  0.0f, 1.0f 
-                    };
-            shader = input_shader;
-            renderInitDebug("Shader initialized");
-            generateVertices(vertices, sizeof(vertices));
-            renderInitDebug("Vertices generated");
-            attachTexture(texture_dir);
-            renderInitDebug("Texture attached");
-            Transform_func = &Transform::Default;
-            renderInitDebug("Transform function set"); 
-        };
-
         RenderObject(float input_x, float input_y, float input_width, float input_height, Shader *input_shader, std::string texture_dir)
         {   
             width = input_width;
@@ -71,6 +49,7 @@ class RenderObject{
         void generateVertices(float vertices[], int vertices_size){
             renderInitDebug("Generating vertices");
             glGenVertexArrays(1, &VAO);
+            renderInitDebug("Temp : Till here done!");
             glGenBuffers(1, &VBO);
             glGenBuffers(1, &EBO);
             glBindVertexArray(VAO);
@@ -88,7 +67,6 @@ class RenderObject{
 
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
-
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0); 

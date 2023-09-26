@@ -72,18 +72,18 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 
 //RenderClass debug
 // #define RENDER_DRAW_DEBUG
-// #define RENDER_INIT_DEBUG
+ #define RENDER_INIT_DEBUG
 
 //AnimationClass debug
 // #define ANIMATION_DRAW_DEBUG
-#define ANIMATION_INIT_DEBUG
+//#define ANIMATION_INIT_DEBUG
 
 //AnimationRenderClass debug
 // #define ANIMATION_RENDER_DRAW_DEBUG
 // #define ANIMATION_RENDER_INIT_DEBUG
 
 //BulletClass debug
-// #define BULLET_DEBUG
+ #define BULLET_DEBUG
 
 //PersonClass debug
 // #define PERSON_UPDATE_BULLET_DEBUG
@@ -103,7 +103,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define SHADER_INIT_DEBUG
 
 //WeaponClass debug
-// #define WEAPON_DEBUG
+ #define WEAPON_DEBUG
 
 //need to implement
 //TextClass debug

@@ -39,6 +39,7 @@ int main(){
     //create a shader
     Shader ground_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader new_wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader hud_shader(VS_SHADER_DIR, FS_SHADER_DIR);
     Shader gun_shader(VS_SHADER_DIR, FS_SHADER_DIR);
@@ -47,6 +48,7 @@ int main(){
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
     RenderObject wall(-0.4, -0.4, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
+    RenderObject new_wall(0.4, 0.4, 0.4, 0.2, &new_wall_shader, STONE_TEX_DIR);
     PlayerClass player(0, 0, 0.08f*0.8f, 0.5f*0.8f);
     SimpleGun gun(&gun_shader);
     EnemyClass* enemy = new EnemyClass(2, 0, 0.08f*0.8f, 0.5f*0.8f);
@@ -65,16 +67,25 @@ int main(){
     wall.mixValue[1] = 0.5f;
     wall.TexScale[1] = 0.2f;
 
+    new_wall.attachTexture(PLAYER_TEX_DIR);
+    new_wall.attachTexture(CONTAINER_TEX_DIR);
+    new_wall.mixValue[0] = 0.5f;
+    new_wall.mixValue[1] = 0.5f;
+    new_wall.TexScale[1] = 0.2f;
+
     player.shouldRender = true;
     player.addCollisionObject(&ground);
     player.addCollisionObject(&wall);
+    player.addCollisionObject(&new_wall);
     player.addCollisionObject(enemy);
     enemy->addCollisionObject(&ground);
     enemy->addCollisionObject(&wall);
+    enemy->addCollisionObject(&new_wall);
     enemy->addCollisionObject(&player);
 
     window.addRenderObject(&ground);
     window.addRenderObject(&wall);
+    window.addRenderObject(&new_wall);
     window.addRenderObject(&hud1);
     window.addEnemy(enemy);
     window.addMouseCallbackObject(&hud1);
