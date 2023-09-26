@@ -48,8 +48,10 @@ class RenderObject{
         //generates the vertices and binds them to the VAO(sends to GPU)
         void generateVertices(float vertices[], int vertices_size){
             renderInitDebug("Generating vertices");
+            glGetError();
+            renderInitDebug("glGetError() called");
             glGenVertexArrays(1, &VAO);
-            renderInitDebug("Temp : Till here done!");
+            
             glGenBuffers(1, &VBO);
             glGenBuffers(1, &EBO);
             glBindVertexArray(VAO);

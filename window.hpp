@@ -189,7 +189,10 @@ class Window{
         void play(){
             while(!glfwWindowShouldClose(window)){
                 show_fps();
-                clear(9.0, 2.0, 79.0); //9, 2, 79 background color
+                processInput();
+                player->update();
+                updatePersons();
+                clear(9.0/255, 2.0/255, 79.0/255); //9, 2, 79 background color
                 windowRenderDebug("Cleared screen");
                 for(auto object : render_objects){
                     if(object != nullptr){

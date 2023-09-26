@@ -35,7 +35,7 @@ class AnimationRenderObject{
                 -width/2, -height/2, 0.0f,  0.0f, 0.0f, 
                 -width/2,  height/2, 0.0f,  0.0f, 1.0f 
                     };
-            shader = new Shader(VS_ANIMATION_SHADER_DIR, FS_ANIMATION_SHADER_DIR);
+            shader = new Shader(shader_dir::vs::animation, shader_dir::fs::animation);
             renderInitDebug("Shader initialized");
             generateVertices(vertices, sizeof(vertices));
             renderInitDebug("Vertices generated");

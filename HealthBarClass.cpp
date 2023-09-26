@@ -3,7 +3,7 @@ class HealthBarClass{
         PersonClass *person;
         float width = 0.1;
         float height = 0.01;
-        Shader shader = Shader(VS_HEALTHBAR_SHADER_DIR, FS_HEALTHBAR_SHADER_DIR); //custom shaders for the health bar
+        Shader shader = Shader(shader_dir::vs::healthbar, shader_dir::fs::healthbar); //custom shaders for the health bar
         unsigned int VBO, VAO, EBO;
         bool shouldRender = true;
         glm::mat4(*Transform_func)(float, float, float) = Transform::Default;

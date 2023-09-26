@@ -13,27 +13,8 @@ struct ScreenStatus{
 };
 ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 
-//textures, might eventually move to other files as strings
-#define IMAGE1_DIR "Textures/container.jpg"
-#define STONE_TEX_DIR "Textures/stone.jpg"
-#define PLAYER_TEX_DIR "test/characterwalk_00000.png"
-#define CONTAINER_TEX_DIR "Textures/container.jpg"
-#define GUN_TEX_DIR "Textures/gun.png"
-#define BULLET_TEX_DIR "Textures/bullet.png"
-
 //sound
 #define MUSIC_DIR "Music/music1.mp3"
-
-//shaders
-#define VS_SHADER_DIR "Shaders/shader.vs"
-#define FS_SHADER_DIR "Shaders/shader.fs"
-#define VS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.vs"
-#define FS_HEALTHBAR_SHADER_DIR "Shaders/healthbar.fs"
-#define VS_TEXT_SHADER_DIR "Shaders/TextShader.vs"
-#define FS_TEXT_SHADER_DIR "Shaders/TextShader.fs"
-#define FS_ANIMATION_SHADER_DIR "Shaders/AnimationShader.fs"
-#define VS_ANIMATION_SHADER_DIR "Shaders/AnimationShader.vs"
-
 
 //fonts
 #define FONT1_DIR "fonts/AmaticSC-Bold.ttf"
@@ -57,7 +38,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
-// #define SINGLE_BUFFER
+#define SINGLE_BUFFER
 // #define VIEWPORT_SIZE_DEBUG
 // #define WINDOW_INIT_DEBUG
 // #define WINDOW_VECTOR_STATUS
@@ -72,7 +53,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 
 //RenderClass debug
 // #define RENDER_DRAW_DEBUG
- #define RENDER_INIT_DEBUG
+//  #define RENDER_INIT_DEBUG
 
 //AnimationClass debug
 // #define ANIMATION_DRAW_DEBUG
@@ -83,7 +64,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define ANIMATION_RENDER_INIT_DEBUG
 
 //BulletClass debug
- #define BULLET_DEBUG
+//  #define BULLET_DEBUG
 
 //PersonClass debug
 // #define PERSON_UPDATE_BULLET_DEBUG
@@ -96,6 +77,9 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 //HUDClass debug
 // #define HUD_DEBUG
 
+//BackgroundClass debug
+// #define BACKGROUND_DEBUG
+
 //HealthClass debug
 // #define HEALTH_DEBUG
 
@@ -103,7 +87,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define SHADER_INIT_DEBUG
 
 //WeaponClass debug
- #define WEAPON_DEBUG
+//  #define WEAPON_DEBUG
 
 //need to implement
 //TextClass debug
@@ -133,6 +117,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include "SoundEngine/irrKlang-64bit-1.6.0/include/irrKlang.h"
 
 //Header files to be included
+#include "locations.hpp" //location for all the textures and sahaders
 #include "transforms.hpp" //contains the functions for transformations
 #include "shaders.hpp"
 #include "TextClass.hpp"
@@ -150,6 +135,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include "EnemyClass.hpp"
 #include "PlayerClass.hpp"
 #include "HUDClass.hpp"
+#include "BackgroundClass.hpp"
 #include "MenuClass.hpp"
 #include "window.hpp" //contains the functions for initalizing and terminating glfw and inputs processing
 

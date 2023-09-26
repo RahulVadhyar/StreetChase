@@ -8,7 +8,7 @@ class BaseBulletClass: public PhysicsObject, public RenderObject{
         float initial_velocity = 0;
         float start_time = 0;
         float max_time = 5; //max time before bullet is destroyed
-        Shader bullet_shader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
+        Shader bullet_shader = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
     
         BaseBulletClass(float x, float y, float input_width, float input_height, std::string texture_dir):
         PhysicsObject::PhysicsObject(x, y, input_width, input_height), RenderObject::RenderObject(x, y, input_width, input_height, &bullet_shader, texture_dir){

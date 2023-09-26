@@ -19,7 +19,7 @@ class AnimationClass{
         int state = 0; //0 is idle, 1 is running right, 2 is running left, 3 is jumping
         float x = 1, y = 0;
         float width = 0, height = 0;
-        Shader commonshader = Shader(VS_SHADER_DIR, FS_SHADER_DIR);
+        Shader commonshader = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
         float* screen_x = nullptr;
         AnimationRenderObject* animation_object = nullptr;
         int current_animation_state = 0;

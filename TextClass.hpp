@@ -7,7 +7,7 @@ class TextClass{
             unsigned int advance;
         };
         std::map<GLchar, Character> Characters;
-        Shader shader = Shader(VS_TEXT_SHADER_DIR, FS_TEXT_SHADER_DIR);
+        Shader shader = Shader(shader_dir::vs::text, shader_dir::fs::text);
         unsigned int VAO, VBO;
 
         TextClass(){
