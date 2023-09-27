@@ -11,8 +11,8 @@
 #define STONE_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\stone.jpg"
 #define PLAYER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\player.png"
 #define CONTAINER_TEX_DIR "C:\\Users\\vadhy\\StreetChase\\Textures\\container.jpg"
-#define VS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs"
-#define FS_SHADER_DIR "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs"
+#define shader_dir::vs::shader "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.vs"
+#define shader_dir::fs::shader "C:\\Users\\vadhy\\StreetChase\\Shaders\\shader.fs"
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
 

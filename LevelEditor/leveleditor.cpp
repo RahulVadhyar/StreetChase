@@ -5,7 +5,7 @@ int main(){
     Window window;
 
     //create a shader
-    Shader shader1(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader shader1(shader_dir::vs::shader, shader_dir::fs::shader);
 
     //create ground and player
     RenderObject ground(0, -1.0f, 20.0f, 1.0f, &shader1, STONE_TEX_DIR);

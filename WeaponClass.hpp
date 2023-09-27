@@ -10,7 +10,7 @@ class BaseWeaponClass:public RenderObject{
         float bullet_offset_x = 0;
         float bullet_offset_y = 0;
         BaseWeaponClass(Shader* input_gun_shader, std::string input_gun_texture_dir , int input_current_ammo) :
-        RenderObject::RenderObject(0.1, 0.1, input_gun_shader, input_gun_texture_dir){
+        RenderObject::RenderObject(0, 0, 0.1, 0.1, input_gun_shader, input_gun_texture_dir){
             current_ammo = input_current_ammo;
             offset_y = -0.05;
         }

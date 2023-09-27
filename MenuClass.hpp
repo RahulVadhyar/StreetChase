@@ -31,7 +31,7 @@ class MenuClass{
         
         MenuClass(){
             //create the needed shaders(for HUDObject) and text renderer
-            hudshader = new Shader(VS_SHADER_DIR, FS_SHADER_DIR);
+            hudshader = new Shader(shader_dir::vs::shader, shader_dir::fs::shader);
             menuAllocDeallocDebug("Created hud shader: " + std::to_string((long)hudshader));
             text_renderer = new TextClass();
             menuAllocDeallocDebug("Created text renderer: " + std::to_string((long)text_renderer));

@@ -1,6 +1,7 @@
 #include "definitions.hpp"
 
-//command:g++ main.cpp glad/glad.c -o main -lglfw -lfreetype -I/usr/include/freetype2/ -I/home/starsystem/StreetChase/ SoundEngine/irrKlang-64bit-1.6.0/bin/linux-gcc-64/libIrrKlang.so -pthread &&./main
+//command:g++ main.cpp glad/glad.c -o main -lglfw -lfreetype -I/usr/include/freetype2/ SoundEngine/irrKlang-64bit-1.6.0/bin/linux-gcc-64/libIrrKlang.so &&./main
+//command for windows: g++ main.cpp glad/glad.c -o main.exe -I"C:\Program Files (x86)\GnuWin32\include" -I"C:\Program Files (x86)\GnuWin32\include\freetype2" -lglfw3  -fpermissive; .\main.exe
 //command for number of lines : git ls-files | grep '\pp' | xargs wc -l
 //for powershell git ls-files --exclude-standard -- '*.cpp' '*.hpp' | ForEach-Object { Get-Content $_ } | Measure-Object -Line
 //sudo apt install libasound2
@@ -12,44 +13,47 @@ void sleep(int milliseconds){
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
-void in(Window* window){
-    while(!glfwWindowShouldClose(window->window)){
-        window->processInput();
-    }
-}
-
-void update(PlayerClass* player, Window* window){
-    while(!glfwWindowShouldClose(window->window)){
-        player->update();
-        sleep(1);       
-    }
-}
-
-void personupdate(Window* window){
-    while(!glfwWindowShouldClose(window->window)){
-        window->updatePersons();
-        sleep(1);       
-    }
-}
-
 int main(){
     //Initalize  window
     Window window;
 
+    //make and initialize the background
+    //moon and stars
+    Shader bg_shader_moon_and_stars = Shader(shader_dir::vs::shader, shader_dir::fs::shader);  
+    BackgroundObject bg_moon_and_stars(0.0f, 0.8f, 2.0f, 1.0f, 0.01f, &bg_shader_moon_and_stars, texture_dirs::background::moon_and_stars);
+    window.addRenderObject(&bg_moon_and_stars);
+
+    //background buildings
+    Shader bg_shader_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_background_buildings(0.0f, 0.6f, 20.0f, 3.0f, 0.06f, &bg_shader_buildings, texture_dirs::background::background_buildings);
+    window.addRenderObject(&bg_background_buildings);
+    //middle buildings
+    Shader bg_shader_middle_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_middle_buildings(0.0f, -0.2f, 20.0f, 3.0f, 0.3f, &bg_shader_middle_buildings, texture_dirs::background::middle_buildings);
+    window.addRenderObject(&bg_middle_buildings);
+    //foreground buildings
+    Shader bg_shader_foreground_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_foreground_buildings(0.0f, -0.2f, 20.0f, 3.0f, 0.6f, &bg_shader_foreground_buildings, texture_dirs::background::foreground_buildings);
+    window.addRenderObject(&bg_foreground_buildings);
+    //foreground(railings and some buildings)
+    Shader bg_shader_foreground = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_foreground(0.0f, 0.4f, 15.0f, 3.0f, 1.00f, &bg_shader_foreground, texture_dirs::background::foreground);
+    window.addRenderObject(&bg_foreground);
+    //ground 
+    Shader bg_shader_ground = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_ground(0.0f, -0.85f, 20.0f, 0.3f, 0.99f, &bg_shader_ground, texture_dirs::background::ground);
+    window.addRenderObject(&bg_ground);
+
     //create a shader
-    Shader ground_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader wall_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader player_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader hud_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader gun_shader(VS_SHADER_DIR, FS_SHADER_DIR);
-    Shader enemy_shader(VS_SHADER_DIR, FS_SHADER_DIR);
+    Shader player_shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    Shader hud_shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    Shader gun_shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    Shader enemy_shader(shader_dir::vs::shader, shader_dir::fs::shader);
 
     //create ground and player
-    RenderObject ground(0, -1.0f, 20.0f, 1.0f, &ground_shader, STONE_TEX_DIR);
-    RenderObject wall(-0.4, -0.4, 0.4, 0.2, &wall_shader, STONE_TEX_DIR);
-    PlayerClass player(0, 0, 0.08f*0.8f, 0.5f*0.8f);
+    PlayerClass player(0, 1.5, 0.08f*0.8f, 0.5f*0.8f);
     SimpleGun gun(&gun_shader);
-    EnemyClass* enemy = new EnemyClass(2, 0, 0.08f*0.8f, 0.5f*0.8f);
+    EnemyClass* enemy = new EnemyClass(2, 1.5, 0.08f*0.8f, 0.5f*0.8f);
 
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
@@ -59,40 +63,25 @@ int main(){
     HUDObject hud1(0.0f, -0.9f, 0.2f, 0.2f, &hud_shader, CONTAINER_TEX_DIR);
 
 
-    wall.attachTexture(PLAYER_TEX_DIR);
-    wall.attachTexture(CONTAINER_TEX_DIR);
-    wall.mixValue[0] = 0.5f;
-    wall.mixValue[1] = 0.5f;
-    wall.TexScale[1] = 0.2f;
 
     player.shouldRender = true;
-    player.addCollisionObject(&ground);
-    player.addCollisionObject(&wall);
     player.addCollisionObject(enemy);
-    enemy->addCollisionObject(&ground);
-    enemy->addCollisionObject(&wall);
+    player.addCollisionObject(&bg_ground);
     enemy->addCollisionObject(&player);
+    // enemy->addCollisionObject(&bg_ground);
 
-    window.addRenderObject(&ground);
-    window.addRenderObject(&wall);
     window.addRenderObject(&hud1);
     window.addEnemy(enemy);
     window.addMouseCallbackObject(&hud1);
     window.addPlayer(&player);
     
-    irrklang::ISoundEngine* sound_engine = irrklang::createIrrKlangDevice();
+    // irrklang::ISoundEngine* sound_engine = irrklang::createIrrKlangDevice();
 
     //render and play the game
-    // window.mainMenu();
-    std::thread input_thread(in, &window);
-    std::thread updatet(update, &player, &window);
-    std::thread personupdatet(personupdate, &window);
-
-    sound_engine->play2D(MUSIC_DIR, false);
-    sound_engine->setSoundVolume(0.5f);
+//     window.mainMenu();
+    // sound_engine->play2D(MUSIC_DIR, false);
+    // sound_engine->setSoundVolume(0.5f);
     window.play();
-    input_thread.join();
-    updatet.join();
-    personupdatet.join();
+
     return 0;
 }
