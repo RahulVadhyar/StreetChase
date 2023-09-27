@@ -20,18 +20,29 @@ int main(){
     //make and initialize the background
     //moon and stars
     Shader bg_shader_moon_and_stars = Shader(shader_dir::vs::shader, shader_dir::fs::shader);  
-    BackgroundObject bg_moon_and_stars(0.0f, 0.5f, 2.0f, 1.0f, 0.01f, &bg_shader_moon_and_stars, texture_dirs::background::moon_and_stars);
+    BackgroundObject bg_moon_and_stars(0.0f, 0.8f, 2.0f, 1.0f, 0.01f, &bg_shader_moon_and_stars, texture_dirs::background::moon_and_stars);
     window.addRenderObject(&bg_moon_and_stars);
 
     //background buildings
     Shader bg_shader_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
-    BackgroundObject bg_background_buildings(0.0f, 0.1f, 2.0f, 1.0f, 0.06f, &bg_shader_buildings, texture_dirs::background::background_buildings);
+    BackgroundObject bg_background_buildings(0.0f, 0.6f, 20.0f, 3.0f, 0.06f, &bg_shader_buildings, texture_dirs::background::background_buildings);
     window.addRenderObject(&bg_background_buildings);
+    //middle buildings
+    Shader bg_shader_middle_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_middle_buildings(0.0f, -0.2f, 20.0f, 3.0f, 0.3f, &bg_shader_middle_buildings, texture_dirs::background::middle_buildings);
+    window.addRenderObject(&bg_middle_buildings);
+    //foreground buildings
+    Shader bg_shader_foreground_buildings = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_foreground_buildings(0.0f, -0.2f, 20.0f, 3.0f, 0.6f, &bg_shader_foreground_buildings, texture_dirs::background::foreground_buildings);
+    window.addRenderObject(&bg_foreground_buildings);
+    //foreground(railings and some buildings)
+    Shader bg_shader_foreground = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
+    BackgroundObject bg_foreground(0.0f, 0.4f, 15.0f, 3.0f, 1.00f, &bg_shader_foreground, texture_dirs::background::foreground);
+    window.addRenderObject(&bg_foreground);
     //ground 
     Shader bg_shader_ground = Shader(shader_dir::vs::shader, shader_dir::fs::shader);
-    BackgroundObject bg_ground(0.0f, -0.5f, 2.0f, 1.0f, 0.1f, &bg_shader_ground, texture_dirs::background::ground);
+    BackgroundObject bg_ground(0.0f, -0.85f, 20.0f, 0.3f, 0.99f, &bg_shader_ground, texture_dirs::background::ground);
     window.addRenderObject(&bg_ground);
-
 
     //create a shader
     Shader player_shader(shader_dir::vs::shader, shader_dir::fs::shader);
@@ -40,9 +51,9 @@ int main(){
     Shader enemy_shader(shader_dir::vs::shader, shader_dir::fs::shader);
 
     //create ground and player
-    PlayerClass player(0, 0, 0.08f*0.8f, 0.5f*0.8f);
+    PlayerClass player(0, 1.5, 0.08f*0.8f, 0.5f*0.8f);
     SimpleGun gun(&gun_shader);
-    EnemyClass* enemy = new EnemyClass(2, 0, 0.08f*0.8f, 0.5f*0.8f);
+    EnemyClass* enemy = new EnemyClass(2, 1.5, 0.08f*0.8f, 0.5f*0.8f);
 
     SimpleGun enemy_gun(&gun_shader);
     player.addWeapon(&gun);
@@ -57,7 +68,7 @@ int main(){
     player.addCollisionObject(enemy);
     player.addCollisionObject(&bg_ground);
     enemy->addCollisionObject(&player);
-    enemy->addCollisionObject(&bg_ground);
+    // enemy->addCollisionObject(&bg_ground);
 
     window.addRenderObject(&hud1);
     window.addEnemy(enemy);
