@@ -38,7 +38,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 // #define WIREFRAME_MODE //uncomment to enable wireframe mode
 // #define SHOW_FPS
 // #define SHOW_SCREEN_X
-#define SINGLE_BUFFER
+// #define SINGLE_BUFFER
 // #define VIEWPORT_SIZE_DEBUG
 // #define WINDOW_INIT_DEBUG
 // #define WINDOW_VECTOR_STATUS
@@ -114,7 +114,7 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 #include "glm/gtc/type_ptr.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "SoundEngine/irrKlang-64bit-1.6.0/include/irrKlang.h"
+// #include "SoundEngine/irrKlang-64bit-1.6.0/include/irrKlang.h"
 
 //Header files to be included
 #include "locations.hpp" //location for all the textures and sahaders

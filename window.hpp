@@ -194,6 +194,7 @@ class Window{
                 updatePersons();
                 clear(9.0/255, 2.0/255, 79.0/255); //9, 2, 79 background color
                 windowRenderDebug("Cleared screen");
+                // std::cout << "GL errors: " << std::to_string(glGetError()) << std::endl;
                 for(auto object : render_objects){
                     if(object != nullptr){
                         object->draw();
