@@ -1,0 +1,37 @@
+Adobe After Effects v23.1 Windows 64 render log for project “GangMember3.aep”
+
+Rendering started on 17-10-2023 at 11:50:59 PM
+
+  17-10-2023 11:50:59 PM: Starting composition “Walking”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\Walking\Walking_[###].png    17-10-2023 11:51:12 PM: Finished composition “Walking”.
+
+
+  17-10-2023 11:51:12 PM: Starting composition “Running”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\Running\Running_[###].png    17-10-2023 11:51:29 PM: Finished composition “Running”.
+
+
+  17-10-2023 11:51:30 PM: Starting composition “Jumping”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\Jumping\Jumping_[###].png    17-10-2023 11:52:42 PM: Finished composition “Jumping”.
+
+
+  17-10-2023 11:52:42 PM: Starting composition “Idle”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\Idle\Idle_[###].png    17-10-2023 11:55:25 PM: Finished composition “Idle”.
+
+
+  17-10-2023 11:55:25 PM: Starting composition “TakeDamageBody”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\TakeDamageBody\TakeDamageBody_[###].png    17-10-2023 11:55:57 PM: Finished composition “TakeDamageBody”.
+
+
+  17-10-2023 11:55:57 PM: Starting composition “TakeDamageHead”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember3\TakeDamageHead\TakeDamageHead_[###].png    17-10-2023 11:56:43 PM: Finished composition “TakeDamageHead”.
+
+
+  Total Time Elapsed: 5 Min, 44 Sec
+Log closed on 17-10-2023 at 11:56:43 PM
+

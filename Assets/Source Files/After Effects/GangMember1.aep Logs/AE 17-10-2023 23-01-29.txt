@@ -1,0 +1,41 @@
+Adobe After Effects v23.1 Windows 64 render log for project “GangMember1.aep”
+
+Rendering started on 17-10-2023 at 23:01:29
+
+  17-10-2023 23:01:29: Starting composition “Walking”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\Walking\Walking_[###].png    17-10-2023 23:01:46: Finished composition “Walking”.
+
+
+  17-10-2023 23:01:46: Starting composition “Running”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\Running\Running_[###].png    17-10-2023 23:02:05: Finished composition “Running”.
+
+
+  17-10-2023 23:02:05: Starting composition “Jumping”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\Jumping\Jumping_[###].png    17-10-2023 23:02:49: Finished composition “Jumping”.
+
+
+  17-10-2023 23:02:49: Starting composition “Idle”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\Idle\Idle_[###].png  After Effects warning: Could not create the file 'G:\StreetChase\Assets\Export\Animations\GangMember1\Idle\Idle_400.png'. Access was denied.After Effects: AEGP Plugin PNGIO Support: Unable to create PNGIO. (5027  ::  12)After Effects error: cannot close a closed file. (3  ::  5)  An unexpected error occurred while exporting a composition.
+
+Error Code: 14
+
+Please restart After Effects and retry the export.  17-10-2023 23:04:16: Finished composition “Idle”.
+
+
+  17-10-2023 23:04:16: Starting composition “TakeDamageBody”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\TakeDamageBody\TakeDamageBody_[###].png    17-10-2023 23:04:39: Finished composition “TakeDamageBody”.
+
+
+  17-10-2023 23:04:40: Starting composition “TakeDamageHead”.
+
+  Output To: G:\StreetChase\Assets\Export\Animations\GangMember1\TakeDamageHead\TakeDamageHead_[###].png    17-10-2023 23:05:18: Finished composition “TakeDamageHead”.
+
+
+  Total Time Elapsed: 3 Min, 49 Sec
+Log closed on 17-10-2023 at 23:05:18
+

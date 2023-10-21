@@ -46,8 +46,6 @@ Things to be done
             -can be changed using the keys 1-9
             -Need to display on the HUD, need a system for that
             -Need to display weapons on the ground and need a pick up system for it
-
-    -Later
         -level design
         -Enemy AI
             -Enemy will go towards player
@@ -60,14 +58,16 @@ Things to be done
         
         -boss battles
         -death screen
-            -Background needed
         -main menu design
-            -Background neeeded
         -Victory screen
-            -Background needed
         -animation
+            -total animations - idle, walk, run, pick object, drop object, damage(blood, injuries),
+                        jump, fall,
+            -completed_animations - walk, run
+            -animations - idle, pick object, drop object, damage(blood, injuries),
+                        jump, fall, 
             -update function to be written
-            -finalize animations for main player
+            -finalize animations for main player        
 
     -Paused for now as other things are needed before we can further work on this
         This is most likely cancelled at this point as there is little point and will be too complicated
@@ -82,7 +82,6 @@ Optimizations I want to do
     - antialiasing
     - Reduce number of textures as much as possible
     - Intense parallelization(multithreading)
-    - Caching of shader compilation if possible
 
 Title : Escape from chaos
 
