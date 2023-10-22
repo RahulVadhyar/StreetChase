@@ -88,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>;G:\Chronos\stb_image.h</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>;G:\Chronos\stb_image.h</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,7 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.261.1;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;C:\VulkanSDK\1.3.261.1\Include\vulkan;C:\VulkanSDK\1.3.261.1\Include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.261.1;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;C:\VulkanSDK\1.3.261.1\Include\vulkan;C:\VulkanSDK\1.3.261.1\Include\glm;G:\Chronos\stb_image.h</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.261.1;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;C:\VulkanSDK\1.3.261.1\Include\vulkan;C:\VulkanSDK\1.3.261.1\Include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.261.1;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;C:\VulkanSDK\1.3.261.1\Include\vulkan;C:\VulkanSDK\1.3.261.1\Include\glm;G:\Chronos\stb_image.h</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -154,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="ChooseDevice.hpp" />
     <ClInclude Include="Chrono.hpp" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="validation.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +165,9 @@
     <None Include="shader.frag" />
     <None Include="shader.vert" />
     <None Include="vert.spv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
