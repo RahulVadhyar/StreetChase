@@ -1,7 +1,4 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <array>
-#include <glm/glm.hpp>
+#pragma once
 struct Vertex {
 	glm::vec2 pos;
 	glm::vec3 color;

@@ -1,36 +1,12 @@
-#include <iostream>
-#include <vector>
-#include <stdexcept>
-#include <cstdlib>
-#include <cstring>
-#include <set>
-#include <fstream>
+#include "vulkaninit.hpp"
+#include "swapchain.hpp"
 #include "Chrono.hpp"
 #include "validation.hpp"
 #include "ChooseDevice.hpp"
-#include "swapchain.hpp"
 #include "pipeline.hpp"
 #include "helper.hpp"
 #include "texture.hpp"
-
-const std::vector<Vertex> vertices = {
-	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-};
-
-const std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0
-};
-
-struct UniformBufferObject {
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 proj;
-};
-
-
+#include "Vertex.hpp"
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	auto app = reinterpret_cast<ChronoApplication*>(glfwGetWindowUserPointer(window));
@@ -194,17 +170,6 @@ void ChronoApplication::drawFrame(){
 	}
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-}
-
-std::vector <const char*> getRequiredExtensions() {
-	uint32_t glfwExtensionCount = 0;
-	const char** glfwExtensions;
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-	std::vector <const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-	if (enableValidationLayers) {
-		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-	}
-	return extensions;
 }
 
 void ChronoApplication::createInstance() {
@@ -533,7 +498,7 @@ void ChronoApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, uint3
 	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame],
 		0, nullptr);
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(rectangle.indices.size()), 1, 0, 0, 0);
 	vkCmdEndRenderPass(commandBuffer);
 
 	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
@@ -595,7 +560,7 @@ void ChronoApplication::recreateSwapChain() {
 }
 
 void ChronoApplication::createVertexBuffer() {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkDeviceSize bufferSize = sizeof(rectangle.vertices[0]) * rectangle.vertices.size();
 	
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -604,7 +569,7 @@ void ChronoApplication::createVertexBuffer() {
 
 	void* data;
 	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
+	memcpy(data, rectangle.vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(device, stagingBufferMemory);
 
 	createBuffer(physicalDevice, device, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -615,7 +580,7 @@ void ChronoApplication::createVertexBuffer() {
 }
 
 void ChronoApplication::createIndexBuffer() {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	VkDeviceSize bufferSize = sizeof(rectangle.indices[0]) * rectangle.indices.size();
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -623,7 +588,7 @@ void ChronoApplication::createIndexBuffer() {
 
 	void* data;
 	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
+	memcpy(data, rectangle.indices.data(), (size_t)bufferSize);
 	vkUnmapMemory(device, stagingBufferMemory);
 
 	createBuffer(physicalDevice, device, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &indexBuffer, &indexBufferMemory);

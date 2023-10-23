@@ -1,8 +1,5 @@
-#include <vector>
-#ifndef GLFW_INCLUDE_VULKAN
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#endif
+#pragma once
+
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector <VkSurfaceFormatKHR> formats;

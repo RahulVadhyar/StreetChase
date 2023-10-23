@@ -1,13 +1,6 @@
 #pragma once
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <vector>
-#include <array>
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <chrono>
+#include "vulkaninit.hpp"
+#include "shape.hpp"
 #include "Vertex.hpp"
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -24,19 +17,20 @@ private:
 	float prev_time = 0.0f;
 	int width = 800;
 	int height = 600;
-	GLFWwindow* window = nullptr;
+	Rectangle rectangle = Rectangle();
+	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 
-	VkInstance instance = nullptr;
-	VkDebugUtilsMessengerEXT debugMessenger = nullptr;
-	VkPhysicalDevice physicalDevice = nullptr;
-	VkDevice device = nullptr;
-	VkQueue graphicsQueue = nullptr;
-	VkQueue presentQueue = nullptr;
-	VkSurfaceKHR surface = nullptr;
-	VkSwapchainKHR swapChain = nullptr;
-	VkFormat swapChainImageFormat = (VkFormat)NULL;
-	VkExtent2D swapChainExtent = (VkExtent2D)NULL;
+	VkInstance instance;
+	VkDebugUtilsMessengerEXT debugMessenger;
+	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkQueue graphicsQueue;
+	VkQueue presentQueue;
+	VkSurfaceKHR surface;
+	VkSwapchainKHR swapChain;
+	VkFormat swapChainImageFormat;
+	VkExtent2D swapChainExtent;
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
@@ -52,9 +46,9 @@ private:
 	VkImageView textureImageView;	
 	VkSampler textureSampler;
 
-	std::vector<VkImage> swapChainImages{};
-	std::vector<VkImageView> swapChainImageViews{};
-	std::vector<VkFramebuffer> swapChainFramebuffers{};
+	std::vector<VkImage> swapChainImages;
+	std::vector<VkImageView> swapChainImageViews;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 	std::vector<VkDescriptorSet> descriptorSets;
 	std::vector<VkCommandBuffer> commandBuffers;
 	std::vector<VkSemaphore> imageAvailableSemaphores;

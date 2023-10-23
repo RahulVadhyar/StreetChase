@@ -1,6 +1,6 @@
-#include <iostream>
-#define INCLUDE_CHRONO
+#include "vulkaninit.hpp"
 #include "pipeline.hpp"
+#include "Vertex.hpp"
 
 
 static std::vector<char> readFile(const std::string& filename) {

@@ -1,9 +1,7 @@
-#include <string>
-#include <set>
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include "vulkaninit.hpp"
 #include "ChooseDevice.hpp"
 #include "swapchain.hpp"
+
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface) {
 	QueueFamilyIndices indices;

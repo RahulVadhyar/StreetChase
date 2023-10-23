@@ -1,6 +1,4 @@
-#include <optional>
-#include <vector>
-
+#pragma once
 
 struct QueueFamilyIndices {
 	std::optional <uint32_t> graphicsFamily;
