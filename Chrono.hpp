@@ -1,9 +1,12 @@
 #pragma once
 #include "vulkaninit.hpp"
+#include "device.hpp"
+#include "commandpool.hpp"
 #include "shape.hpp"
 #include "Vertex.hpp"
 #include "buffers.hpp"
 #include "swapchain.hpp"
+
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class ChronoApplication {
@@ -22,17 +25,13 @@ private:
 	Rectangle rectangle = Rectangle();
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
-
+	Device device = Device();
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
-	VkPhysicalDevice physicalDevice;
-	VkDevice device;
-	VkQueue graphicsQueue;
-	VkQueue presentQueue;
 	VkSurfaceKHR surface;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	VkCommandPool commandPool;
+	VkCommandPool commandPool;//
 	VertexBuffer vertexBuffer = VertexBuffer();
 	IndexBuffer indexBuffer = IndexBuffer();
 	VkDeviceMemory textureImageMemory;
@@ -43,8 +42,15 @@ private:
 	VkSampler textureSampler;
 	SwapChain swapChain = SwapChain();
 
-	std::vector<VkDescriptorSet> descriptorSets;
-	std::vector<VkCommandBuffer> commandBuffers;
+
+	/*Classes to create:
+	pipeline
+	command pool and command buffer
+	texture
+	*/
+
+	std::vector<VkDescriptorSet> descriptorSets;//
+	std::vector<VkCommandBuffer> commandBuffers;//
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
@@ -56,18 +62,15 @@ private:
 	void cleanup();
 	void createInstance();
 	void setupDebugMessenger();
-	void pickPhysicalDevice();
-	void createLogicalDevice();
 	void createSurface();
-	void createFramebuffers();
-	void createCommandPool();
-	void createCommandBuffers();
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	void createCommandPool();//
+	void createCommandBuffers();//
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);//
 	void drawFrame();
 	void createSyncObjects();
-	void createDescriptorSetLayout();
-	void createDescriptorPool();
-	void createDescriptorSets();
+	void createDescriptorSetLayout();//
+	void createDescriptorPool();//
+	void createDescriptorSets();//
 
 	void showfps() {
 		float current_time = glfwGetTime();

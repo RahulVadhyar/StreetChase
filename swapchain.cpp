@@ -1,4 +1,5 @@
 #include "vulkaninit.hpp"
+#include "device.hpp"
 #include "swapchain.hpp"
 #include "helper.hpp"
 #include "texture.hpp"
@@ -82,9 +83,8 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurface
 
 	return details;
 }
-void SwapChain::init(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, GLFWwindow* window) {
+void SwapChain::init(Device device, VkSurfaceKHR surface, GLFWwindow* window) {
 	this->device = device;
-	this->physicalDevice = physicalDevice;
 	this->surface = surface;
 	this->window = window;
 	create();
@@ -94,10 +94,8 @@ void SwapChain::init(VkPhysicalDevice physicalDevice, VkDevice device, VkSurface
 }
 
 void SwapChain::create() {
-	this->device = device;
-	this->physicalDevice = physicalDevice;
 	//create the swapchain
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
+	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device.physicalDevice, surface);
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
@@ -120,7 +118,7 @@ void SwapChain::create() {
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices indices = findQueueFamilies(device.physicalDevice, surface);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily) {
@@ -139,12 +137,12 @@ void SwapChain::create() {
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = nullptr;
 
-	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(device.device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create swap chain");
 	}
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
 }
@@ -152,7 +150,7 @@ void SwapChain::create() {
 void SwapChain::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
-		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, device);
+		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, device.device);
 	}
 }
 
@@ -193,7 +191,7 @@ void SwapChain::createRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(device.device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 }
@@ -213,27 +211,27 @@ void SwapChain::createFramebuffers() {
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
-		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+		if (vkCreateFramebuffer(device.device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
 }
 
 void SwapChain::destroy() {
-	vkDestroyRenderPass(device, renderPass, nullptr);
+	vkDestroyRenderPass(device.device, renderPass, nullptr);
 }
 
 void SwapChain::cleanup() {
 	for (auto framebuffer : swapChainFramebuffers) {
-		vkDestroyFramebuffer(device, framebuffer, nullptr);
+		vkDestroyFramebuffer(device.device, framebuffer, nullptr);
 	}
 	//destroy the image views
 	for (auto imageView : swapChainImageViews) {
-		vkDestroyImageView(device, imageView, nullptr);
+		vkDestroyImageView(device.device, imageView, nullptr);
 	}
 
 	//destroy the swap chain
-	vkDestroySwapchainKHR(device, swapChain, nullptr);
+	vkDestroySwapchainKHR(device.device, swapChain, nullptr);
 }
 
 void SwapChain::recreate() {
@@ -244,7 +242,7 @@ void SwapChain::recreate() {
 		glfwWaitEvents();
 	}
 
-	vkDeviceWaitIdle(device);
+	vkDeviceWaitIdle(device.device);
 
 	cleanup();
 	create();

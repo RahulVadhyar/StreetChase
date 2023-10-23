@@ -1,5 +1,6 @@
 #pragma once
 #include "vulkaninit.hpp"
+#include "device.hpp"
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector <VkSurfaceFormatKHR> formats;
@@ -13,8 +14,8 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurface
 
 class SwapChain {
 public:
-	VkPhysicalDevice physicalDevice;
-	VkDevice device;
+	Device device = Device();
+	
 	VkSwapchainKHR swapChain;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
@@ -25,7 +26,7 @@ public:
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	void init(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, GLFWwindow* window);
+	void init(Device device, VkSurfaceKHR surface, GLFWwindow* window);
 	void create();
 	void recreate();
 	void cleanup();

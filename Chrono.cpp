@@ -1,4 +1,5 @@
 #include "vulkaninit.hpp"
+#include "device.hpp"
 #include "chrono.hpp"
 #include "swapchain.hpp"
 #include "validation.hpp"
@@ -32,20 +33,19 @@ void ChronoApplication::initVulkan() {
 		setupDebugMessenger();
 	}
 	createSurface();
-	pickPhysicalDevice();
-	createLogicalDevice();
-	swapChain.init(physicalDevice, device, surface, window);
+	device.init(instance, surface);
+	swapChain.init(device, surface, window);
 	createDescriptorSetLayout();
-	createGraphicsPipeline(device, &descriptorSetLayout, swapChain.renderPass, swapChain.swapChainExtent, &pipelineLayout, &graphicsPipeline);
+	createGraphicsPipeline(device.device, &descriptorSetLayout, swapChain.renderPass, swapChain.swapChainExtent, &pipelineLayout, &graphicsPipeline);
 	createCommandPool();
-	createTextureImage(device, physicalDevice, &textureImage, &textureImageMemory, commandPool, graphicsQueue);
-	textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, device);
-	createTextureSampler(physicalDevice, device, &textureSampler);
-	vertexBuffer.create(physicalDevice, device, commandPool, graphicsQueue, rectangle);
-	indexBuffer.create(physicalDevice, device, commandPool, graphicsQueue, rectangle);
+	createTextureImage(device, &textureImage, &textureImageMemory, commandPool);
+	textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, device.device);
+	createTextureSampler(device, &textureSampler);
+	vertexBuffer.create(device, commandPool, rectangle);
+	indexBuffer.create(device, commandPool, rectangle);
 	uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		uniformBuffers[i].create(physicalDevice, device);
+		uniformBuffers[i].create(device);
 	}
 	createDescriptorPool();
 	createDescriptorSets();
@@ -64,34 +64,34 @@ void ChronoApplication::mainLoop() {
 		glfwPollEvents();
 		drawFrame();
 	}
-	vkDeviceWaitIdle(device);
+	vkDeviceWaitIdle(device.device);
 }
 
 void ChronoApplication::cleanup() {
 
 	swapChain.cleanup();
-	vkDestroySampler(device, textureSampler, nullptr);
-	vkDestroyImageView(device, textureImageView, nullptr);
-	vkDestroyImage(device, textureImage, nullptr);
-	vkFreeMemory(device, textureImageMemory, nullptr);
+	vkDestroySampler(device.device, textureSampler, nullptr);
+	vkDestroyImageView(device.device, textureImageView, nullptr);
+	vkDestroyImage(device.device, textureImage, nullptr);
+	vkFreeMemory(device.device, textureImageMemory, nullptr);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		uniformBuffers[i].destroy();
 	}
-	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+	vkDestroyDescriptorPool(device.device, descriptorPool, nullptr);
+	vkDestroyDescriptorSetLayout(device.device, descriptorSetLayout, nullptr);
 	indexBuffer.destroy();
 	vertexBuffer.destroy();
 
-	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyCommandPool(device.device, commandPool, nullptr);
 	//destroy the semaphores
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-		vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-		vkDestroyFence(device, inFlightFences[i], nullptr);
+		vkDestroySemaphore(device.device, renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(device.device, imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(device.device, inFlightFences[i], nullptr);
 	}
 	swapChain.destroy();
-	vkDestroyPipeline(device, graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+	vkDestroyPipeline(device.device, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(device.device, pipelineLayout, nullptr);
 	
 	//destroy the debug messenger
 	if (enableValidationLayers) {
@@ -99,7 +99,7 @@ void ChronoApplication::cleanup() {
 	}
 
 	//destroy the logical device
-	vkDestroyDevice(device, nullptr);
+	device.destroy();
 
 	//destroy the surface
 	vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -113,9 +113,9 @@ void ChronoApplication::cleanup() {
 }
 
 void ChronoApplication::drawFrame(){
-	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+	vkWaitForFences(device.device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(device, swapChain.swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(device.device, swapChain.swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		swapChain.recreate();
@@ -125,7 +125,7 @@ void ChronoApplication::drawFrame(){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
 	uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
-	vkResetFences(device, 1, &inFlightFences[currentFrame]);
+	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 	
@@ -143,7 +143,7 @@ void ChronoApplication::drawFrame(){
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
+	if (vkQueueSubmit(device.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
 
@@ -156,7 +156,7 @@ void ChronoApplication::drawFrame(){
 	presentInfo.pSwapchains = swapChains;
 	presentInfo.pImageIndices = &imageIndex;
 	presentInfo.pResults = nullptr;
-	result = vkQueuePresentKHR(presentQueue, &presentInfo);
+	result = vkQueuePresentKHR(device.presentQueue, &presentInfo);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
 		framebufferResized = false;
 		swapChain.recreate();
@@ -231,75 +231,6 @@ void ChronoApplication::setupDebugMessenger() {
 	}
 }
 
-void ChronoApplication::pickPhysicalDevice() {
-	//get the number of devices
-	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-	if (deviceCount == 0) {
-		throw std::runtime_error("Failed to find GPUs with Vulkan support");
-	}
-	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-
-	//check if the device is suitable
-	for (const auto& device : devices) {
-		if (isDeviceSuitable(device, surface)) {
-			physicalDevice = device;
-			break;
-		}
-	}
-	//if no suitable device is found
-	if (physicalDevice == VK_NULL_HANDLE) {
-		throw std::runtime_error("Failed to find a suitable GPU");
-	}
-}
-
-void ChronoApplication::createLogicalDevice() {
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
-
-	std::vector <VkDeviceQueueCreateInfo> queueCreateInfos;
-	std::set <uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
-
-	float queuePriority = 1.0f;
-
-	//create a struct to hold information about the queue to send to vulkan
-	for(uint32_t queueFamily : uniqueQueueFamilies){
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = queueFamily;
-		queueCreateInfo.queueCount = 1;
-		queueCreateInfo.pQueuePriorities = &queuePriority;
-		queueCreateInfos.push_back(queueCreateInfo);
-	}
-
-	//create a struct to hold information about the device to send to vulkan
-	VkPhysicalDeviceFeatures deviceFeatures{};
-	deviceFeatures.samplerAnisotropy = VK_TRUE;
-
-	//create a struct to hold information about the device to send to vulkan
-	VkDeviceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.pQueueCreateInfos = queueCreateInfos.data();
-	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-	createInfo.pEnabledFeatures = &deviceFeatures;
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-	createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-	createInfo.enabledLayerCount = 0;
-	if (enableValidationLayers) {
-		createInfo.enabledLayerCount = static_cast<uint32_t> (validationLayers.size());
-		createInfo.ppEnabledLayerNames = validationLayers.data();
-	}
-	
-	//create the logical device
-	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create logical device");
-	}
-
-	//get the queue handle
-	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
-	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
-}
-
 void ChronoApplication::createSurface() {
 	if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create window surface");
@@ -307,12 +238,12 @@ void ChronoApplication::createSurface() {
 }
 
 void ChronoApplication::createCommandPool() {
-	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(device.physicalDevice, surface);
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional
-	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+	if (vkCreateCommandPool(device.device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
 }
@@ -325,7 +256,7 @@ void ChronoApplication::createCommandBuffers() {
 	allocInfo.commandPool = commandPool;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
-	if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(device.device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
 	}
 }
@@ -390,9 +321,9 @@ void ChronoApplication::createSyncObjects() {
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
+		if (vkCreateSemaphore(device.device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+			vkCreateSemaphore(device.device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
+			vkCreateFence(device.device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
 
 			throw std::runtime_error("failed to create synchronization objects for a frame!");
 		}
@@ -419,12 +350,10 @@ void ChronoApplication::createDescriptorSetLayout() {
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
-	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+	if (vkCreateDescriptorSetLayout(device.device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
-
-
 
 void ChronoApplication::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes{};
@@ -438,7 +367,7 @@ void ChronoApplication::createDescriptorPool() {
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	if(vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+	if(vkCreateDescriptorPool(device.device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }
@@ -451,7 +380,7 @@ void ChronoApplication::createDescriptorSets() {
 	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	allocInfo.pSetLayouts = layouts.data();
 	descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-	if(vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+	if(vkAllocateDescriptorSets(device.device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -484,7 +413,7 @@ void ChronoApplication::createDescriptorSets() {
 		descriptorWrites[1].descriptorCount = 1;
 		descriptorWrites[1].pImageInfo = &imageInfo;
 
-		vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(device.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 		std::cout << "descriptor set " << i << " created" << std::endl;
 	}
 }

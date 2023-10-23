@@ -13,16 +13,16 @@ const std::vector<const char*> deviceExtensions = {
 };
 VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool, VkDevice device);
 
-void endSingleTimeCommands(VkCommandBuffer* commandBuffer, VkQueue graphicsQueue, VkDevice device, VkCommandPool commandPool);
+void endSingleTimeCommands(VkCommandBuffer* commandBuffer, Device device, VkCommandPool commandPool);
 
 uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice physicalDevice);
 
-void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer* buffer, VkDeviceMemory* bufferMemory);
+void createBuffer(Device device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer* buffer, VkDeviceMemory* bufferMemory);
 
-void copyBuffer(VkDevice device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandPool commandPool, VkQueue graphicsQueue);
+void copyBuffer(Device device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandPool commandPool);
 
 std::vector <const char*> getRequiredExtensions();
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface);
+bool isDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);

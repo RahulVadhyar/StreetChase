@@ -1,4 +1,5 @@
 #include "vulkaninit.hpp"
+#include "device.hpp"
 #include "helper.hpp"
 #include "validation.hpp"
 #include "swapchain.hpp"
@@ -22,7 +23,7 @@ VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool, VkDevice devi
 	return commandBuffer;
 }
 
-void endSingleTimeCommands(VkCommandBuffer* commandBuffer, VkQueue graphicsQueue, VkDevice device, VkCommandPool commandPool) {
+void endSingleTimeCommands(VkCommandBuffer* commandBuffer, Device device, VkCommandPool commandPool) {
 	vkEndCommandBuffer(*commandBuffer);
 
 	VkSubmitInfo submitInfo{};
@@ -30,10 +31,10 @@ void endSingleTimeCommands(VkCommandBuffer* commandBuffer, VkQueue graphicsQueue
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = commandBuffer;
 
-	vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(graphicsQueue);
+	vkQueueSubmit(device.graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(device.graphicsQueue);
 
-	vkFreeCommandBuffers(device, commandPool, 1, commandBuffer);
+	vkFreeCommandBuffers(device.device, commandPool, 1, commandBuffer);
 }
 
 uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice physicalDevice) {
@@ -47,41 +48,41 @@ uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, V
 	throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer* buffer, VkDeviceMemory* bufferMemory) {
+void createBuffer(Device device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer* buffer, VkDeviceMemory* bufferMemory) {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = size;
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateBuffer(device, &bufferInfo, nullptr, buffer) != VK_SUCCESS) {
+	if (vkCreateBuffer(device.device, &bufferInfo, nullptr, buffer) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create buffer!");
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(device, *buffer, &memRequirements);
+	vkGetBufferMemoryRequirements(device.device, *buffer, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
+	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties, device.physicalDevice);
 
-	if (vkAllocateMemory(device, &allocInfo, nullptr, bufferMemory) != VK_SUCCESS) {
+	if (vkAllocateMemory(device.device, &allocInfo, nullptr, bufferMemory) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate buffer memory!");
 	}
 
-	vkBindBufferMemory(device, *buffer, *bufferMemory, 0);
+	vkBindBufferMemory(device.device, *buffer, *bufferMemory, 0);
 }
 
 
-void copyBuffer(VkDevice device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandPool commandPool, VkQueue graphicsQueue) {
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device);
+void copyBuffer(Device device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandPool commandPool) {
+	VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device.device);
 	VkBufferCopy copyRegion{};
 	copyRegion.srcOffset = 0;
 	copyRegion.dstOffset = 0;
 	copyRegion.size = size;
 	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-	endSingleTimeCommands(&commandBuffer, graphicsQueue, device, commandPool);
+	endSingleTimeCommands(&commandBuffer, device, commandPool);
 }
 
 std::vector <const char*> getRequiredExtensions() {

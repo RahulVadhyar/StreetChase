@@ -1,4 +1,5 @@
 #include "vulkaninit.hpp"
+#include "device.hpp"
 #include "pipeline.hpp"
 #include "Vertex.hpp"
 
