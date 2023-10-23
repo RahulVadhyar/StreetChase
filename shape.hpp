@@ -1,5 +1,7 @@
 #pragma once
 #include "Vertex.hpp"
+#include "device.hpp"
+#include "buffers.hpp"
 class Shape {
 public:
 	std::vector<uint16_t> indices{ 0, 1, 2, 2, 3, 0 };
@@ -12,6 +14,13 @@ public:
 };
 
 class Rectangle: public Shape {
+public:
+	Device device;
+	CommandPool commandPool;
+	Buffer vertexBuffer;
+	Buffer indexBuffer;
+	void init(Device device, CommandPool commandPool);
+	void destroy();
 };
 struct UniformBufferObject {
 	glm::mat4 model;

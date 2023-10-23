@@ -15,16 +15,6 @@ public:
 	void destroy();
 };
 
-class VertexBuffer : public Buffer {
-public:
-	void create(Device device, VkCommandPool commandPool, Shape shape);
-};
-
-class IndexBuffer : public Buffer {
-public:
-	void create(Device device, VkCommandPool commandPool, Shape shape);
-};
-
 class UniformBuffer : public Buffer {
 public:
 	void* data;

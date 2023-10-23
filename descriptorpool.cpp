@@ -1,5 +1,6 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
+#include "commandpool.hpp"
 #include "shape.hpp"
 #include "buffers.hpp"
 #include "descriptorpool.hpp"

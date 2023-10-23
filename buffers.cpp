@@ -1,5 +1,6 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
+#include "commandpool.hpp"
 #include "shape.hpp"
 #include "buffers.hpp"
 #include "helper.hpp"
@@ -25,17 +26,6 @@ void Buffer::copy(void* inputData, VkCommandPool commandPool) {
 void Buffer::destroy() {
 	vkDestroyBuffer(device.device, buffer, nullptr);
 	vkFreeMemory(device.device, memory, nullptr);
-}
-
-void VertexBuffer::create(Device device, VkCommandPool commandPool, Shape shape){
-	size = sizeof(shape.vertices[0]) * shape.vertices.size();
-	Buffer::create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	this->copy(shape.vertices.data(), commandPool);
-}
-void IndexBuffer::create(Device device, VkCommandPool commandPool, Shape shape){
-	size = sizeof(shape.indices[0]) * shape.indices.size();
-	Buffer::create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	this->copy(shape.indices.data(), commandPool);
 }
 
 void UniformBuffer::create(Device device){

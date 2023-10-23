@@ -1,5 +1,6 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
+#include "swapchain.hpp"
 #include "pipeline.hpp"
 #include "Vertex.hpp"
 
@@ -32,7 +33,7 @@ VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device
 }
 
 
-void createGraphicsPipeline(VkDevice device, VkDescriptorSetLayout* descriptorSetLayout, VkRenderPass renderPass, VkExtent2D swapChainExtent, VkPipelineLayout* pipelineLayout, VkPipeline* graphicsPipeline) {
+void createGraphicsPipeline(VkDevice device, VkDescriptorSetLayout* descriptorSetLayout, SwapChain swapChain, VkPipelineLayout* pipelineLayout, VkPipeline* graphicsPipeline) {
 
 	//load and create the shader modules
 	auto vertShaderCode = readFile("vert.spv");
@@ -75,14 +76,14 @@ void createGraphicsPipeline(VkDevice device, VkDescriptorSetLayout* descriptorSe
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)swapChainExtent.width;
-	viewport.height = (float)swapChainExtent.height;
+	viewport.width = (float)swapChain.swapChainExtent.width;
+	viewport.height = (float)swapChain.swapChainExtent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = swapChainExtent;
+	scissor.extent = swapChain.swapChainExtent;
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -167,7 +168,7 @@ void createGraphicsPipeline(VkDevice device, VkDescriptorSetLayout* descriptorSe
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = *pipelineLayout;
-	pipelineInfo.renderPass = renderPass;
+	pipelineInfo.renderPass = swapChain.renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1;

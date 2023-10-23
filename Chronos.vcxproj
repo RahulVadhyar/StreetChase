@@ -159,12 +159,14 @@
   <ItemGroup>
     <ClCompile Include="buffers.cpp" />
     <ClCompile Include="Chrono.cpp" />
+    <ClCompile Include="commandbuffer.cpp" />
     <ClCompile Include="commandpool.cpp" />
     <ClCompile Include="descriptorpool.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pipeline.cpp" />
+    <ClCompile Include="shape.cpp" />
     <ClCompile Include="swapchain.cpp" />
     <ClCompile Include="swapchain.hpp" />
     <ClCompile Include="texture.cpp" />
@@ -173,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="buffers.hpp" />
     <ClInclude Include="chrono.hpp" />
+    <ClInclude Include="commandbuffer.hpp" />
     <ClInclude Include="commandpool.hpp" />
     <ClInclude Include="descriptorpool.hpp" />
     <ClInclude Include="device.hpp" />

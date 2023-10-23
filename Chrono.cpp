@@ -34,19 +34,22 @@ void ChronoApplication::initVulkan() {
 	device.init(instance, surface);
 	swapChain.init(device, surface, window);
 	descriptorPool.createDescriptorSetLayout(device);
-	createGraphicsPipeline(device.device, &descriptorPool.descriptorSetLayout, swapChain.renderPass, swapChain.swapChainExtent, &pipelineLayout, &graphicsPipeline);
+	createGraphicsPipeline(device.device, &descriptorPool.descriptorSetLayout, swapChain, &pipelineLayout, &graphicsPipeline);
 	commandPool.createCommandPool(device, surface, swapChain, graphicsPipeline, pipelineLayout);
-	texture.create(device, commandPool.commandPool);
 	createTextureSampler(device, &textureSampler);
-	vertexBuffer.create(device, commandPool.commandPool, rectangle);
-	indexBuffer.create(device, commandPool.commandPool, rectangle);
+
+	rectangle.init(device, commandPool);
+	//put this under rectangle
+	texture.create(device, commandPool.commandPool);
 	uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		uniformBuffers[i].create(device);
 	}
+	//till here
+
 	descriptorPool.createDescriptorPool();
 	descriptorPool.createDescriptorSets(uniformBuffers, texture.textureImageView, textureSampler);
-	commandPool.createCommandBuffers(vertexBuffer, indexBuffer, rectangle);
+	commandBuffer.create(commandPool, rectangle);
 	createSyncObjects();
 }
 
@@ -73,8 +76,7 @@ void ChronoApplication::cleanup() {
 		uniformBuffers[i].destroy();
 	}
 	descriptorPool.destroy();
-	indexBuffer.destroy();
-	vertexBuffer.destroy();
+	rectangle.destroy();
 
 	commandPool.destroy();
 	//destroy the semaphores
@@ -120,8 +122,8 @@ void ChronoApplication::drawFrame(){
 	}
 	uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
-	vkResetCommandBuffer(commandPool.commandBuffers[currentFrame], 0);
-	commandPool.recordCommandBuffer(currentFrame, imageIndex, &(descriptorPool.descriptorSets[currentFrame]));
+	vkResetCommandBuffer(commandBuffer.commandBuffers[currentFrame], 0);
+	commandBuffer.record(currentFrame, imageIndex, &(descriptorPool.descriptorSets[currentFrame]));
 	
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -133,7 +135,7 @@ void ChronoApplication::drawFrame(){
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandPool.commandBuffers[currentFrame];
+	submitInfo.pCommandBuffers = &commandBuffer.commandBuffers[currentFrame];
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 

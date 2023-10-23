@@ -8,6 +8,7 @@
 #include "swapchain.hpp"
 #include "descriptorpool.hpp"
 #include "texture.hpp"
+#include "commandbuffer.hpp"
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -33,14 +34,12 @@ private:
 	VkSurfaceKHR surface;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	VertexBuffer vertexBuffer = VertexBuffer();
-	IndexBuffer indexBuffer = IndexBuffer();
 	Texture texture = Texture();
 	VkSampler textureSampler;
 	SwapChain swapChain = SwapChain();
 	CommandPool commandPool = CommandPool();
 	DescriptorPool descriptorPool = DescriptorPool();
-
+	CommandBuffer commandBuffer = CommandBuffer();
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;

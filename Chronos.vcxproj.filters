@@ -63,6 +63,12 @@
     <ClCompile Include="descriptorpool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="commandbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vulkaninit.hpp">
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="descriptorpool.hpp">
       <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="commandbuffer.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
