@@ -150,14 +150,19 @@
     <ClCompile Include="ChooseDevice.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pipeline.cpp" />
     <ClCompile Include="swapchain.cpp" />
     <ClCompile Include="swapchain.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChooseDevice.hpp" />
     <ClInclude Include="Chrono.hpp" />
+    <ClInclude Include="helper.hpp" />
+    <ClInclude Include="pipeline.hpp" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texture.hpp" />
     <ClInclude Include="validation.hpp" />
+    <ClInclude Include="Vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="compile.bat" />
