@@ -3,6 +3,7 @@
 #include "shape.hpp"
 #include "Vertex.hpp"
 #include "buffers.hpp"
+#include "swapchain.hpp"
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class ChronoApplication {
@@ -29,10 +30,6 @@ private:
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
 	VkSurfaceKHR surface;
-	VkSwapchainKHR swapChain;
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
-	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkCommandPool commandPool;
@@ -44,10 +41,8 @@ private:
 	VkImage textureImage;
 	VkImageView textureImageView;	
 	VkSampler textureSampler;
+	SwapChain swapChain = SwapChain();
 
-	std::vector<VkImage> swapChainImages;
-	std::vector<VkImageView> swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
 	std::vector<VkDescriptorSet> descriptorSets;
 	std::vector<VkCommandBuffer> commandBuffers;
 	std::vector<VkSemaphore> imageAvailableSemaphores;
@@ -64,17 +59,12 @@ private:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSurface();
-	void createSwapChain();
-	void createImageViews();
-	void createRenderPass();
 	void createFramebuffers();
 	void createCommandPool();
 	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	void drawFrame();
 	void createSyncObjects();
-	void recreateSwapChain();
-	void cleanupSwapChain();
 	void createDescriptorSetLayout();
 	void createDescriptorPool();
 	void createDescriptorSets();

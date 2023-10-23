@@ -34,12 +34,9 @@ void ChronoApplication::initVulkan() {
 	createSurface();
 	pickPhysicalDevice();
 	createLogicalDevice();
-	createSwapChain();
-	createImageViews();
-	createRenderPass();
+	swapChain.init(physicalDevice, device, surface, window);
 	createDescriptorSetLayout();
-	createGraphicsPipeline(device, &descriptorSetLayout, renderPass, swapChainExtent, &pipelineLayout, &graphicsPipeline);
-	createFramebuffers();
+	createGraphicsPipeline(device, &descriptorSetLayout, swapChain.renderPass, swapChain.swapChainExtent, &pipelineLayout, &graphicsPipeline);
 	createCommandPool();
 	createTextureImage(device, physicalDevice, &textureImage, &textureImageMemory, commandPool, graphicsQueue);
 	textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, device);
@@ -72,7 +69,7 @@ void ChronoApplication::mainLoop() {
 
 void ChronoApplication::cleanup() {
 
-	cleanupSwapChain();
+	swapChain.cleanup();
 	vkDestroySampler(device, textureSampler, nullptr);
 	vkDestroyImageView(device, textureImageView, nullptr);
 	vkDestroyImage(device, textureImage, nullptr);
@@ -92,7 +89,7 @@ void ChronoApplication::cleanup() {
 		vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
 		vkDestroyFence(device, inFlightFences[i], nullptr);
 	}
-	vkDestroyRenderPass(device, renderPass, nullptr);
+	swapChain.destroy();
 	vkDestroyPipeline(device, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 	
@@ -118,16 +115,16 @@ void ChronoApplication::cleanup() {
 void ChronoApplication::drawFrame(){
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(device, swapChain.swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		recreateSwapChain();
+		swapChain.recreate();
 		return;
 	}
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	uniformBuffers[currentFrame].update(swapChainExtent);
+	uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
@@ -154,7 +151,7 @@ void ChronoApplication::drawFrame(){
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
-	VkSwapchainKHR swapChains[] = { swapChain };
+	VkSwapchainKHR swapChains[] = { swapChain.swapChain };
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapChains;
 	presentInfo.pImageIndices = &imageIndex;
@@ -162,7 +159,7 @@ void ChronoApplication::drawFrame(){
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
 		framebufferResized = false;
-		recreateSwapChain();
+		swapChain.recreate();
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to present swap chain image");
@@ -309,131 +306,6 @@ void ChronoApplication::createSurface() {
 	}
 }
 
-void ChronoApplication::createSwapChain() {
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
-	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
-
-	//set the number of images in the swap chain
-	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-
-	//check if the number of images exceeds the maximum
-	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
-		imageCount = swapChainSupport.capabilities.maxImageCount;
-	}
-
-	VkSwapchainCreateInfoKHR createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surface;
-	createInfo.minImageCount = imageCount;
-	createInfo.imageFormat = surfaceFormat.format;
-	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = extent;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
-	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
-
-	if (indices.graphicsFamily != indices.presentFamily) {
-		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-		createInfo.queueFamilyIndexCount = 2;
-		createInfo.pQueueFamilyIndices = queueFamilyIndices;
-	}
-	else {
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 0; // Optional
-		createInfo.pQueueFamilyIndices = nullptr; // Optional
-	}
-	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	createInfo.presentMode = presentMode;
-	createInfo.clipped = VK_TRUE;
-	createInfo.oldSwapchain = nullptr;
-
-	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create swap chain");
-	}
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
-	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
-	swapChainImageFormat = surfaceFormat.format;
-	swapChainExtent = extent;
-}
-
-void ChronoApplication::createImageViews() {
-	swapChainImageViews.resize(swapChainImages.size());
-	for (size_t i = 0; i < swapChainImages.size(); i++) {
-		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, device);
-	}	
-}
-
-void ChronoApplication::createRenderPass() {
-	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format = swapChainImageFormat;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-	VkAttachmentReference colorAttachmentRef{};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-	VkSubpassDescription subpass{};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-
-	VkSubpassDependency dependency{};
-	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-	dependency.dstSubpass = 0;
-	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.srcAccessMask = 0;
-	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-	VkRenderPassCreateInfo renderPassInfo{};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	renderPassInfo.attachmentCount = 1;
-	renderPassInfo.pAttachments = &colorAttachment;
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-	renderPassInfo.dependencyCount = 1;
-	renderPassInfo.pDependencies = &dependency;
-
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create render pass!");
-	}
-	
-	
-}
-
-void ChronoApplication::createFramebuffers() {
-	swapChainFramebuffers.resize(swapChainImageViews.size());
-	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-
-		VkImageView attachments[] = {
-			swapChainImageViews[i]
-		};
-		VkFramebufferCreateInfo framebufferInfo{};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = 1;
-		framebufferInfo.pAttachments = attachments;
-		framebufferInfo.width = swapChainExtent.width;
-		framebufferInfo.height = swapChainExtent.height;
-		framebufferInfo.layers = 1;
-		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create framebuffer!");
-		}
-	}
-}
-
 void ChronoApplication::createCommandPool() {
 	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice, surface);
 	VkCommandPoolCreateInfo poolInfo{};
@@ -446,7 +318,7 @@ void ChronoApplication::createCommandPool() {
 }
 
 void ChronoApplication::createCommandBuffers() {
-	commandBuffers.resize(swapChainFramebuffers.size());
+	commandBuffers.resize(swapChain.swapChainFramebuffers.size());
 
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -467,10 +339,10 @@ void ChronoApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, uint3
 
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = renderPass;
-	renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+	renderPassInfo.renderPass = swapChain.renderPass;
+	renderPassInfo.framebuffer = swapChain.swapChainFramebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = swapChainExtent;
+	renderPassInfo.renderArea.extent = swapChain.swapChainExtent;
 	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
@@ -480,15 +352,15 @@ void ChronoApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, uint3
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<float> (swapChainExtent.width);
-	viewport.height = static_cast<float> (swapChainExtent.height);
+	viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
+	viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = swapChainExtent;
+	scissor.extent = swapChain.swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	VkBuffer vertexBuffers[] = { vertexBuffer.buffer };
@@ -525,37 +397,6 @@ void ChronoApplication::createSyncObjects() {
 			throw std::runtime_error("failed to create synchronization objects for a frame!");
 		}
 	}
-}
-
-void ChronoApplication::cleanupSwapChain() {
-	
-	for (auto framebuffer : swapChainFramebuffers) {
-		vkDestroyFramebuffer(device, framebuffer, nullptr);
-	}
-	//destroy the image views
-	for (auto imageView : swapChainImageViews) {
-		vkDestroyImageView(device, imageView, nullptr);
-	}
-
-	//destroy the swap chain
-	vkDestroySwapchainKHR(device, swapChain, nullptr);
-}
-
-void ChronoApplication::recreateSwapChain() {
-	int width = 0, height = 0;
-	glfwGetFramebufferSize(window, &width, &height);
-	while (width == 0 || height == 0) {
-		glfwGetFramebufferSize(window, &width, &height);
-		glfwWaitEvents();
-	}
-
-	vkDeviceWaitIdle(device);
-
-	cleanupSwapChain();
-
-	createSwapChain();
-	createImageViews();
-	createFramebuffers();
 }
 
 void ChronoApplication::createDescriptorSetLayout() {

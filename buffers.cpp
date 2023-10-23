@@ -3,8 +3,6 @@
 #include "buffers.hpp"
 #include "helper.hpp"
 
-
-
 void Buffer::create(VkPhysicalDevice physicalDevice, VkDevice device, VkBufferUsageFlags flags, VkMemoryPropertyFlags properties) {
 	this->physicalDevice = physicalDevice;
 	this->device = device;
