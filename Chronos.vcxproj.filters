@@ -57,6 +57,12 @@
     <ClCompile Include="device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="commandpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="descriptorpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vulkaninit.hpp">
@@ -90,10 +96,13 @@
       <Filter>Third Party Libraries</Filter>
     </ClInclude>
     <ClInclude Include="device.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
     <ClInclude Include="commandpool.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="descriptorpool.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

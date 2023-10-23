@@ -6,6 +6,8 @@
 #include "Vertex.hpp"
 #include "buffers.hpp"
 #include "swapchain.hpp"
+#include "descriptorpool.hpp"
+#include "texture.hpp"
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -31,26 +33,15 @@ private:
 	VkSurfaceKHR surface;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	VkCommandPool commandPool;//
 	VertexBuffer vertexBuffer = VertexBuffer();
 	IndexBuffer indexBuffer = IndexBuffer();
-	VkDeviceMemory textureImageMemory;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkDescriptorPool descriptorPool;
-	VkImage textureImage;
-	VkImageView textureImageView;	
+	Texture texture = Texture();
 	VkSampler textureSampler;
 	SwapChain swapChain = SwapChain();
+	CommandPool commandPool = CommandPool();
+	DescriptorPool descriptorPool = DescriptorPool();
 
 
-	/*Classes to create:
-	pipeline
-	command pool and command buffer
-	texture
-	*/
-
-	std::vector<VkDescriptorSet> descriptorSets;//
-	std::vector<VkCommandBuffer> commandBuffers;//
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
@@ -63,14 +54,8 @@ private:
 	void createInstance();
 	void setupDebugMessenger();
 	void createSurface();
-	void createCommandPool();//
-	void createCommandBuffers();//
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);//
 	void drawFrame();
 	void createSyncObjects();
-	void createDescriptorSetLayout();//
-	void createDescriptorPool();//
-	void createDescriptorSets();//
 
 	void showfps() {
 		float current_time = glfwGetTime();

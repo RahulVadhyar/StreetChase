@@ -150,7 +150,7 @@ void SwapChain::create() {
 void SwapChain::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
-		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, device.device);
+		swapChainImageViews[i] = createImageView(device, swapChainImageFormat, swapChainImages[i]);
 	}
 }
 

@@ -1,6 +1,4 @@
 #pragma once
-#include "vulkaninit.hpp"
-#include "device.hpp"
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector <VkSurfaceFormatKHR> formats;

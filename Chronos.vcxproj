@@ -159,6 +159,8 @@
   <ItemGroup>
     <ClCompile Include="buffers.cpp" />
     <ClCompile Include="Chrono.cpp" />
+    <ClCompile Include="commandpool.cpp" />
+    <ClCompile Include="descriptorpool.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="main.cpp" />
@@ -172,6 +174,7 @@
     <ClInclude Include="buffers.hpp" />
     <ClInclude Include="chrono.hpp" />
     <ClInclude Include="commandpool.hpp" />
+    <ClInclude Include="descriptorpool.hpp" />
     <ClInclude Include="device.hpp" />
     <ClInclude Include="helper.hpp" />
     <ClInclude Include="pipeline.hpp" />
