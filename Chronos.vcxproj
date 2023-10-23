@@ -157,7 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ChooseDevice.cpp" />
+    <ClCompile Include="buffers.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="main.cpp" />
@@ -168,8 +168,8 @@
     <ClCompile Include="validation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ChooseDevice.hpp" />
-    <ClInclude Include="Chrono.hpp" />
+    <ClInclude Include="buffers.hpp" />
+    <ClInclude Include="chrono.hpp" />
     <ClInclude Include="helper.hpp" />
     <ClInclude Include="pipeline.hpp" />
     <ClInclude Include="shape.hpp" />

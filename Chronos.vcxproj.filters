@@ -9,9 +9,21 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="Header Files\Header Only">
+      <UniqueIdentifier>{30325a40-7bd9-4b95-b7f8-251cba2cf2e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Libraries">
+      <UniqueIdentifier>{7f73c530-801f-4d21-86eb-0fa6fba70103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{9e817d74-fa85-4115-99f5-e67ad1510358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Not Header Only%28Have Source Files%29">
+      <UniqueIdentifier>{69374c84-2023-4af9-a81e-f42f2c67d6b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,13 +33,7 @@
     <ClCompile Include="Chrono.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="swapchain.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="swapchain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChooseDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pipeline.cpp">
@@ -42,59 +48,65 @@
     <ClCompile Include="validation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="buffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="swapchain.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chrono.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="vulkaninit.hpp">
+      <Filter>Header Files\Header Only</Filter>
     </ClInclude>
-    <ClInclude Include="validation.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="buffers.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
-    <ClInclude Include="ChooseDevice.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="chrono.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
     <ClInclude Include="helper.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
-    <ClInclude Include="vulkaninit.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="pipeline.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
     <ClInclude Include="shape.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="validation.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Third Party Libraries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vert">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="shader.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="frag.spv">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="vert.spv">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="compile.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture.jpg">
-      <Filter>Resource Files</Filter>
+      <Filter>Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>
