@@ -2,6 +2,7 @@
 #include "vulkaninit.hpp"
 #include "shape.hpp"
 #include "Vertex.hpp"
+#include "buffers.hpp"
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class ChronoApplication {
@@ -35,10 +36,8 @@ private:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkCommandPool commandPool;
-	VkBuffer indexBuffer;
-	VkBuffer vertexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-	VkDeviceMemory indexBufferMemory;
+	VertexBuffer vertexBuffer = VertexBuffer();
+	IndexBuffer indexBuffer = IndexBuffer();
 	VkDeviceMemory textureImageMemory;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
@@ -54,10 +53,7 @@ private:
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
-	std::vector<VkBuffer> uniformBuffers;
-	std::vector<VkDeviceMemory> uniformBuffersMemory;
-	std::vector<void*> uniformBuffersMapped;
-
+	std::vector<UniformBuffer> uniformBuffers;
 
 	void initWindow();
 	void initVulkan();
@@ -79,11 +75,7 @@ private:
 	void createSyncObjects();
 	void recreateSwapChain();
 	void cleanupSwapChain();
-	void createVertexBuffer();
-	void createIndexBuffer();
 	void createDescriptorSetLayout();
-	void createUniformBuffers();
-	void updateUniformBuffer(uint32_t currentImage);
 	void createDescriptorPool();
 	void createDescriptorSets();
 

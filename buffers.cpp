@@ -4,20 +4,20 @@
 #include "helper.hpp"
 
 
-Buffer::Buffer(VkPhysicalDevice physicalDevice, VkDevice device) {
+
+void Buffer::create(VkPhysicalDevice physicalDevice, VkDevice device, VkBufferUsageFlags flags, VkMemoryPropertyFlags properties) {
 	this->physicalDevice = physicalDevice;
 	this->device = device;
+	createBuffer(this->physicalDevice, this->device, size, flags, properties, &buffer, &memory);
 }
 
-void Buffer::create(VkBufferUsageFlags flags, VkMemoryPropertyFlags properties) {
-	createBuffer(physicalDevice, device, size, flags, properties, &buffer, &memory);
-}
-
-void Buffer::copy(void* data, VkCommandPool commandPool, VkQueue graphicsQueue) {
+void Buffer::copy(void* inputData, VkCommandPool commandPool, VkQueue graphicsQueue) {
+	void* data;
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(physicalDevice, device, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 	vkMapMemory(device, stagingBufferMemory, 0, size, 0, &data);
+	memcpy(data, inputData, (size_t)size);
 	vkUnmapMemory(device, stagingBufferMemory);
 	copyBuffer(device, stagingBuffer, buffer, size, commandPool, graphicsQueue);
 	vkDestroyBuffer(device, stagingBuffer, nullptr);
@@ -29,21 +29,20 @@ void Buffer::destroy() {
 	vkFreeMemory(device, memory, nullptr);
 }
 
-VertexBuffer::VertexBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, Shape shape) : Buffer(physicalDevice, device) {
+void VertexBuffer::create(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, Shape shape){
 	size = sizeof(shape.vertices[0]) * shape.vertices.size();
-	this->create(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	Buffer::create(physicalDevice, device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	this->copy(shape.vertices.data(), commandPool, graphicsQueue);
 }
-
-IndexBuffer::IndexBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, Shape shape) : Buffer(physicalDevice, device) {
+void IndexBuffer::create(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, Shape shape){
 	size = sizeof(shape.indices[0]) * shape.indices.size();
-	this->create(VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	Buffer::create(physicalDevice, device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	this->copy(shape.indices.data(), commandPool, graphicsQueue);
 }
 
-UniformBuffer::UniformBuffer(VkPhysicalDevice physicalDevice, VkDevice device) : Buffer(physicalDevice, device) {
+void UniformBuffer::create(VkPhysicalDevice physicalDevice, VkDevice device){
 	size = sizeof(UniformBufferObject);
-	this->create(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	Buffer::create(physicalDevice, device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 	vkMapMemory(device, memory, 0, size, 0, &data);
 }
 
