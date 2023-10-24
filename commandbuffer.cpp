@@ -5,7 +5,7 @@
 void CommandBuffer::create(CommandPool commandPool, Rectangle rectangle) {	
 	this->commandPool = commandPool;
 	this->rectangle = rectangle;
-	commandBuffers.resize(commandPool.swapChain.swapChainFramebuffers.size());
+	commandBuffers.resize((*commandPool.swapChain).swapChainFramebuffers.size());
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool = commandPool.commandPool;
@@ -25,10 +25,10 @@ void CommandBuffer::record(uint32_t currentFrame, uint32_t imageIndex, VkDescrip
 
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = commandPool.swapChain.renderPass;
-	renderPassInfo.framebuffer = commandPool.swapChain.swapChainFramebuffers[imageIndex];
+	renderPassInfo.renderPass = (*commandPool.swapChain).renderPass;
+	renderPassInfo.framebuffer = (*commandPool.swapChain).swapChainFramebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = commandPool.swapChain.swapChainExtent;
+	renderPassInfo.renderArea.extent = (*commandPool.swapChain).swapChainExtent;
 	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
@@ -38,15 +38,15 @@ void CommandBuffer::record(uint32_t currentFrame, uint32_t imageIndex, VkDescrip
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<float> (commandPool.swapChain.swapChainExtent.width);
-	viewport.height = static_cast<float> (commandPool.swapChain.swapChainExtent.height);
+	viewport.width = static_cast<float> ((*commandPool.swapChain).swapChainExtent.width);
+	viewport.height = static_cast<float> ((*commandPool.swapChain).swapChainExtent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = commandPool.swapChain.swapChainExtent;
+	scissor.extent = (*commandPool.swapChain).swapChainExtent;
 	vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
 
 	VkBuffer vertexBuffers[] = { rectangle.vertexBuffer.buffer };

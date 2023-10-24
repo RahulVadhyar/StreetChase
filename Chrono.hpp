@@ -34,7 +34,6 @@ private:
 	VkSurfaceKHR surface;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	Texture texture = Texture();
 	VkSampler textureSampler;
 	SwapChain swapChain = SwapChain();
 	CommandPool commandPool = CommandPool();
@@ -44,7 +43,7 @@ private:
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
-	std::vector<UniformBuffer> uniformBuffers;
+	
 
 	void initWindow();
 	void initVulkan();

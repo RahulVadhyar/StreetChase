@@ -4,7 +4,7 @@
 #include "helper.hpp"
 #include "swapchain.hpp"
 
-void CommandPool::createCommandPool(Device device, VkSurfaceKHR surface, SwapChain swapChain, VkPipeline graphicsPipeline, VkPipelineLayout pipelineLayout) {
+void CommandPool::createCommandPool(Device device, VkSurfaceKHR surface, SwapChain* swapChain, VkPipeline graphicsPipeline, VkPipelineLayout pipelineLayout) {
 	this->device = device;
 	this->swapChain = swapChain;
 	this->graphicsPipeline = graphicsPipeline;

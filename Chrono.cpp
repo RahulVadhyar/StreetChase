@@ -35,20 +35,11 @@ void ChronoApplication::initVulkan() {
 	swapChain.init(device, surface, window);
 	descriptorPool.createDescriptorSetLayout(device);
 	createGraphicsPipeline(device.device, &descriptorPool.descriptorSetLayout, swapChain, &pipelineLayout, &graphicsPipeline);
-	commandPool.createCommandPool(device, surface, swapChain, graphicsPipeline, pipelineLayout);
+	commandPool.createCommandPool(device, surface, &swapChain, graphicsPipeline, pipelineLayout);
 	createTextureSampler(device, &textureSampler);
-
 	rectangle.init(device, commandPool);
-	//put this under rectangle
-	texture.create(device, commandPool.commandPool);
-	uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		uniformBuffers[i].create(device);
-	}
-	//till here
-
 	descriptorPool.createDescriptorPool();
-	descriptorPool.createDescriptorSets(uniformBuffers, texture.textureImageView, textureSampler);
+	descriptorPool.createDescriptorSets(rectangle, textureSampler);
 	commandBuffer.create(commandPool, rectangle);
 	createSyncObjects();
 }
@@ -71,10 +62,6 @@ void ChronoApplication::cleanup() {
 
 	swapChain.cleanup();
 	vkDestroySampler(device.device, textureSampler, nullptr);
-	texture.destroy();
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		uniformBuffers[i].destroy();
-	}
 	descriptorPool.destroy();
 	rectangle.destroy();
 
@@ -120,7 +107,7 @@ void ChronoApplication::drawFrame(){
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
+	rectangle.uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffer.commandBuffers[currentFrame], 0);
 	commandBuffer.record(currentFrame, imageIndex, &(descriptorPool.descriptorSets[currentFrame]));

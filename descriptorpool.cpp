@@ -47,7 +47,7 @@ void DescriptorPool::createDescriptorPool() {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }
-void DescriptorPool::createDescriptorSets(std::vector<UniformBuffer> uniformBuffers, VkImageView textureImageView, VkSampler textureSampler) {
+void DescriptorPool::createDescriptorSets(Rectangle rectangle, VkSampler textureSampler) {
 	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -60,14 +60,14 @@ void DescriptorPool::createDescriptorSets(std::vector<UniformBuffer> uniformBuff
 	}
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = uniformBuffers[i].buffer;
+		bufferInfo.buffer = rectangle.uniformBuffers[i].buffer;
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferObject);
 		VkWriteDescriptorSet descriptorWrite{};
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = textureImageView;
+		imageInfo.imageView = rectangle.texture.textureImageView;
 		imageInfo.sampler = textureSampler;
 
 		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
@@ -89,7 +89,6 @@ void DescriptorPool::createDescriptorSets(std::vector<UniformBuffer> uniformBuff
 		descriptorWrites[1].pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(device.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-		std::cout << "descriptor set " << i << " created" << std::endl;
 	}
 }
 

@@ -9,9 +9,9 @@ public:
 	VkCommandPool commandPool;
 	VkPipeline graphicsPipeline;
 	Device device;
-	SwapChain swapChain;
+	SwapChain* swapChain;
 	VkPipelineLayout pipelineLayout;
-	void createCommandPool(Device device, VkSurfaceKHR surface, SwapChain swapChain, VkPipeline graphicsPipeline, VkPipelineLayout pipelineLayout);
+	void createCommandPool(Device device, VkSurfaceKHR surface, SwapChain* swapChain, VkPipeline graphicsPipeline, VkPipelineLayout pipelineLayout);
 	void destroy();
 
 };

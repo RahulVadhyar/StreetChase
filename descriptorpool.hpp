@@ -8,6 +8,6 @@ public:
 	Device device;
 	void createDescriptorSetLayout(Device device);
 	void createDescriptorPool();
-	void createDescriptorSets(std::vector<UniformBuffer> uniformBuffers, VkImageView textureImageView, VkSampler textureSampler);//
+	void createDescriptorSets(Rectangle rectangle, VkSampler textureSampler);//
 	void destroy();
 };
