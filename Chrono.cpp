@@ -36,10 +36,13 @@ void ChronoApplication::initVulkan() {
 	createCommandPool();
 	rectangles.resize(1);
 	triangles.resize(1);
+	circles.resize(1);
 	for(Rectangle& rectangle : rectangles)
 		rectangle.init(device, commandPool, &swapChain, textureSampler);
 	for(Triangle& triangle : triangles)
 		triangle.init(device, commandPool, &swapChain, textureSampler);
+	for(Circle& circle : circles)
+		circle.init(device, commandPool, &swapChain, textureSampler);
 	createCommandBuffer();
 	createSyncObjects();
 }
@@ -66,6 +69,8 @@ void ChronoApplication::cleanup() {
 		rectangle.destroy();
 	for(Triangle& triangle : triangles)
 		triangle.destroy();
+	for(Circle& circle : circles)
+		circle.destroy();
 
 	vkDestroyCommandPool(device.device, commandPool, nullptr);
 	//destroy the semaphores
@@ -108,8 +113,9 @@ void ChronoApplication::drawFrame(){
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	rectangles[0].update(currentFrame, 0.1, 0.1, 0, 1.0, 1.0);
-	triangles[0].update(currentFrame, -0.1, -0.1, 0, 1.0, 1.0);
+	rectangles[0].update(currentFrame, 0.5, 0.5, 0, 0.5, 0.5);
+	triangles[0].update(currentFrame, -0.5, -0.5, 0, 1.0, 0.5);
+	circles[0].update(currentFrame, 0, 0, 0, 0.5, 0.5);
 
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
@@ -274,23 +280,23 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
+	VkViewport viewport{};
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
+	viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+
+	VkRect2D scissor{};
+	scissor.offset = { 0, 0 };
+	scissor.extent = swapChain.swapChainExtent;
+
 	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	for(Rectangle& rectangle: rectangles) {
 		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, rectangle.graphicsPipeline);
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
-		viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = swapChain.swapChainExtent;
 		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-
 		VkBuffer vertexBuffers[] = { rectangle.vertexBuffer.buffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
@@ -300,26 +306,25 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 	}
 	for (Triangle& triangle : triangles) {
 		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, triangle.graphicsPipeline);
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
-		viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = swapChain.swapChainExtent;
 		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-
 		VkBuffer vertexBuffers[] = { triangle.vertexBuffer.buffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffers[currentFrame], triangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
 		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, triangle.pipelineLayout, 0, 1, &triangle.descriptorSets[currentFrame], 0, nullptr);
 		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(triangle.indices.size()), 1, 0, 0, 0);
+	}
+	for (Circle& circle : circles) {
+		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, circle.graphicsPipeline);
+		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
+		VkBuffer vertexBuffers[] = { circle.vertexBuffer.buffer };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffers[currentFrame], circle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, circle.pipelineLayout, 0, 1, &circle.descriptorSets[currentFrame], 0, nullptr);
+		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(circle.indices.size()), 1, 0, 0, 0);
 	}
 	vkCmdEndRenderPass(commandBuffers[currentFrame]);
 

@@ -181,6 +181,10 @@
     <ClInclude Include="vulkaninit.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="circle.frag" />
+    <None Include="circle.vert" />
+    <None Include="circle_frag.spv" />
+    <None Include="circle_vert.spv" />
     <None Include="compile.bat" />
     <None Include="frag.spv" />
     <None Include="shader.frag" />

@@ -24,6 +24,7 @@ private:
 	int height = 600;
 	std::vector<Rectangle> rectangles;
 	std::vector<Triangle> triangles;
+	std::vector<Circle> circles;
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();

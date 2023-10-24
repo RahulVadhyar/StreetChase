@@ -106,6 +106,16 @@
     <None Include="compile.bat">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="circle.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="circle.frag" />
+    <None Include="circle_frag.spv">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="circle_vert.spv">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture.jpg">

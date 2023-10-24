@@ -31,8 +31,8 @@ void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain,
 
 void Shape::createGraphicsPipeline() {
 	//load and create the shader modules
-	auto vertShaderCode = readFile("vert.spv");
-	auto fragShaderCode = readFile("frag.spv");
+	auto vertShaderCode = readFile(vertexShaderPath);
+	auto fragShaderCode = readFile(fragmentShaderPath);
 
 	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, device.device);
 	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, device.device);

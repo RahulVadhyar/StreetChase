@@ -7,6 +7,8 @@
 #include "texture.hpp"
 class Shape {
 public:
+	const char* vertexShaderPath = "vert.spv";
+	const char* fragmentShaderPath = "frag.spv";
 	std::vector<uint16_t> indices;
 	std::vector<Vertex> vertices;
 	Device device;
@@ -68,6 +70,9 @@ public:
 			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
 			{{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {1.0f, 1.0f}}
 		};
+		vertexShaderPath = "circle_vert.spv";
+		fragmentShaderPath = "circle_frag.spv";
+
 	}
 };
 
