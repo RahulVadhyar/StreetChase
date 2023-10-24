@@ -1,6 +1,5 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
-#include "commandpool.hpp"
 #include "shape.hpp"
 #include "buffers.hpp"
 #include "helper.hpp"
@@ -34,14 +33,15 @@ void UniformBuffer::create(Device device){
 	vkMapMemory(device.device, memory, 0, size, 0, &data);
 }
 
-void UniformBuffer::update(VkExtent2D swapChainExtent) {
+void UniformBuffer::update(VkExtent2D swapChainExtent, uint32_t pos) {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 	UniformBufferObject ubo{};
-	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f, 0.0f));
+	ubo.model = glm::rotate(ubo.model, time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	ubo.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	ubo.proj = glm::ortho(-1.0f, 1.0f, -(float)swapChainExtent.height / (float)swapChainExtent.width, (float)swapChainExtent.height/(float)swapChainExtent.width, -100.0f, 100.0f);
 	ubo.proj[1][1] *= -1;

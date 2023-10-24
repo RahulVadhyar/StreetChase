@@ -2,7 +2,6 @@
 #include "device.hpp"
 #include "chrono.hpp"
 #include "validation.hpp"
-#include "pipeline.hpp"
 #include "helper.hpp"
 #include "Vertex.hpp"
 
@@ -33,14 +32,12 @@ void ChronoApplication::initVulkan() {
 	createSurface();
 	device.init(instance, surface);
 	swapChain.init(device, surface, window);
-	descriptorPool.createDescriptorSetLayout(device);
-	createGraphicsPipeline(device.device, &descriptorPool.descriptorSetLayout, swapChain, &pipelineLayout, &graphicsPipeline);
-	commandPool.createCommandPool(device, surface, &swapChain, graphicsPipeline, pipelineLayout);
 	createTextureSampler(device, &textureSampler);
-	rectangle.init(device, commandPool);
-	descriptorPool.createDescriptorPool();
-	descriptorPool.createDescriptorSets(rectangle, textureSampler);
-	commandBuffer.create(commandPool, rectangle);
+	createCommandPool();
+	rectangles.resize(2);
+	for(Rectangle& rectangle : rectangles)
+		rectangle.init(device, commandPool, &swapChain, textureSampler);
+	createCommandBuffer();
 	createSyncObjects();
 }
 
@@ -62,10 +59,10 @@ void ChronoApplication::cleanup() {
 
 	swapChain.cleanup();
 	vkDestroySampler(device.device, textureSampler, nullptr);
-	descriptorPool.destroy();
-	rectangle.destroy();
+	for(Rectangle& rectangle : rectangles)
+		rectangle.destroy();
 
-	commandPool.destroy();
+	vkDestroyCommandPool(device.device, commandPool, nullptr);
 	//destroy the semaphores
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(device.device, renderFinishedSemaphores[i], nullptr);
@@ -73,8 +70,7 @@ void ChronoApplication::cleanup() {
 		vkDestroyFence(device.device, inFlightFences[i], nullptr);
 	}
 	swapChain.destroy();
-	vkDestroyPipeline(device.device, graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(device.device, pipelineLayout, nullptr);
+	
 	
 	//destroy the debug messenger
 	if (enableValidationLayers) {
@@ -107,10 +103,12 @@ void ChronoApplication::drawFrame(){
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	rectangle.uniformBuffers[currentFrame].update(swapChain.swapChainExtent);
+	rectangles[0].update(currentFrame, 0.5);
+	rectangles[1].update(currentFrame, 1.0);
+
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
-	vkResetCommandBuffer(commandBuffer.commandBuffers[currentFrame], 0);
-	commandBuffer.record(currentFrame, imageIndex, &(descriptorPool.descriptorSets[currentFrame]));
+	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+	recordCommandBuffer(currentFrame, imageIndex);//&(rectangle.descriptorSets[currentFrame]));
 	
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -122,7 +120,7 @@ void ChronoApplication::drawFrame(){
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer.commandBuffers[currentFrame];
+	submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -239,5 +237,76 @@ void ChronoApplication::createSyncObjects() {
 
 			throw std::runtime_error("failed to create synchronization objects for a frame!");
 		}
+	}
+}
+
+void ChronoApplication::createCommandBuffer() {
+	commandBuffers.resize(swapChain.swapChainFramebuffers.size());
+	VkCommandBufferAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+	if (vkAllocateCommandBuffers(device.device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate command buffers!");
+	}
+}
+
+void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex) {
+	VkCommandBufferBeginInfo beginInfo{};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	if (vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo) != VK_SUCCESS) {
+		throw std::runtime_error("failed to begin recording command buffer!");
+	}
+
+	VkRenderPassBeginInfo renderPassInfo{};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	renderPassInfo.renderPass = swapChain.renderPass;
+	renderPassInfo.framebuffer = swapChain.swapChainFramebuffers[imageIndex];
+	renderPassInfo.renderArea.offset = { 0, 0 };
+	renderPassInfo.renderArea.extent = swapChain.swapChainExtent;
+	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	renderPassInfo.clearValueCount = 1;
+	renderPassInfo.pClearValues = &clearColor;
+
+	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	for(Rectangle& rectangle: rectangles) {
+		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, rectangle.graphicsPipeline);
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
+		viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = swapChain.swapChainExtent;
+		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
+
+		VkBuffer vertexBuffers[] = { rectangle.vertexBuffer.buffer };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffers[currentFrame], rectangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, rectangle.pipelineLayout, 0, 1, &rectangle.descriptorSets[currentFrame], 0, nullptr);
+		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(rectangle.indices.size()), 1, 0, 0, 0);
+	}
+	vkCmdEndRenderPass(commandBuffers[currentFrame]);
+
+	if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
+		throw std::runtime_error("failed to record command buffer!");
+	}
+}
+
+void ChronoApplication::createCommandPool() {
+	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(device.physicalDevice, surface);
+	VkCommandPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional
+	if (vkCreateCommandPool(device.device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command pool!");
 	}
 }

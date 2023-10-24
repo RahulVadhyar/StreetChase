@@ -36,9 +36,6 @@
     <ClCompile Include="swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,16 +54,7 @@
     <ClCompile Include="device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="commandpool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="descriptorpool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="commandbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,9 +69,6 @@
       <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
     <ClInclude Include="helper.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="pipeline.hpp">
       <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
     </ClInclude>
     <ClInclude Include="shape.hpp">
@@ -103,15 +88,6 @@
     </ClInclude>
     <ClInclude Include="device.hpp">
       <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="commandpool.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="descriptorpool.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="commandbuffer.hpp">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,11 @@
 #pragma once
 #include "vulkaninit.hpp"
 #include "device.hpp"
-#include "commandpool.hpp"
 #include "shape.hpp"
 #include "Vertex.hpp"
 #include "buffers.hpp"
 #include "swapchain.hpp"
-#include "descriptorpool.hpp"
 #include "texture.hpp"
-#include "commandbuffer.hpp"
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -25,20 +22,19 @@ private:
 	float prev_time = 0.0f;
 	int width = 800;
 	int height = 600;
-	Rectangle rectangle = Rectangle();
+	std::vector<Rectangle> rectangles;
+	//Rectangle rectangle = Rectangle();
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkSurfaceKHR surface;
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
 	VkSampler textureSampler;
 	SwapChain swapChain = SwapChain();
-	CommandPool commandPool = CommandPool();
-	DescriptorPool descriptorPool = DescriptorPool();
-	CommandBuffer commandBuffer = CommandBuffer();
+	VkCommandPool commandPool;
+	
+	std::vector<VkCommandBuffer> commandBuffers;
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -54,6 +50,9 @@ private:
 	void createSurface();
 	void drawFrame();
 	void createSyncObjects();
+	void createCommandBuffer();
+	void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
+	void createCommandPool();
 
 	void showfps() {
 		float current_time = glfwGetTime();

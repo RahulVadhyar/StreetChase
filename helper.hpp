@@ -25,3 +25,8 @@ std::vector <const char*> getRequiredExtensions();
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 bool isDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+
+VkCommandPool createCommandPool(Device device, VkSurfaceKHR surface);
+
+std::vector<char> readFile(const std::string& filename);
+VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
