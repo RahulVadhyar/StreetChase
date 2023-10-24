@@ -23,7 +23,7 @@ private:
 	int width = 800;
 	int height = 600;
 	std::vector<Rectangle> rectangles;
-	//Rectangle rectangle = Rectangle();
+	std::vector<Triangle> triangles;
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();

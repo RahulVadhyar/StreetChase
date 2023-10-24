@@ -3,7 +3,7 @@
 #include "shape.hpp"
 #include "chrono.hpp"
 #include "helper.hpp"
-void Rectangle::init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler) {
+void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler) {
 	this-> device = device;
 	this->swapChain = swapChain;
 	this->commandPool = commandPool;
@@ -29,7 +29,7 @@ void Rectangle::init(Device device, VkCommandPool commandPool, SwapChain* swapCh
 
 }
 
-void Rectangle::createGraphicsPipeline() {
+void Shape::createGraphicsPipeline() {
 	//load and create the shader modules
 	auto vertShaderCode = readFile("vert.spv");
 	auto fragShaderCode = readFile("frag.spv");
@@ -178,7 +178,7 @@ void Rectangle::createGraphicsPipeline() {
 }
 
 
-void Rectangle::destroy() {
+void Shape::destroy() {
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		uniformBuffers[i].destroy();
 	}
@@ -191,7 +191,7 @@ void Rectangle::destroy() {
 	vkDestroyPipelineLayout(device.device, pipelineLayout, nullptr);
 }
 
-void Rectangle::createDescriptorPool() {
+void Shape::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes{};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -208,7 +208,7 @@ void Rectangle::createDescriptorPool() {
 	}
 }
 
-void Rectangle::createDescriptorSetLayout() {
+void Shape::createDescriptorSetLayout() {
 	this->device = device;
 	VkDescriptorSetLayoutBinding uboLayoutBinding{};
 	uboLayoutBinding.binding = 0;
@@ -234,7 +234,7 @@ void Rectangle::createDescriptorSetLayout() {
 	}
 }
 
-void Rectangle::createDescriptorSets() {
+void Shape::createDescriptorSets() {
 	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -279,7 +279,7 @@ void Rectangle::createDescriptorSets() {
 	}
 }
 
-void Rectangle::update(uint32_t currentFrame, uint32_t pos) {
-	uniformBuffers[currentFrame].update(swapChain->swapChainExtent, pos);
+void Shape::update(uint32_t currentFrame, float x, float y, float rotation, float xSize, float ySize) {
+	uniformBuffers[currentFrame].update(swapChain->swapChainExtent, x, y, rotation, xSize, ySize);
 
 }

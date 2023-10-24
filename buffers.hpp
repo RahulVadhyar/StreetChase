@@ -19,5 +19,5 @@ class UniformBuffer : public Buffer {
 public:
 	void* data;
 	void create(Device device);
-	void update(VkExtent2D swapChainExtent, uint32_t pos);
+	void update(VkExtent2D swapChainExtent, float x, float y, float rotation, float x_size, float y_size);
 };

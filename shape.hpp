@@ -7,17 +7,8 @@
 #include "texture.hpp"
 class Shape {
 public:
-	std::vector<uint16_t> indices{ 0, 1, 2, 2, 3, 0 };
-	std::vector<Vertex> vertices{
-		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-		{{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {1.0f, 1.0f}}
-	};
-};
-
-class Rectangle: public Shape {
-public:
+	std::vector<uint16_t> indices;
+	std::vector<Vertex> vertices;
 	Device device;
 	SwapChain* swapChain;
 	VkCommandPool commandPool;
@@ -31,22 +22,54 @@ public:
 	VkDescriptorPool descriptorPool;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	
-
-
 	std::vector<UniformBuffer> uniformBuffers;
 	void init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler);
 	void createGraphicsPipeline();
 	void createDescriptorPool();
 	void createDescriptorSetLayout();
 	void createDescriptorSets();
-	void update(uint32_t currentFrame, uint32_t pos);
+	void update(uint32_t currentFrame, float x, float y, float rotation, float xSize, float ySize);
 	void destroy();
 };
 
-class Triangle : public Shape {};
+class Rectangle: public Shape {
+public:
+	Rectangle() {
+		indices = std::vector<uint16_t>{ 0, 1, 2, 2, 3, 0 };
+		vertices = std::vector<Vertex>{
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {1.0f, 1.0f}}
+		};
+	}
+};
 
-class Circle : public Shape {};
+class Triangle : public Shape {
+public:
+	Triangle() {
+		indices = std::vector<uint16_t>{ 0, 1, 2 };
+		vertices = std::vector<Vertex>{
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}}
+		};
+	}
+
+};
+
+class Circle : public Shape {
+public:
+	Circle() {
+		indices = std::vector<uint16_t>{ 0, 1, 2, 2, 3, 0 };
+		vertices = std::vector<Vertex>{
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {1.0f, 1.0f}}
+		};
+	}
+};
 
 
 struct UniformBufferObject {
