@@ -55,6 +55,13 @@ private:
 	void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
 	void createCommandPool();
 
+#ifdef DISPLAY_IMGUI
+	VkDescriptorPool imguiPool;
+	VkCommandPool imguiCommandPool;
+	std::vector<VkCommandBuffer> imguiCommandBuffers;
+	void initImGui();
+#endif
+
 	void showfps() {
 		float current_time = glfwGetTime();
 		float fps = 1.0f / (current_time - prev_time);

@@ -22,6 +22,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
+#define DISPLAY_IMGUI
+#ifdef DISPLAY_IMGUI
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
+#include "imstb_rectpack.h"
+#include "imstb_textedit.h"
+#include "imstb_truetype.h"
+#endif

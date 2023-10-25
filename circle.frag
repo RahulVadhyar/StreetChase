@@ -8,5 +8,9 @@ layout(location = 1) in vec2 fragTexCoord;
 layout(location = 0) out vec4 outColor;
 
 void main() {
+//find centre
+//get radius
+//find whether point is inside or outside the circle
+//if outside, dont shade
     outColor = texture(texSampler, fragTexCoord);
 }

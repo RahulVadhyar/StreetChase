@@ -35,4 +35,9 @@ public:
 	void createRenderPass();
 	void createFramebuffers();
 
+#ifdef DISPLAY_IMGUI
+	std::vector<VkFramebuffer> imguiFramebuffers;
+	VkRenderPass imguiRenderPass;
+#endif
+
 };

@@ -45,6 +45,9 @@ void ChronoApplication::initVulkan() {
 		circle.init(device, commandPool, &swapChain, textureSampler);
 	createCommandBuffer();
 	createSyncObjects();
+#ifdef DISPLAY_IMGUI
+	initImGui();
+#endif
 }
 
 void ChronoApplication::mainLoop() {
@@ -56,6 +59,13 @@ void ChronoApplication::mainLoop() {
 			glfwSetWindowShouldClose(window, true);
 		}
 		glfwPollEvents();
+#ifdef DISPLAY_IMGUI
+		ImGui_ImplVulkan_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+#endif
 		drawFrame();
 	}
 	vkDeviceWaitIdle(device.device);
@@ -73,6 +83,10 @@ void ChronoApplication::cleanup() {
 		circle.destroy();
 
 	vkDestroyCommandPool(device.device, commandPool, nullptr);
+#ifdef DISPLAY_IMGUI
+	ImGui_ImplVulkan_Shutdown();
+	vkDestroyCommandPool(device.device, imguiCommandPool, nullptr);
+#endif
 	//destroy the semaphores
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(device.device, renderFinishedSemaphores[i], nullptr);
@@ -80,6 +94,9 @@ void ChronoApplication::cleanup() {
 		vkDestroyFence(device.device, inFlightFences[i], nullptr);
 	}
 	swapChain.destroy();
+#ifdef DISPLAY_IMGUI
+	vkDestroyDescriptorPool(device.device, imguiPool, nullptr);
+#endif
 	
 	
 	//destroy the debug messenger
@@ -118,20 +135,28 @@ void ChronoApplication::drawFrame(){
 	circles[0].update(currentFrame, 0, 0, 0, 0.5, 0.5);
 
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
+
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+#ifdef DISPLAY_IMGUI
+	vkResetCommandBuffer(imguiCommandBuffers[currentFrame], 0);
+#endif
 	recordCommandBuffer(currentFrame, imageIndex);
 	
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
 
+	std::vector<VkCommandBuffer> submitCommandBuffers = { commandBuffers[currentFrame] };
+#ifdef DISPLAY_IMGUI
+	submitCommandBuffers.push_back(imguiCommandBuffers[currentFrame]);
+#endif
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
+	submitInfo.commandBufferCount = submitCommandBuffers.size();
+	submitInfo.pCommandBuffers = submitCommandBuffers.data();
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -331,6 +356,24 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 	if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to record command buffer!");
 	}
+
+#ifdef DISPLAY_IMGUI
+	vkBeginCommandBuffer(imguiCommandBuffers[currentFrame], &beginInfo);
+	VkRenderPassBeginInfo info = {};
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	info.renderPass = swapChain.imguiRenderPass;
+	info.framebuffer = swapChain.imguiFramebuffers[imageIndex];
+	info.renderArea.extent = swapChain.swapChainExtent;
+	info.clearValueCount = 1;
+	info.pClearValues = &clearColor;
+	vkCmdBeginRenderPass(imguiCommandBuffers[currentFrame], &info, VK_SUBPASS_CONTENTS_INLINE);
+	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), imguiCommandBuffers[currentFrame]);
+	vkCmdEndRenderPass(imguiCommandBuffers[currentFrame]);
+	vkEndCommandBuffer(imguiCommandBuffers[currentFrame]);
+
+
+#endif
+
 }
 
 void ChronoApplication::createCommandPool() {
@@ -343,3 +386,72 @@ void ChronoApplication::createCommandPool() {
 		throw std::runtime_error("failed to create command pool!");
 	}
 }
+
+#ifdef DISPLAY_IMGUI
+void ChronoApplication::initImGui() {
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;    
+
+	ImGui::StyleColorsDark();
+
+	std::array<VkDescriptorPoolSize, 2> poolSizes{};
+	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+	VkDescriptorPoolSize pool_sizes[] ={{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 }};
+	VkDescriptorPoolCreateInfo pool_info = {};
+	pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+	pool_info.maxSets = 1;
+	pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+	pool_info.pPoolSizes = pool_sizes;
+	vkCreateDescriptorPool(device.device, &pool_info, nullptr, &imguiPool);
+
+	ImGui_ImplGlfw_InitForVulkan(window, true);
+	ImGui_ImplVulkan_InitInfo init_info = {};
+	init_info.Instance = instance;
+	init_info.PhysicalDevice = device.physicalDevice;
+	init_info.Device = device.device;
+	init_info.QueueFamily = findQueueFamilies(device.physicalDevice, surface).graphicsFamily.value(); //IF LITERALLY ANYTHING HAPPENS WE NEED TO COME BACK TO THIS
+	init_info.Queue = device.graphicsQueue;
+	init_info.PipelineCache = VK_NULL_HANDLE;
+	init_info.DescriptorPool = imguiPool;
+	init_info.Allocator = nullptr;
+	init_info.MinImageCount = 2;
+	init_info.ImageCount = MAX_FRAMES_IN_FLIGHT;
+	init_info.CheckVkResultFn = nullptr; //add a fucntion to this
+	ImGui_ImplVulkan_Init(&init_info, swapChain.imguiRenderPass);
+
+	VkCommandPoolCreateInfo commandPoolCreateInfo = {};
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	commandPoolCreateInfo.queueFamilyIndex = findQueueFamilies(device.physicalDevice, surface).graphicsFamily.value();
+	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+	if (vkCreateCommandPool(device.device, &commandPoolCreateInfo, nullptr, &imguiCommandPool) != VK_SUCCESS) {
+		throw std::runtime_error("Could not create graphics command pool");
+	}
+
+	VkCommandBuffer command_buffer = beginSingleTimeCommands(imguiCommandPool, device.device);
+	ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+	endSingleTimeCommands(&command_buffer, device, imguiCommandPool);
+
+	
+	imguiCommandBuffers.resize(swapChain.swapChainFramebuffers.size());
+	VkCommandBufferAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = static_cast<uint32_t>(imguiCommandBuffers.size());
+	if (vkAllocateCommandBuffers(device.device, &allocInfo, imguiCommandBuffers.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate command buffers!");
+	}
+
+}
+
+
+#endif
