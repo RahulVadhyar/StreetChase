@@ -40,14 +40,16 @@ void createImage(Device device, uint32_t width, uint32_t height, VkFormat format
 
 	vkBindImageMemory(device.device, *image, *imageMemory, 0);
 }
-void Texture::create(Device device, VkCommandPool commandPool) {
+void Texture::create(Device device, VkCommandPool commandPool, std::string texturePath) {
 	int texWidth, texHeight, texChannels;
 	this->device = device;
-	stbi_uc* pixels = stbi_load("texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	stbi_uc* pixels = stbi_load(texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
-
+	std::cout << texturePath << std::endl;
+	std::string debugTexturePath = texturePath;
 	if (!pixels) {
-		throw std::runtime_error("failed to load texture image!");
+		std::string debugTexturePath = texturePath;
+		throw std::runtime_error("failed to load texture image " + debugTexturePath);
 	}
 
 	VkBuffer stagingBuffer;

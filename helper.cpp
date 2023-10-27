@@ -1,8 +1,9 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
+#include "swapchain.hpp"
 #include "helper.hpp"
 #include "validation.hpp"
-#include "swapchain.hpp"
+
 
 VkCommandBuffer beginSingleTimeCommands(VkCommandPool commandPool, VkDevice device) {
 	VkCommandBufferAllocateInfo allocInfo{};

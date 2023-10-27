@@ -164,6 +164,7 @@
     <ClCompile Include="buffers.cpp" />
     <ClCompile Include="Chrono.cpp" />
     <ClCompile Include="device.cpp" />
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_vulkan.cpp" />
@@ -183,20 +184,24 @@
     <ClInclude Include="buffers.hpp" />
     <ClInclude Include="chrono.hpp" />
     <ClInclude Include="device.hpp" />
+    <ClInclude Include="gui.hpp" />
     <ClInclude Include="helper.hpp" />
     <ClInclude Include="shape.hpp" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="texture.hpp" />
     <ClInclude Include="validation.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="vulkaninit.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="astcenc-4.5.0-windows-x64\bin\astcenc-avx2.exe" />
     <None Include="circle.frag" />
     <None Include="circle.vert" />
     <None Include="circle_frag.spv" />
     <None Include="circle_vert.spv" />
     <None Include="compile.bat" />
+    <None Include="compressTextures.bat" />
     <None Include="frag.spv" />
     <None Include="shader.frag" />
     <None Include="shader.vert" />
@@ -204,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="AmaticSC-Bold.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdexcept>
 #include "Chrono.hpp"
-
 int main() {
 	ChronoApplication app;
 	try {

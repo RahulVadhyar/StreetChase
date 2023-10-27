@@ -1,9 +1,11 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
+#include "swapchain.hpp"
 #include "chrono.hpp"
 #include "validation.hpp"
 #include "helper.hpp"
 #include "Vertex.hpp"
+
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	auto app = reinterpret_cast<ChronoApplication*>(glfwGetWindowUserPointer(window));
@@ -34,19 +36,30 @@ void ChronoApplication::initVulkan() {
 	swapChain.init(device, surface, window);
 	createTextureSampler(device, &textureSampler);
 	createCommandPool();
-	rectangles.resize(1);
-	triangles.resize(1);
-	circles.resize(1);
-	for(Rectangle& rectangle : rectangles)
-		rectangle.init(device, commandPool, &swapChain, textureSampler);
-	for(Triangle& triangle : triangles)
-		triangle.init(device, commandPool, &swapChain, textureSampler);
-	for(Circle& circle : circles)
-		circle.init(device, commandPool, &swapChain, textureSampler);
+	shapes.push_back(Rectangle());
+	shapes.push_back(Triangle());
+	for(Shape& shape : shapes) {
+		shape.init(device, commandPool, &swapChain, textureSampler, "texture.jpg");
+	}
+	shapes[0].params.x = 0.5;
+	shapes[0].params.y = 0.5;
+	shapes[0].params.xSize = 0.5;
+	shapes[0].params.ySize = 0.5;
+	shapes[0].params.rotation = 0;
+
+	shapes[1].params.x = -0.5;
+	shapes[1].params.y = -0.5;
+	shapes[1].params.xSize = 0.5;
+	shapes[1].params.ySize = 0.5;
+	shapes[1].params.rotation = 0;
+
 	createCommandBuffer();
 	createSyncObjects();
 #ifdef DISPLAY_IMGUI
 	initImGui();
+	guiParams.bgColor = bgColor;
+	guiParams.shapeParams.push_back(&shapes[0].params);
+	guiParams.shapeParams.push_back(&shapes[1].params);
 #endif
 }
 
@@ -63,7 +76,24 @@ void ChronoApplication::mainLoop() {
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
+		gui(&guiParams);
+		if (guiParams.addRectangle) {
+			shapes.push_back(Rectangle());
+			shapes.back().init(device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
+			guiParams.shapeParams.push_back(&shapes.back().params);
+			guiParams.addRectangle = false;
+		}
+		if (guiParams.addTriangle) {
+			shapes.push_back(Triangle());
+			shapes.back().init(device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
+			shapes.back().params.x = -0.5;
+			shapes.back().params.y = -0.5;
+			shapes.back().params.xSize = 0.5;
+			shapes.back().params.ySize = 0.5;
+			shapes.back().params.rotation = 0;
+			guiParams.shapeParams.push_back(&shapes.back().params);
+			guiParams.addTriangle = false;
+		}
 		ImGui::Render();
 #endif
 		drawFrame();
@@ -75,13 +105,9 @@ void ChronoApplication::cleanup() {
 
 	swapChain.cleanup();
 	vkDestroySampler(device.device, textureSampler, nullptr);
-	for(Rectangle& rectangle : rectangles)
-		rectangle.destroy();
-	for(Triangle& triangle : triangles)
-		triangle.destroy();
-	for(Circle& circle : circles)
-		circle.destroy();
-
+	for(Shape& shape : shapes) {
+		shape.destroy();
+	}
 	vkDestroyCommandPool(device.device, commandPool, nullptr);
 #ifdef DISPLAY_IMGUI
 	ImGui_ImplVulkan_Shutdown();
@@ -130,9 +156,9 @@ void ChronoApplication::drawFrame(){
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	rectangles[0].update(currentFrame, 0.5, 0.5, 0, 0.5, 0.5);
-	triangles[0].update(currentFrame, -0.5, -0.5, 0, 1.0, 0.5);
-	circles[0].update(currentFrame, 0, 0, 0, 0.5, 0.5);
+	for(Shape shape: shapes) {
+		shape.update(currentFrame);
+	}
 
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 
@@ -301,7 +327,7 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 	renderPassInfo.framebuffer = swapChain.swapChainFramebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
 	renderPassInfo.renderArea.extent = swapChain.swapChainExtent;
-	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	VkClearValue clearColor = { bgColor[0], bgColor[1], bgColor[2], 1.0f};
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
@@ -318,38 +344,16 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 	scissor.extent = swapChain.swapChainExtent;
 
 	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	for(Rectangle& rectangle: rectangles) {
-		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, rectangle.graphicsPipeline);
+	for(Shape& shape: shapes) {
+		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, shape.graphicsPipeline);
 		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
 		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-		VkBuffer vertexBuffers[] = { rectangle.vertexBuffer.buffer };
+		VkBuffer vertexBuffers[] = { shape.vertexBuffer.buffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffers[currentFrame], rectangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
-		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, rectangle.pipelineLayout, 0, 1, &rectangle.descriptorSets[currentFrame], 0, nullptr);
-		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(rectangle.indices.size()), 1, 0, 0, 0);
-	}
-	for (Triangle& triangle : triangles) {
-		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, triangle.graphicsPipeline);
-		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-		VkBuffer vertexBuffers[] = { triangle.vertexBuffer.buffer };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffers[currentFrame], triangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
-		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, triangle.pipelineLayout, 0, 1, &triangle.descriptorSets[currentFrame], 0, nullptr);
-		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(triangle.indices.size()), 1, 0, 0, 0);
-	}
-	for (Circle& circle : circles) {
-		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, circle.graphicsPipeline);
-		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-		VkBuffer vertexBuffers[] = { circle.vertexBuffer.buffer };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffers[currentFrame], circle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
-		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, circle.pipelineLayout, 0, 1, &circle.descriptorSets[currentFrame], 0, nullptr);
-		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(circle.indices.size()), 1, 0, 0, 0);
+		vkCmdBindIndexBuffer(commandBuffers[currentFrame], shape.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
+		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, shape.pipelineLayout, 0, 1, &shape.descriptorSets[currentFrame], 0, nullptr);
+		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(shape.indices.size()), 1, 0, 0, 0);
 	}
 	vkCmdEndRenderPass(commandBuffers[currentFrame]);
 

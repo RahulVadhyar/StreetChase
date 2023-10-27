@@ -3,7 +3,7 @@
 #include "shape.hpp"
 #include "chrono.hpp"
 #include "helper.hpp"
-void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler) {
+void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath) {
 	this-> device = device;
 	this->swapChain = swapChain;
 	this->commandPool = commandPool;
@@ -17,7 +17,7 @@ void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain,
 	indexBuffer.create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	indexBuffer.copy(indices.data(), commandPool);
 
-	texture.create(device, commandPool);
+	texture.create(device, commandPool, texturePath);
 	uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		uniformBuffers[i].create(device);
@@ -279,7 +279,7 @@ void Shape::createDescriptorSets() {
 	}
 }
 
-void Shape::update(uint32_t currentFrame, float x, float y, float rotation, float xSize, float ySize) {
-	uniformBuffers[currentFrame].update(swapChain->swapChainExtent, x, y, rotation, xSize, ySize);
+void Shape::update(uint32_t currentFrame) {
+	uniformBuffers[currentFrame].update(swapChain->swapChainExtent, params.x, params.y, params.rotation, params.xSize, params.ySize);
 
 }

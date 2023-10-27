@@ -6,7 +6,9 @@
 #include "buffers.hpp"
 #include "swapchain.hpp"
 #include "texture.hpp"
-
+#ifdef DISPLAY_IMGUI
+#include "gui.hpp"
+#endif
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class ChronoApplication {
@@ -18,13 +20,13 @@ public:
 		cleanup();
 	}
 	bool framebufferResized = false;
+	GUIParams guiParams{};
 private:
 	float prev_time = 0.0f;
 	int width = 800;
 	int height = 600;
-	std::vector<Rectangle> rectangles;
-	std::vector<Triangle> triangles;
-	std::vector<Circle> circles;
+	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
+	std::vector<Shape> shapes;
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();
@@ -60,6 +62,7 @@ private:
 	VkCommandPool imguiCommandPool;
 	std::vector<VkCommandBuffer> imguiCommandBuffers;
 	void initImGui();
+
 #endif
 
 	void showfps() {

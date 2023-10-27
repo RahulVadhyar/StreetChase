@@ -5,10 +5,20 @@
 #include "swapChain.hpp"
 #include "buffers.hpp"
 #include "texture.hpp"
+
+struct ShapeParams {
+	float x;
+	float y;
+	float rotation;
+	float xSize;
+	float ySize;
+};
+
 class Shape {
 public:
 	const char* vertexShaderPath = "vert.spv";
 	const char* fragmentShaderPath = "frag.spv";
+	ShapeParams params;
 	std::vector<uint16_t> indices;
 	std::vector<Vertex> vertices;
 	Device device;
@@ -25,12 +35,12 @@ public:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<UniformBuffer> uniformBuffers;
-	void init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler);
+	void init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath);
 	void createGraphicsPipeline();
 	void createDescriptorPool();
 	void createDescriptorSetLayout();
 	void createDescriptorSets();
-	void update(uint32_t currentFrame, float x, float y, float rotation, float xSize, float ySize);
+	void update(uint32_t currentFrame);
 	void destroy();
 };
 

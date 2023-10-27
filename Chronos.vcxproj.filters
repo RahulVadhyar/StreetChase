@@ -15,9 +15,6 @@
     <Filter Include="Third Party Libraries">
       <UniqueIdentifier>{7f73c530-801f-4d21-86eb-0fa6fba70103}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Textures">
-      <UniqueIdentifier>{9e817d74-fa85-4115-99f5-e67ad1510358}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -25,93 +22,117 @@
     <Filter Include="Header Files\Not Header Only%28Have Source Files%29">
       <UniqueIdentifier>{69374c84-2023-4af9-a81e-f42f2c67d6b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ImGUI">
+    <Filter Include="Third Party Libraries\ImGUI">
       <UniqueIdentifier>{5a706ede-5dc0-433f-94e4-b0b2f19df2f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{c86a8324-bea6-4f70-933c-d6c6841d3770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{bd5eab61-3c12-4b8c-a0ba-6d51fe5d74e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Not Header Only%28Have Source Files%29\Renderer">
+      <UniqueIdentifier>{9e5557e4-36ac-47e5-a4ca-b2bf8bc54ba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Not Header Only%28Have Source Files%29\Editor">
+      <UniqueIdentifier>{1fe64f2f-7e3b-43ad-932b-98abf1f1d260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{9e817d74-fa85-4115-99f5-e67ad1510358}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Chrono.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swapchain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="validation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="buffers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swapchain.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClCompile>
-    <ClCompile Include="device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_vulkan.cpp">
-      <Filter>Source Files\ImGUI</Filter>
+      <Filter>Third Party Libraries\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="buffers.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Chrono.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="device.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="helper.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="shape.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="swapchain.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="validation.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="swapchain.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="gui.cpp">
+      <Filter>Source Files\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vulkaninit.hpp">
       <Filter>Header Files\Header Only</Filter>
     </ClInclude>
-    <ClInclude Include="buffers.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="chrono.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="helper.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="shape.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="validation.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Third Party Libraries</Filter>
     </ClInclude>
+    <ClInclude Include="buffers.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="chrono.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="device.hpp">
-      <Filter>Header Files\Not Header Only%28Have Source Files%29</Filter>
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="helper.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="shape.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="validation.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.hpp">
+      <Filter>Header Files\Not Header Only%28Have Source Files%29\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_truetype.h">
+      <Filter>Third Party Libraries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -133,17 +154,30 @@
     <None Include="circle.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="circle.frag" />
     <None Include="circle_frag.spv">
       <Filter>Shaders</Filter>
     </None>
     <None Include="circle_vert.spv">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="circle.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="astcenc-4.5.0-windows-x64\bin\astcenc-avx2.exe">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="compressTextures.bat">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture.jpg">
-      <Filter>Textures</Filter>
+      <Filter>Assets</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="AmaticSC-Bold.ttf">
+      <Filter>Assets</Filter>
+    </Font>
   </ItemGroup>
 </Project>
