@@ -3,24 +3,24 @@
 #include "shape.hpp"
 #include "chrono.hpp"
 #include "helper.hpp"
-void Shape::init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath) {
+void Shape::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath) {
 	this-> device = device;
 	this->swapChain = swapChain;
 	this->commandPool = commandPool;
 	this->textureSampler = textureSampler;
 
 	vertexBuffer.size = sizeof(vertices[0]) * vertices.size();
-	vertexBuffer.create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	vertexBuffer.create(*device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	vertexBuffer.copy(vertices.data(), commandPool);
 
 	indexBuffer.size = sizeof(indices[0]) * indices.size();
-	indexBuffer.create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	indexBuffer.create(*device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	indexBuffer.copy(indices.data(), commandPool);
 
-	texture.create(device, commandPool, texturePath);
+	texture.create(*device, commandPool, texturePath);
 	uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		uniformBuffers[i].create(device);
+		uniformBuffers[i].create(*device);
 	}
 	createDescriptorSetLayout();
 	createDescriptorPool();
@@ -34,8 +34,8 @@ void Shape::createGraphicsPipeline() {
 	auto vertShaderCode = readFile(vertexShaderPath);
 	auto fragShaderCode = readFile(fragmentShaderPath);
 
-	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, device.device);
-	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, device.device);
+	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, device->device);
+	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, device->device);
 
 	//create a struct to hold information about the shader to send to vulkan
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
@@ -103,11 +103,12 @@ void Shape::createGraphicsPipeline() {
 	VkPipelineMultisampleStateCreateInfo multisampling{};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.rasterizationSamples = device.msaaSamples;
+	multisampling.rasterizationSamples = device->msaaSamples;
 	multisampling.minSampleShading = 1.0f; // Optional
 	multisampling.pSampleMask = nullptr; // Optional
 	multisampling.alphaToCoverageEnable = VK_FALSE; // Optional
 	multisampling.alphaToOneEnable = VK_FALSE;
+	multisampling.sampleShadingEnable = VK_TRUE;
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -146,7 +147,7 @@ void Shape::createGraphicsPipeline() {
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-	if (vkCreatePipelineLayout(device.device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(device->device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
@@ -168,13 +169,13 @@ void Shape::createGraphicsPipeline() {
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1;
 
-	if (vkCreateGraphicsPipelines(device.device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(device->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
 	//destory the shader modules
-	vkDestroyShaderModule(device.device, fragShaderModule, nullptr);
-	vkDestroyShaderModule(device.device, vertShaderModule, nullptr);
+	vkDestroyShaderModule(device->device, fragShaderModule, nullptr);
+	vkDestroyShaderModule(device->device, vertShaderModule, nullptr);
 }
 
 
@@ -185,10 +186,10 @@ void Shape::destroy() {
 	texture.destroy();
 	vertexBuffer.destroy();
 	indexBuffer.destroy();
-	vkDestroyDescriptorPool(device.device, descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(device.device, descriptorSetLayout, nullptr);
-	vkDestroyPipeline(device.device, graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(device.device, pipelineLayout, nullptr);
+	vkDestroyDescriptorPool(device->device, descriptorPool, nullptr);
+	vkDestroyDescriptorSetLayout(device->device, descriptorSetLayout, nullptr);
+	vkDestroyPipeline(device->device, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(device->device, pipelineLayout, nullptr);
 }
 
 void Shape::createDescriptorPool() {
@@ -203,7 +204,7 @@ void Shape::createDescriptorPool() {
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	if (vkCreateDescriptorPool(device.device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+	if (vkCreateDescriptorPool(device->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }
@@ -229,7 +230,7 @@ void Shape::createDescriptorSetLayout() {
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
-	if (vkCreateDescriptorSetLayout(device.device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+	if (vkCreateDescriptorSetLayout(device->device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
@@ -242,7 +243,7 @@ void Shape::createDescriptorSets() {
 	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	allocInfo.pSetLayouts = layouts.data();
 	descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-	if (vkAllocateDescriptorSets(device.device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+	if (vkAllocateDescriptorSets(device->device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -275,8 +276,14 @@ void Shape::createDescriptorSets() {
 		descriptorWrites[1].descriptorCount = 1;
 		descriptorWrites[1].pImageInfo = &imageInfo;
 
-		vkUpdateDescriptorSets(device.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(device->device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
+}
+
+void Shape::recreateGraphicsPipeline() {
+	vkDestroyPipeline(device->device, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(device->device, pipelineLayout, nullptr);
+	createGraphicsPipeline();
 }
 
 void Shape::update(uint32_t currentFrame) {

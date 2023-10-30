@@ -33,13 +33,15 @@ void ChronoApplication::initVulkan() {
 	}
 	createSurface();
 	device.init(instance, surface);
-	swapChain.init(device, surface, window);
+	settings.maxMsaaSamples = device.msaaSamples;
+	settings.msaaSamples = device.msaaSamples;
+	swapChain.init(&device, surface, window);
 	createTextureSampler(device, &textureSampler);
 	createCommandPool();
 	shapes.push_back(Rectangle());
 	shapes.push_back(Triangle());
 	for(Shape& shape : shapes) {
-		shape.init(device, commandPool, &swapChain, textureSampler, "G:/Chronos/Assets/texture.jpg");
+		shape.init(&device, commandPool, &swapChain, textureSampler, "G:/Chronos/Assets/texture.jpg");
 	}
 	shapes[0].params.x = 0.5;
 	shapes[0].params.y = 0.5;
@@ -77,15 +79,47 @@ void ChronoApplication::mainLoop() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		gui(&guiParams);
+		if (guiParams.changeMSAA) {
+			if(settings.msaaSamples <= settings.maxMsaaSamples){
+				switch (settings.msaaSamples) {
+				case 1:
+					device.msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+					break;
+				case 2:
+					device.msaaSamples = VK_SAMPLE_COUNT_2_BIT;
+					break;
+				case 4:
+					device.msaaSamples = VK_SAMPLE_COUNT_4_BIT;
+					break;
+				case 8:
+					device.msaaSamples = VK_SAMPLE_COUNT_8_BIT;
+					break;
+				case 16:
+					device.msaaSamples = VK_SAMPLE_COUNT_16_BIT;
+					break;
+				}
+				swapChain.cleanup();
+				swapChain.init(&device, surface, window);
+			}
+			else {
+				settings.msaaSamples = device.msaaSamples;
+			}
+			guiParams.changeMSAA = false;
+		}
 		if (guiParams.addRectangle) {
 			shapes.push_back(Rectangle());
-			shapes.back().init(device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
+			shapes.back().init(&device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
+			shapes.back().params.x = -0.5;
+			shapes.back().params.y = -0.5;
+			shapes.back().params.xSize = 0.5;
+			shapes.back().params.ySize = 0.5;
+			shapes.back().params.rotation = 0;
 			guiParams.shapeParams.push_back(&shapes.back().params);
 			guiParams.addRectangle = false;
 		}
 		if (guiParams.addTriangle) {
 			shapes.push_back(Triangle());
-			shapes.back().init(device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
+			shapes.back().init(&device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
 			shapes.back().params.x = -0.5;
 			shapes.back().params.y = -0.5;
 			shapes.back().params.xSize = 0.5;
@@ -94,6 +128,7 @@ void ChronoApplication::mainLoop() {
 			guiParams.shapeParams.push_back(&shapes.back().params);
 			guiParams.addTriangle = false;
 		}
+
 		ImGui::Render();
 #endif
 		drawFrame();

@@ -83,7 +83,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurface
 
 	return details;
 }
-void SwapChain::init(Device device, VkSurfaceKHR surface, GLFWwindow* window) {
+void SwapChain::init(Device* device, VkSurfaceKHR surface, GLFWwindow* window) {
 	this->device = device;
 	this->surface = surface;
 	this->window = window;
@@ -96,7 +96,7 @@ void SwapChain::init(Device device, VkSurfaceKHR surface, GLFWwindow* window) {
 
 void SwapChain::create() {
 	//create the swapchain
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device.physicalDevice, surface);
+	SwapChainSupportDetails swapChainSupport = querySwapChainSupport((*device).physicalDevice, surface);
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
@@ -119,7 +119,7 @@ void SwapChain::create() {
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	QueueFamilyIndices indices = findQueueFamilies(device.physicalDevice, surface);
+	QueueFamilyIndices indices = findQueueFamilies(device->physicalDevice, surface);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily) {
@@ -138,12 +138,12 @@ void SwapChain::create() {
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = nullptr;
 
-	if (vkCreateSwapchainKHR(device.device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(device->device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create swap chain");
 	}
-	vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(device->device, swapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(device->device, swapChain, &imageCount, swapChainImages.data());
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
 }
@@ -151,14 +151,14 @@ void SwapChain::create() {
 void SwapChain::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
-		swapChainImageViews[i] = createImageView(device, swapChainImageFormat, swapChainImages[i]);
+		swapChainImageViews[i] = createImageView(*device, swapChainImageFormat, swapChainImages[i]);
 	}
 }
 
 void SwapChain::createRenderPass() {
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapChainImageFormat;
-	colorAttachment.samples = device.msaaSamples;
+	colorAttachment.samples = device->msaaSamples;
 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -215,7 +215,7 @@ void SwapChain::createRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(device.device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(device->device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 
@@ -249,7 +249,7 @@ void SwapChain::createRenderPass() {
 	renderPassInfo.pSubpasses = &subpass;
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
-	if (vkCreateRenderPass(device.device, &renderPassInfo, nullptr, &imguiRenderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(device->device, &renderPassInfo, nullptr, &imguiRenderPass) != VK_SUCCESS) {
 		throw std::runtime_error("Could not create Dear ImGui's render pass");
 	}
 #endif
@@ -274,7 +274,7 @@ void SwapChain::createFramebuffers() {
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
-			if (vkCreateFramebuffer(device.device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+			if (vkCreateFramebuffer(device->device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
 				throw std::runtime_error("failed to create framebuffer!");
 			}
 #ifdef DISPLAY_IMGUI
@@ -285,7 +285,7 @@ void SwapChain::createFramebuffers() {
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
-		if (vkCreateFramebuffer(device.device, &framebufferInfo, nullptr, &imguiFramebuffers[i]) != VK_SUCCESS) {
+		if (vkCreateFramebuffer(device->device, &framebufferInfo, nullptr, &imguiFramebuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 #endif
@@ -294,37 +294,37 @@ void SwapChain::createFramebuffers() {
 
 void SwapChain::createColorResources() {
 	VkFormat colorFormat = swapChainImageFormat;
-	createImage(device, swapChainExtent.width, swapChainExtent.height, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &colorImage, &colorImageMemory, device.msaaSamples);
+	createImage(*device, swapChainExtent.width, swapChainExtent.height, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &colorImage, &colorImageMemory, device->msaaSamples);
 
-	colorImageView = createImageView(device, colorFormat, colorImage);
+	colorImageView = createImageView(*device, colorFormat, colorImage);
 }
 
 void SwapChain::destroy() {
-	vkDestroyRenderPass(device.device, renderPass, nullptr);
+	vkDestroyRenderPass(device->device, renderPass, nullptr);
 #ifdef DISPLAY_IMGUI
-	vkDestroyRenderPass(device.device, imguiRenderPass, nullptr);
+	vkDestroyRenderPass(device->device, imguiRenderPass, nullptr);
 #endif
 }
 
 void SwapChain::cleanup() {
 	for (auto framebuffer : swapChainFramebuffers) {
-		vkDestroyFramebuffer(device.device, framebuffer, nullptr);
+		vkDestroyFramebuffer(device->device, framebuffer, nullptr);
 	}
 
 #ifdef DISPLAY_IMGUI
 	for (auto framebuffer : imguiFramebuffers) {
-		vkDestroyFramebuffer(device.device, framebuffer, nullptr);
+		vkDestroyFramebuffer(device->device, framebuffer, nullptr);
 	}
 #endif
-	vkDestroyImageView(device.device, colorImageView, nullptr);
-	vkDestroyImage(device.device, colorImage, nullptr);
-	vkFreeMemory(device.device, colorImageMemory, nullptr);
+	vkDestroyImageView(device->device, colorImageView, nullptr);
+	vkDestroyImage(device->device, colorImage, nullptr);
+	vkFreeMemory(device->device, colorImageMemory, nullptr);
 	//destroy the image views
 	for (auto imageView : swapChainImageViews) {
-		vkDestroyImageView(device.device, imageView, nullptr);
+		vkDestroyImageView(device->device, imageView, nullptr);
 	}
 	//destroy the swap chain
-	vkDestroySwapchainKHR(device.device, swapChain, nullptr);
+	vkDestroySwapchainKHR(device->device, swapChain, nullptr);
 }
 
 void SwapChain::recreate() {
@@ -335,11 +335,25 @@ void SwapChain::recreate() {
 		glfwWaitEvents();
 	}
 
-	vkDeviceWaitIdle(device.device);
+	vkDeviceWaitIdle(device->device);
 
 	cleanup();
 	create();
 	createImageViews();
 	createColorResources();
+	createFramebuffers();
+}
+
+void SwapChain::changeMsaa() {
+	vkDeviceWaitIdle(device->device);
+	cleanup();
+	vkDestroyRenderPass(device->device, renderPass, nullptr);
+#ifdef DISPLAY_IMGUI
+	vkDestroyRenderPass(device->device, imguiRenderPass, nullptr);
+#endif
+	create();
+	createImageViews();
+	createColorResources();
+	createRenderPass();
 	createFramebuffers();
 }

@@ -14,7 +14,7 @@ SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurface
 
 class SwapChain {
 public:
-	Device device = Device();
+	Device* device;
 	
 	VkSwapchainKHR swapChain;
 	VkFormat swapChainImageFormat;
@@ -29,7 +29,7 @@ public:
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	void init(Device device, VkSurfaceKHR surface, GLFWwindow* window);
+	void init(Device* device, VkSurfaceKHR surface, GLFWwindow* window);
 	void create();
 	void recreate();
 	void cleanup();
@@ -38,6 +38,7 @@ public:
 	void createRenderPass();
 	void createFramebuffers();
 	void createColorResources();
+	void changeMsaa();
 
 #ifdef DISPLAY_IMGUI
 	std::vector<VkFramebuffer> imguiFramebuffers;

@@ -57,6 +57,7 @@ void Device::createLogicalDevice(VkSurfaceKHR surface) {
 	//create a struct to hold information about the device to send to vulkan
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
+	deviceFeatures.sampleRateShading = VK_TRUE;
 
 	//create a struct to hold information about the device to send to vulkan
 	VkDeviceCreateInfo createInfo{};

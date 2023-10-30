@@ -21,7 +21,7 @@ public:
 	ShapeParams params;
 	std::vector<uint16_t> indices;
 	std::vector<Vertex> vertices;
-	Device device;
+	Device* device;
 	SwapChain* swapChain;
 	VkCommandPool commandPool;
 	VkSampler textureSampler;
@@ -35,13 +35,14 @@ public:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<UniformBuffer> uniformBuffers;
-	void init(Device device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath);
+	void init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath);
 	void createGraphicsPipeline();
 	void createDescriptorPool();
 	void createDescriptorSetLayout();
 	void createDescriptorSets();
 	void update(uint32_t currentFrame);
 	void destroy();
+	void recreateGraphicsPipeline();
 };
 
 class Rectangle: public Shape {
