@@ -5,9 +5,30 @@
 std::vector<bool> shapeHeader;
 
 void gui(GUIParams* gui) {
-	char texturePath[30] = "texture.jpg";
+	char texturePath[100] = "G:/Chronos/Assets/texture.jpg";
 	shapeHeader.resize(gui->shapeParams.size());
 	ImGui::Begin("GUI");
+	if (ImGui::BeginMenuBar) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Close", "Ctrl+W")) { /* Do stuff */ }
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Settings")) {
+			if (ImGui::MenuItem("MSAA")) {
+
+			}
+			if (ImGui::MenuItem("VSync")) {
+
+			}
+			if (ImGui::MenuItem("Post Processing")) {
+
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}	
 	ImGui::ColorEdit3("Background Color", gui->bgColor);
 	ImGui::InputText("Texture Path", texturePath, sizeof(texturePath));
 	gui->addRectangle = ImGui::Button("Add Rectangle");

@@ -39,7 +39,7 @@ void ChronoApplication::initVulkan() {
 	shapes.push_back(Rectangle());
 	shapes.push_back(Triangle());
 	for(Shape& shape : shapes) {
-		shape.init(device, commandPool, &swapChain, textureSampler, "texture.jpg");
+		shape.init(device, commandPool, &swapChain, textureSampler, "G:/Chronos/Assets/texture.jpg");
 	}
 	shapes[0].params.x = 0.5;
 	shapes[0].params.y = 0.5;
@@ -429,7 +429,6 @@ void ChronoApplication::initImGui() {
 	init_info.MinImageCount = 2;
 	init_info.ImageCount = MAX_FRAMES_IN_FLIGHT;
 	init_info.CheckVkResultFn = nullptr; //add a fucntion to this
-	init_info.MSAASamples = device.msaaSamples;
 	ImGui_ImplVulkan_Init(&init_info, swapChain.imguiRenderPass);
 
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};

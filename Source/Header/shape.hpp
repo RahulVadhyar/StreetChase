@@ -16,8 +16,8 @@ struct ShapeParams {
 
 class Shape {
 public:
-	const char* vertexShaderPath = "vert.spv";
-	const char* fragmentShaderPath = "frag.spv";
+	const char* vertexShaderPath = "G:/Chronos/Shaders/vert.spv";
+	const char* fragmentShaderPath = "G:/Chronos/Shaders/frag.spv";
 	ShapeParams params;
 	std::vector<uint16_t> indices;
 	std::vector<Vertex> vertices;
