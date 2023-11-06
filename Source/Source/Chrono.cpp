@@ -7,6 +7,7 @@
 #include "Vertex.hpp"
 
 
+
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	auto app = reinterpret_cast<ChronoApplication*>(glfwGetWindowUserPointer(window));
 	app->framebufferResized = true;
@@ -54,6 +55,8 @@ void ChronoApplication::initVulkan() {
 	shapes[1].params.xSize = 0.5;
 	shapes[1].params.ySize = 0.5;
 	shapes[1].params.rotation = 0;
+
+	textManager.init(&device, commandPool, &swapChain);
 
 	createCommandBuffer();
 	createSyncObjects();
@@ -143,6 +146,7 @@ void ChronoApplication::cleanup() {
 	for(Shape& shape : shapes) {
 		shape.destroy();
 	}
+	textManager.destroy();
 	vkDestroyCommandPool(device.device, commandPool, nullptr);
 #ifdef DISPLAY_IMGUI
 	ImGui_ImplVulkan_Shutdown();
@@ -194,7 +198,9 @@ void ChronoApplication::drawFrame(){
 	for(Shape shape: shapes) {
 		shape.update(currentFrame);
 	}
-
+	textManager.beginUpdate();
+	textManager.add("Hello world", 0.25f, 0.25f, Text::Center);
+	textManager.endUpdate();
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
@@ -389,6 +395,18 @@ void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imag
 		vkCmdBindIndexBuffer(commandBuffers[currentFrame], shape.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
 		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, shape.pipelineLayout, 0, 1, &shape.descriptorSets[currentFrame], 0, nullptr);
 		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(shape.indices.size()), 1, 0, 0, 0);
+	}
+	vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, textManager.graphicsPipeline);
+	vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
+	vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
+	VkBuffer vertexBuffers[] = { textManager.vertexBuffer};
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
+	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 1, 1, vertexBuffers, offsets);
+	vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, textManager.pipelineLayout, 0, 1, &textManager.descriptorSets[currentFrame], 0, nullptr);
+	for (uint32_t j = 0; j < textManager.numLetters; j++)
+	{
+		vkCmdDraw(commandBuffers[currentFrame], 4, 1, j * 4, 0);
 	}
 	vkCmdEndRenderPass(commandBuffers[currentFrame]);
 

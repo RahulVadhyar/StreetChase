@@ -6,6 +6,7 @@
 #include "buffers.hpp"
 #include "swapchain.hpp"
 #include "texture.hpp"
+#include "text.hpp"
 #ifdef DISPLAY_IMGUI
 #include "gui.hpp"
 #endif
@@ -34,6 +35,7 @@ private:
 	int height = 600;
 	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
 	std::vector<Shape> shapes;
+	Text textManager;
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();

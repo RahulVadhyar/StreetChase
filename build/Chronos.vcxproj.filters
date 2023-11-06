@@ -25,6 +25,9 @@
     <ClCompile Include="G:\Chronos\Source\Source\swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="G:\Chronos\Source\Source\text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="G:\Chronos\Source\Source\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

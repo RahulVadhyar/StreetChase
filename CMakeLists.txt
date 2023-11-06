@@ -16,6 +16,9 @@ set(VULKAN_SDK_INCLUDE ${VULKAN_SDK_DIR}/Include) #glm is also included
 set(IMGUI_DIR imgui) 
 set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
 
+#fonts
+set(FONTS_DIR Assets/usascii/arial)
+
 #header files
 include_directories(Include)
 include_directories(Source/Header)
@@ -23,7 +26,7 @@ include_directories(${GLFW_DIR})
 include_directories(${VULKAN_SDK_INCLUDE})      
 include_directories(${IMGUI_DIR})               
 include_directories(${IMGUI_BACKENDS})
-
+include_directories(${FONTS_DIR})
 
 #source files
 set(SOURCE_DIR Source/Source)
