@@ -19,7 +19,6 @@ public:
 	VkSwapchainKHR swapChain;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
-	VkRenderPass renderPass;
 	VkSurfaceKHR surface;
 	GLFWwindow* window;
 	VkImage colorImage;
@@ -27,22 +26,14 @@ public:
 	VkImageView colorImageView;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
+	VkRenderPass renderPass;	
 
 	void init(Device* device, VkSurfaceKHR surface, GLFWwindow* window);
 	void create();
 	void recreate();
 	void cleanup();
-	void destroy();
 	void createImageViews();
-	void createRenderPass();
-	void createFramebuffers();
 	void createColorResources();
 	void changeMsaa();
-
-#ifdef DISPLAY_IMGUI
-	std::vector<VkFramebuffer> imguiFramebuffers;
-	VkRenderPass imguiRenderPass;
-#endif
 
 };

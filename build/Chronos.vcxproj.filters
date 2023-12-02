@@ -22,6 +22,9 @@
     <ClCompile Include="G:\Chronos\Source\Source\shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="G:\Chronos\Source\Source\shapeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="G:\Chronos\Source\Source\swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

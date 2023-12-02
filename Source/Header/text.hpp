@@ -27,6 +27,9 @@ public:
 	VkDeviceMemory textureImageMemory;
 	glm::vec4 * mappedMemory;
 
+	std::vector<VkCommandBuffer> commandBuffers;
+	VkRenderPass renderPass;
+	std::vector<VkFramebuffer> framebuffers;
 	std::vector<VkDescriptorSet> descriptorSets;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
@@ -42,4 +45,6 @@ public:
 	void beginUpdate();
 	void add(std::string text, float x, float y, TextAlignment alignment);
 	void endUpdate();
+	void changeMsaa();
+	void render(uint32_t currentFrame, uint32_t imageIndex, float bgColor[3]);
 };

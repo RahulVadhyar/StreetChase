@@ -1,13 +1,13 @@
 #include "vulkaninit.hpp"
 #include "shape.hpp"
 #include "gui.hpp"
+#include "Chrono.hpp"
+#include "helper.hpp"
 #ifdef DISPLAY_IMGUI
-std::vector<bool> shapeHeader;
 
-GUIInternal internal{};
-void gui(GUIParams* gui) {
+void GUI::config() {
 	char texturePath[100] = "G:/Chronos/Assets/texture.jpg";
-	shapeHeader.resize(gui->shapeParams.size());
+	shapeHeader.resize(params->shapeManager->shapes.size());
 
 	if (ImGui::BeginMainMenuBar()) {
 		ImGui::MenuItem("Add Shape", nullptr, &internal.showAddShapeWindow);
@@ -18,11 +18,10 @@ void gui(GUIParams* gui) {
 	}
 	if(internal.showShapeWindow) {
 		ImGui::Begin("Shapes");
-		{	internal.showAddShapeWindow = ImGui::Button("Add Shape");
-			for (size_t i = 0; i < gui->shapeParams.size(); i++) {
+		{	for (size_t i = 0; i < params->shapeManager->shapes.size(); i++) {
 				shapeHeader[i] = ImGui::CollapsingHeader(("Shape Params " + std::to_string(i + 1)).c_str(), shapeHeader[i]);
 				if (shapeHeader[i])
-					shapeMover(gui->shapeParams[i]);
+					shapeMover(&params->shapeManager->shapes[i].params);
 			}
 		}
 		ImGui::End();
@@ -66,14 +65,14 @@ void gui(GUIParams* gui) {
 					case 0:
 						break;
 					case 1:
-						gui->addRectangle = true;
+						params->addRectangle = true;
 						break;
 					case 2:
-						gui->addTriangle = true;
+						params->addTriangle = true;
 						break;	
 				}
 				const char* intermediate = texturePath;
-				gui->texturePath = intermediate;
+				params->texturePath = intermediate;
 			}
 		}
 		ImGui::End();
@@ -82,9 +81,9 @@ void gui(GUIParams* gui) {
 
 	if (internal.showSettingsWindow) { 
 		ImGui::Begin("Settings");
-		{	ImGui::Checkbox("Vsync", &gui->settings->vsync);
-			ImGui::ColorEdit3("Background Color", gui->bgColor);
-			if (ImGui::BeginCombo("MSAA", ("MSAA " + std::to_string(gui->settings->msaaSamples)).c_str(), 0)) {
+		{	ImGui::Checkbox("Vsync", &params->settings->vsync);
+			ImGui::ColorEdit3("Background Color", params->bgColor);
+			if (ImGui::BeginCombo("MSAA", ("MSAA " + std::to_string(params->settings->msaaSamples)).c_str(), 0)) {
 				bool selected[5] = { false, false, false, false, false };
 				ImGui::Selectable("MSAA 1", &selected[1],0);
 				ImGui::Selectable("MSAA 2", &selected[2],0);
@@ -97,19 +96,19 @@ void gui(GUIParams* gui) {
 						switch (i)
 						{
 						case 1:
-							gui->settings->msaaSamples = 1;
+							params->settings->msaaSamples = 1;
 							break;
 						case 2:
-							gui->settings->msaaSamples = 2;
+							params->settings->msaaSamples = 2;
 							break;
 						case 3:
-							gui->settings->msaaSamples = 4;
+							params->settings->msaaSamples = 4;
 							break;
 						case 4:
-							gui->settings->msaaSamples = 8;
+							params->settings->msaaSamples = 8;
 							break;
 						case 5:
-							gui->settings->msaaSamples = 16;
+							params->settings->msaaSamples = 16;
 							break;
 						}
 						
@@ -121,19 +120,19 @@ void gui(GUIParams* gui) {
 	if (internal.showPostProcessingWindow) {
 		ImGui::Begin("Post Processing");
 		{
-			ImGui::SliderFloat("Brightness", &gui->settings->postProcessing.brightness, 0.0f, 1.0f);
-			ImGui::SliderFloat("Saturation", &gui->settings->postProcessing.saturation, 0.0f, 1.0f);
-			ImGui::SliderFloat("Exposure", &gui->settings->postProcessing.exposure, 0.0f, 1.0f);
-			ImGui::SliderFloat("Brilliance", &gui->settings->postProcessing.brilliance, 0.0f, 1.0f);
-			ImGui::SliderFloat("Highlights", &gui->settings->postProcessing.highlights, 0.0f, 1.0f);
-			ImGui::SliderFloat("Shadows", &gui->settings->postProcessing.shadows, 0.0f, 1.0f);
-			ImGui::SliderFloat("Contrast", &gui->settings->postProcessing.contrast, 0.0f, 1.0f);
-			ImGui::SliderFloat("Black Point", &gui->settings->postProcessing.blackPoint, 0.0f, 1.0f);
-			ImGui::SliderFloat("Vibrancy", &gui->settings->postProcessing.vibrancy, 0.0f, 1.0f);
-			ImGui::SliderFloat("Warmth", &gui->settings->postProcessing.warmth, 0.0f, 1.0f);
-			ImGui::SliderFloat("Tint", &gui->settings->postProcessing.tint, 0.0f, 1.0f);
-			ImGui::SliderFloat("Sharpness", &gui->settings->postProcessing.sharpness, 0.0f, 1.0f);
-			ImGui::SliderFloat("Vignette", &gui->settings->postProcessing.vignette, 0.0f, 1.0f);
+			ImGui::SliderFloat("Brightness", &params->settings->postProcessing.brightness, 0.0f, 1.0f);
+			ImGui::SliderFloat("Saturation", &params->settings->postProcessing.saturation, 0.0f, 1.0f);
+			ImGui::SliderFloat("Exposure", &params->settings->postProcessing.exposure, 0.0f, 1.0f);
+			ImGui::SliderFloat("Brilliance", &params->settings->postProcessing.brilliance, 0.0f, 1.0f);
+			ImGui::SliderFloat("Highlights", &params->settings->postProcessing.highlights, 0.0f, 1.0f);
+			ImGui::SliderFloat("Shadows", &params->settings->postProcessing.shadows, 0.0f, 1.0f);
+			ImGui::SliderFloat("Contrast", &params->settings->postProcessing.contrast, 0.0f, 1.0f);
+			ImGui::SliderFloat("Black Point", &params->settings->postProcessing.blackPoint, 0.0f, 1.0f);
+			ImGui::SliderFloat("Vibrancy", &params->settings->postProcessing.vibrancy, 0.0f, 1.0f);
+			ImGui::SliderFloat("Warmth", &params->settings->postProcessing.warmth, 0.0f, 1.0f);
+			ImGui::SliderFloat("Tint", &params->settings->postProcessing.tint, 0.0f, 1.0f);
+			ImGui::SliderFloat("Sharpness", &params->settings->postProcessing.sharpness, 0.0f, 1.0f);
+			ImGui::SliderFloat("Vignette", &params->settings->postProcessing.vignette, 0.0f, 1.0f);
 
 		}
 		ImGui::End();
@@ -147,4 +146,164 @@ void shapeMover(ShapeParams* shapeParams) {
 	ImGui::DragFloat("Size Y", &shapeParams->ySize, 0.001f);
 	ImGui::DragFloat("Rotation", &shapeParams->rotation, 1.0f);
 };
+
+
+void GUI::init(Device * device, GLFWwindow* window, SwapChain* swapChain, VkInstance instance, VkSurfaceKHR surface, GUIParams* params) {
+	this->device = device;
+	this->swapChain = swapChain;
+	this->params = params;
+	this->surface = surface;
+	this->window = window;
+
+	renderPass = createRenderPass(*device, *swapChain, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, false, false, true);
+	framebuffers = createFramebuffer(*device, *swapChain, renderPass, false);
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+	ImGui::StyleColorsDark();
+
+	std::array<VkDescriptorPoolSize, 2> poolSizes{};
+	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+	VkDescriptorPoolSize pool_sizes[] = { { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 } };
+	VkDescriptorPoolCreateInfo pool_info = {};
+	pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+	pool_info.maxSets = 1;
+	pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+	pool_info.pPoolSizes = pool_sizes;
+	vkCreateDescriptorPool(device->device, &pool_info, nullptr, &descriptorPool);
+
+	ImGui_ImplGlfw_InitForVulkan(window, true);
+	ImGui_ImplVulkan_InitInfo init_info = {};
+	init_info.Instance = instance;
+	init_info.PhysicalDevice = device->physicalDevice;
+	init_info.Device = device->device;
+	init_info.QueueFamily = findQueueFamilies(device->physicalDevice, surface).graphicsFamily.value();
+	init_info.Queue = device->graphicsQueue;
+	init_info.PipelineCache = VK_NULL_HANDLE;
+	init_info.DescriptorPool = descriptorPool;
+	init_info.Allocator = nullptr;
+	init_info.MinImageCount = 2;
+	init_info.ImageCount = MAX_FRAMES_IN_FLIGHT;
+	init_info.CheckVkResultFn = nullptr; //add a fucntion to this
+	ImGui_ImplVulkan_Init(&init_info, renderPass);
+
+	VkCommandPoolCreateInfo commandPoolCreateInfo = {};
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	commandPoolCreateInfo.queueFamilyIndex = findQueueFamilies(device->physicalDevice, surface).graphicsFamily.value();
+	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+	if (vkCreateCommandPool(device->device, &commandPoolCreateInfo, nullptr, &commandPool) != VK_SUCCESS) {
+		throw std::runtime_error("Could not create graphics command pool");
+	}
+
+	VkCommandBuffer command_buffer = beginSingleTimeCommands(commandPool, device->device);
+	ImGui_ImplVulkan_CreateFontsTexture();
+	endSingleTimeCommands(&command_buffer, *device, commandPool);
+
+
+	commandBuffers.resize(swapChain->swapChainImageViews.size());
+	VkCommandBufferAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+	if (vkAllocateCommandBuffers(device->device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate command buffers!");
+	}
+
+	std::cout << "Command Buffers(GUI): " << std::endl;
+	for(auto commandBuffer : commandBuffers)
+		std::cout << commandBuffer << std::endl;
+}
+
+void GUI::destroy() {
+	ImGui_ImplVulkan_Shutdown();
+	vkDestroyCommandPool(device->device, commandPool, nullptr);
+	vkDestroyDescriptorPool(device->device, descriptorPool, nullptr);
+}
+
+void GUI::update() {
+	ImGui_ImplVulkan_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	config();
+	if (params->changeMSAA) {
+		if (params->settings->msaaSamples <= params->settings->maxMsaaSamples) {
+			switch (params->settings->msaaSamples) {
+			case 1:
+				device->msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+				break;
+			case 2:
+				device->msaaSamples = VK_SAMPLE_COUNT_2_BIT;
+				break;
+			case 4:
+				device->msaaSamples = VK_SAMPLE_COUNT_4_BIT;
+				break;
+			case 8:
+				device->msaaSamples = VK_SAMPLE_COUNT_8_BIT;
+				break;
+			case 16:
+				device->msaaSamples = VK_SAMPLE_COUNT_16_BIT;
+				break;
+			}
+			swapChain->cleanup();
+			swapChain->init(device, surface, window);
+		}
+		else {
+			params->settings->msaaSamples = device->msaaSamples;
+		}
+		params->changeMSAA = false;
+	}
+	if (params->addRectangle) {
+		ShapeParams shapeParams;
+		shapeParams.x = -0.5;
+		shapeParams.y = -0.5;
+		shapeParams.xSize = 0.5;
+		shapeParams.ySize = 0.5;
+		shapeParams.rotation = 0;
+		params->shapeManager->addRectangle(shapeParams, params->texturePath);	
+		params->addRectangle = false;
+	}
+	if (params->addTriangle) {
+		ShapeParams shapeParams;
+		shapeParams.x = -0.5;
+		shapeParams.y = -0.5;
+		shapeParams.xSize = 0.5;
+		shapeParams.ySize = 0.5;
+		shapeParams.rotation = 0;
+		params->shapeManager->addTriangle(shapeParams, params->texturePath);
+		params->addTriangle = false;
+	}
+
+
+	ImGui::Render();
+}
+
+void GUI::render(uint32_t currentFrame, uint32_t imageIndex, float bgColor[3]) {
+	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+	VkCommandBufferBeginInfo beginInfo{};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	VkClearValue clearColor = { bgColor[0], bgColor[1], bgColor[2], 1.0f };
+	vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
+	VkRenderPassBeginInfo info = {};
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	info.renderPass = renderPass;
+	info.framebuffer = framebuffers[imageIndex];
+	info.renderArea.extent = swapChain->swapChainExtent;
+	info.clearValueCount = 1;
+	info.pClearValues = &clearColor;
+	vkCmdBeginRenderPass(commandBuffers[currentFrame], &info, VK_SUBPASS_CONTENTS_INLINE);
+	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffers[currentFrame]);
+	vkCmdEndRenderPass(commandBuffers[currentFrame]);
+	vkEndCommandBuffer(commandBuffers[currentFrame]);
+}
+
 #endif

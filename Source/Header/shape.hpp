@@ -25,6 +25,7 @@ public:
 	SwapChain* swapChain;
 	VkCommandPool commandPool;
 	VkSampler textureSampler;
+	VkRenderPass* renderPass;
 
 	Buffer vertexBuffer;
 	Buffer indexBuffer;
@@ -35,7 +36,7 @@ public:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<UniformBuffer> uniformBuffers;
-	void init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath);
+	void init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath, VkRenderPass* renderPass);
 	void createGraphicsPipeline();
 	void createDescriptorPool();
 	void createDescriptorSetLayout();

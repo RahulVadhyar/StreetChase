@@ -7,6 +7,7 @@
 #include "swapchain.hpp"
 #include "texture.hpp"
 #include "text.hpp"
+#include "shapeManager.hpp"
 #ifdef DISPLAY_IMGUI
 #include "gui.hpp"
 #endif
@@ -17,6 +18,7 @@ class ChronoApplication {
 public:
 	void run() {
 #ifdef DISPLAY_IMGUI
+		gui = GUI();
 		guiParams.settings = &settings;
 #endif
 		initWindow();
@@ -25,8 +27,9 @@ public:
 		cleanup();
 	}
 	bool framebufferResized = false;
-	Settings settings{};
+	
 #ifdef DISPLAY_IMGUI
+	Settings settings{};
 	GUIParams guiParams{};
 #endif
 private:
@@ -34,7 +37,7 @@ private:
 	int width = 800;
 	int height = 600;
 	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
-	std::vector<Shape> shapes;
+	ShapeManager shapeManager;
 	Text textManager;
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
@@ -46,8 +49,6 @@ private:
 	SwapChain swapChain = SwapChain();
 	VkCommandPool commandPool;
 	
-	std::vector<VkCommandBuffer> commandBuffers;
-
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
@@ -62,20 +63,13 @@ private:
 	void createSurface();
 	void drawFrame();
 	void createSyncObjects();
-	void createCommandBuffer();
-	void recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex);
-	void createCommandPool();
 
 #ifdef DISPLAY_IMGUI
-	VkDescriptorPool imguiPool;
-	VkCommandPool imguiCommandPool;
-	std::vector<VkCommandBuffer> imguiCommandBuffers;
-	void initImGui();
-
+	GUI gui;
 #endif
 
 	void showfps() {
-		float current_time = glfwGetTime();
+		float current_time = static_cast<float>(glfwGetTime());
 		float fps = 1.0f / (current_time - prev_time);
 		prev_time = current_time;
 		std::cout << "FPS: " << fps << std::endl;

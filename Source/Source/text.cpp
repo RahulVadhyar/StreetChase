@@ -45,7 +45,7 @@ void Text::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain)
 
 	VkPhysicalDeviceProperties properties{};
 	vkGetPhysicalDeviceProperties(device->physicalDevice, &properties);
-
+	
 	//create the sampler
 	VkSamplerCreateInfo samplerInfo{};
 
@@ -73,6 +73,14 @@ void Text::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain)
 	}
 
 	//create all of the other thigns
+#ifdef DISPLAY_IMGUI
+	renderPass = createRenderPass(*device, *swapChain, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, true, false, false);
+#else 
+	renderPass = createRenderPass(*device, *swapChain, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, true, false);
+#endif
+	commandBuffers = createCommandBuffer(*device, *swapChain, commandPool);
+	framebuffers = createFramebuffer(*device, *swapChain, renderPass, true);
+
 	createDescriptorSetLayout();
 	createDescriptorPool();
 	createGraphicsPipeline();
@@ -231,7 +239,7 @@ void Text::createGraphicsPipeline() {
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = (*swapChain).renderPass;
+	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1;
@@ -247,6 +255,7 @@ void Text::createGraphicsPipeline() {
 
 
 void Text::destroy() {
+	vkDestroyRenderPass(device->device, renderPass, nullptr);
 	vkDestroySampler(device->device, textureSampler, nullptr);
 	vkDestroyImageView(device->device, textureImageView, nullptr);
 	vkDestroyImage(device->device, texture, nullptr);
@@ -408,4 +417,63 @@ void Text::add(std::string text, float x, float y, TextAlignment alignment) {
 void Text::endUpdate() {
 	vkUnmapMemory(device->device, vertexBufferMemory);
 	mappedMemory = nullptr;
+}
+
+void Text::changeMsaa() {
+	vkDestroyRenderPass(device->device, renderPass, nullptr);
+#ifdef DISPLAY_IMGUI
+	renderPass = createRenderPass(*device, *swapChain, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, true, false, false);
+#else 
+	renderPass = createRenderPass(*device, *swapChain, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, true, false);
+#endif
+}
+
+void Text::render(uint32_t currentFrame, uint32_t imageIndex, float bgColor[3]) {
+	VkCommandBufferBeginInfo beginInfo{};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	if (vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo) != VK_SUCCESS) {
+		throw std::runtime_error("failed to begin recording command buffer!");
+	}
+
+	VkRenderPassBeginInfo renderPassInfo{};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	renderPassInfo.renderPass = renderPass;
+	renderPassInfo.framebuffer = framebuffers[imageIndex];
+	renderPassInfo.renderArea.offset = { 0, 0 };
+	renderPassInfo.renderArea.extent = swapChain->swapChainExtent;
+	VkClearValue clearColor = { bgColor[0], bgColor[1], bgColor[2], 1.0f };
+	renderPassInfo.clearValueCount = 1;
+	renderPassInfo.pClearValues = &clearColor;
+
+	VkViewport viewport{};
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width = static_cast<float> (swapChain->swapChainExtent.width);
+	viewport.height = static_cast<float> (swapChain->swapChainExtent.height);
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+
+	VkRect2D scissor{};
+	scissor.offset = { 0, 0 };
+	scissor.extent = swapChain->swapChainExtent;
+
+	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	//text
+	vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
+	vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
+	VkBuffer vertexBuffers[] = { vertexBuffer };
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
+	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 1, 1, vertexBuffers, offsets);
+	vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+	for (uint32_t j = 0; j < numLetters; j++)
+	{
+		vkCmdDraw(commandBuffers[currentFrame], 3, 1, j * 4, 0);
+	}
+	vkCmdEndRenderPass(commandBuffers[currentFrame]);
+
+	if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
+		throw std::runtime_error("failed to record command buffer!");
+	}
 }

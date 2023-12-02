@@ -3,11 +3,12 @@
 #include "shape.hpp"
 #include "chrono.hpp"
 #include "helper.hpp"
-void Shape::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath) {
+void Shape::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain, VkSampler textureSampler, std::string texturePath, VkRenderPass* renderPass) {
 	this-> device = device;
 	this->swapChain = swapChain;
 	this->commandPool = commandPool;
 	this->textureSampler = textureSampler;
+	this->renderPass = renderPass;
 
 	vertexBuffer.size = sizeof(vertices[0]) * vertices.size();
 	vertexBuffer.create(*device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -164,7 +165,7 @@ void Shape::createGraphicsPipeline() {
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = (*swapChain).renderPass;
+	pipelineInfo.renderPass = *renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1;

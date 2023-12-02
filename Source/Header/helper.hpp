@@ -1,4 +1,6 @@
 #pragma once
+#include "vulkaninit.hpp"
+#include "swapchain.hpp"
 struct QueueFamilyIndices {
 	std::optional <uint32_t> graphicsFamily;
 	std::optional <uint32_t> presentFamily;
@@ -27,7 +29,9 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 bool isDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
 VkCommandPool createCommandPool(Device device, VkSurfaceKHR surface);
-
+VkRenderPass createRenderPass(Device device, SwapChain swapChain, VkImageLayout initalLayout, VkImageLayout finalLayout, VkImageLayout msaaFinalLayout, bool msaa, bool clearFramebuffer, bool dependency);
+std::vector<VkFramebuffer> createFramebuffer(Device device, SwapChain swapChain, VkRenderPass renderPass, bool msaa);
+std::vector<VkCommandBuffer> createCommandBuffer(Device device, SwapChain swapChain, VkCommandPool commandPool);
 std::vector<char> readFile(const std::string& filename);
 VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
 VkSampleCountFlagBits getMaxUsableSampleCount(VkPhysicalDevice physicalDevice);

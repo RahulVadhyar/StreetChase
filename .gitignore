@@ -361,3 +361,17 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+build/*
+.vscode
+build/ALL_BUILD.vcxproj
+build/Chronos.vcxproj
+build/Chronos.vcxproj.filters
+build/CMakeCache.txt
+build/ZERO_CHECK.vcxproj
+build/CMakeFiles/CMakeConfigureLog.yaml
+build/CMakeFiles/generate.stamp.depend
+build/CMakeFiles/3.26.4/CMakeDetermineCompilerABI_C.bin
+build/CMakeFiles/3.26.4/CMakeDetermineCompilerABI_CXX.bin
+build/CMakeFiles/3.26.4/CompilerIdC/CompilerIdC.exe
+build/CMakeFiles/3.26.4/CompilerIdCXX/CompilerIdCXX.exe

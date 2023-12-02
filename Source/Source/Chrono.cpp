@@ -6,8 +6,6 @@
 #include "helper.hpp"
 #include "Vertex.hpp"
 
-
-
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	auto app = reinterpret_cast<ChronoApplication*>(glfwGetWindowUserPointer(window));
 	app->framebufferResized = true;
@@ -34,37 +32,22 @@ void ChronoApplication::initVulkan() {
 	}
 	createSurface();
 	device.init(instance, surface);
+#ifdef DISPLAY_IMGUI	
 	settings.maxMsaaSamples = device.msaaSamples;
 	settings.msaaSamples = device.msaaSamples;
+#endif
 	swapChain.init(&device, surface, window);
 	createTextureSampler(device, &textureSampler);
-	createCommandPool();
-	shapes.push_back(Rectangle());
-	shapes.push_back(Triangle());
-	for(Shape& shape : shapes) {
-		shape.init(&device, commandPool, &swapChain, textureSampler, "G:/Chronos/Assets/texture.jpg");
-	}
-	shapes[0].params.x = 0.5;
-	shapes[0].params.y = 0.5;
-	shapes[0].params.xSize = 0.5;
-	shapes[0].params.ySize = 0.5;
-	shapes[0].params.rotation = 0;
-
-	shapes[1].params.x = -0.5;
-	shapes[1].params.y = -0.5;
-	shapes[1].params.xSize = 0.5;
-	shapes[1].params.ySize = 0.5;
-	shapes[1].params.rotation = 0;
-
+	commandPool = createCommandPool(device, swapChain.surface);
+	shapeManager.init(&device, &swapChain, commandPool, textureSampler);
 	textManager.init(&device, commandPool, &swapChain);
 
-	createCommandBuffer();
 	createSyncObjects();
 #ifdef DISPLAY_IMGUI
-	initImGui();
+	gui.init(&device, window, &swapChain, instance, surface, &guiParams);
 	guiParams.bgColor = bgColor;
-	guiParams.shapeParams.push_back(&shapes[0].params);
-	guiParams.shapeParams.push_back(&shapes[1].params);
+	guiParams.settings = &settings;	
+	guiParams.shapeManager = &shapeManager;
 #endif
 }
 
@@ -77,63 +60,6 @@ void ChronoApplication::mainLoop() {
 			glfwSetWindowShouldClose(window, true);
 		}
 		glfwPollEvents();
-#ifdef DISPLAY_IMGUI
-		ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-		gui(&guiParams);
-		if (guiParams.changeMSAA) {
-			if(settings.msaaSamples <= settings.maxMsaaSamples){
-				switch (settings.msaaSamples) {
-				case 1:
-					device.msaaSamples = VK_SAMPLE_COUNT_1_BIT;
-					break;
-				case 2:
-					device.msaaSamples = VK_SAMPLE_COUNT_2_BIT;
-					break;
-				case 4:
-					device.msaaSamples = VK_SAMPLE_COUNT_4_BIT;
-					break;
-				case 8:
-					device.msaaSamples = VK_SAMPLE_COUNT_8_BIT;
-					break;
-				case 16:
-					device.msaaSamples = VK_SAMPLE_COUNT_16_BIT;
-					break;
-				}
-				swapChain.cleanup();
-				swapChain.init(&device, surface, window);
-			}
-			else {
-				settings.msaaSamples = device.msaaSamples;
-			}
-			guiParams.changeMSAA = false;
-		}
-		if (guiParams.addRectangle) {
-			shapes.push_back(Rectangle());
-			shapes.back().init(&device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
-			shapes.back().params.x = -0.5;
-			shapes.back().params.y = -0.5;
-			shapes.back().params.xSize = 0.5;
-			shapes.back().params.ySize = 0.5;
-			shapes.back().params.rotation = 0;
-			guiParams.shapeParams.push_back(&shapes.back().params);
-			guiParams.addRectangle = false;
-		}
-		if (guiParams.addTriangle) {
-			shapes.push_back(Triangle());
-			shapes.back().init(&device, commandPool, &swapChain, textureSampler, guiParams.texturePath);
-			shapes.back().params.x = -0.5;
-			shapes.back().params.y = -0.5;
-			shapes.back().params.xSize = 0.5;
-			shapes.back().params.ySize = 0.5;
-			shapes.back().params.rotation = 0;
-			guiParams.shapeParams.push_back(&shapes.back().params);
-			guiParams.addTriangle = false;
-		}
-
-		ImGui::Render();
-#endif
 		drawFrame();
 	}
 	vkDeviceWaitIdle(device.device);
@@ -143,14 +69,10 @@ void ChronoApplication::cleanup() {
 
 	swapChain.cleanup();
 	vkDestroySampler(device.device, textureSampler, nullptr);
-	for(Shape& shape : shapes) {
-		shape.destroy();
-	}
+	shapeManager.destroy();
 	textManager.destroy();
-	vkDestroyCommandPool(device.device, commandPool, nullptr);
 #ifdef DISPLAY_IMGUI
-	ImGui_ImplVulkan_Shutdown();
-	vkDestroyCommandPool(device.device, imguiCommandPool, nullptr);
+	gui.destroy();
 #endif
 	//destroy the semaphores
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -158,17 +80,12 @@ void ChronoApplication::cleanup() {
 		vkDestroySemaphore(device.device, imageAvailableSemaphores[i], nullptr);
 		vkDestroyFence(device.device, inFlightFences[i], nullptr);
 	}
-	swapChain.destroy();
-#ifdef DISPLAY_IMGUI
-	vkDestroyDescriptorPool(device.device, imguiPool, nullptr);
-#endif
-	
-	
+	vkDestroyCommandPool(device.device, commandPool, nullptr);
 	//destroy the debug messenger
 	if (enableValidationLayers) {
 		DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 	}
-
+	
 	//destroy the logical device
 	device.destroy();
 
@@ -195,34 +112,36 @@ void ChronoApplication::drawFrame(){
 	else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR){
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
-	for(Shape shape: shapes) {
-		shape.update(currentFrame);
-	}
+	shapeManager.update(currentFrame);
 	textManager.beginUpdate();
 	textManager.add("Hello world", 0.25f, 0.25f, Text::Center);
 	textManager.endUpdate();
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 
-	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+	shapeManager.render(currentFrame, imageIndex, bgColor);
+	textManager.render(currentFrame, imageIndex, bgColor);
 #ifdef DISPLAY_IMGUI
-	vkResetCommandBuffer(imguiCommandBuffers[currentFrame], 0);
+	gui.update();
+	gui.render(currentFrame, imageIndex, bgColor);
 #endif
-	recordCommandBuffer(currentFrame, imageIndex);
 	
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
 
-	std::vector<VkCommandBuffer> submitCommandBuffers = { commandBuffers[currentFrame] };
+	std::vector<VkCommandBuffer> submitCommandBuffers;
+	submitCommandBuffers.push_back(shapeManager.commandBuffers[currentFrame]);
+	submitCommandBuffers.push_back(textManager.commandBuffers[currentFrame]);
+
 #ifdef DISPLAY_IMGUI
-	submitCommandBuffers.push_back(imguiCommandBuffers[currentFrame]);
+	submitCommandBuffers.push_back(gui.commandBuffers[currentFrame]);
 #endif
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.commandBufferCount = submitCommandBuffers.size();
+	submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 	submitInfo.pCommandBuffers = submitCommandBuffers.data();
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
@@ -342,173 +261,3 @@ void ChronoApplication::createSyncObjects() {
 		}
 	}
 }
-
-void ChronoApplication::createCommandBuffer() {
-	commandBuffers.resize(swapChain.swapChainFramebuffers.size());
-	VkCommandBufferAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.commandPool = commandPool;
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
-	if (vkAllocateCommandBuffers(device.device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate command buffers!");
-	}
-}
-
-void ChronoApplication::recordCommandBuffer(uint32_t currentFrame, uint32_t imageIndex) {
-	VkCommandBufferBeginInfo beginInfo{};
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	if (vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo) != VK_SUCCESS) {
-		throw std::runtime_error("failed to begin recording command buffer!");
-	}
-
-	VkRenderPassBeginInfo renderPassInfo{};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = swapChain.renderPass;
-	renderPassInfo.framebuffer = swapChain.swapChainFramebuffers[imageIndex];
-	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = swapChain.swapChainExtent;
-	VkClearValue clearColor = { bgColor[0], bgColor[1], bgColor[2], 1.0f};
-	renderPassInfo.clearValueCount = 1;
-	renderPassInfo.pClearValues = &clearColor;
-
-	VkViewport viewport{};
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = static_cast<float> (swapChain.swapChainExtent.width);
-	viewport.height = static_cast<float> (swapChain.swapChainExtent.height);
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
-
-	VkRect2D scissor{};
-	scissor.offset = { 0, 0 };
-	scissor.extent = swapChain.swapChainExtent;
-
-	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	for(Shape& shape: shapes) {
-		vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, shape.graphicsPipeline);
-		vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-		vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-		VkBuffer vertexBuffers[] = { shape.vertexBuffer.buffer };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffers[currentFrame], shape.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
-		vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, shape.pipelineLayout, 0, 1, &shape.descriptorSets[currentFrame], 0, nullptr);
-		vkCmdDrawIndexed(commandBuffers[currentFrame], static_cast<uint32_t>(shape.indices.size()), 1, 0, 0, 0);
-	}
-	vkCmdBindPipeline(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, textManager.graphicsPipeline);
-	vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
-	vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-	VkBuffer vertexBuffers[] = { textManager.vertexBuffer};
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers, offsets);
-	vkCmdBindVertexBuffers(commandBuffers[currentFrame], 1, 1, vertexBuffers, offsets);
-	vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, textManager.pipelineLayout, 0, 1, &textManager.descriptorSets[currentFrame], 0, nullptr);
-	for (uint32_t j = 0; j < textManager.numLetters; j++)
-	{
-		vkCmdDraw(commandBuffers[currentFrame], 4, 1, j * 4, 0);
-	}
-	vkCmdEndRenderPass(commandBuffers[currentFrame]);
-
-	if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
-		throw std::runtime_error("failed to record command buffer!");
-	}
-
-#ifdef DISPLAY_IMGUI
-	vkBeginCommandBuffer(imguiCommandBuffers[currentFrame], &beginInfo);
-	VkRenderPassBeginInfo info = {};
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	info.renderPass = swapChain.imguiRenderPass;
-	info.framebuffer = swapChain.imguiFramebuffers[imageIndex];
-	info.renderArea.extent = swapChain.swapChainExtent;
-	info.clearValueCount = 1;
-	info.pClearValues = &clearColor;
-	vkCmdBeginRenderPass(imguiCommandBuffers[currentFrame], &info, VK_SUBPASS_CONTENTS_INLINE);
-	ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), imguiCommandBuffers[currentFrame]);
-	vkCmdEndRenderPass(imguiCommandBuffers[currentFrame]);
-	vkEndCommandBuffer(imguiCommandBuffers[currentFrame]);
-
-
-#endif
-
-}
-
-void ChronoApplication::createCommandPool() {
-	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(device.physicalDevice, surface);
-	VkCommandPoolCreateInfo poolInfo{};
-	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional
-	if (vkCreateCommandPool(device.device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create command pool!");
-	}
-}
-
-#ifdef DISPLAY_IMGUI
-void ChronoApplication::initImGui() {
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;    
-
-	ImGui::StyleColorsDark();
-
-	std::array<VkDescriptorPoolSize, 2> poolSizes{};
-	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-
-	VkDescriptorPoolSize pool_sizes[] ={{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 }};
-	VkDescriptorPoolCreateInfo pool_info = {};
-	pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-	pool_info.maxSets = 1;
-	pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
-	pool_info.pPoolSizes = pool_sizes;
-	vkCreateDescriptorPool(device.device, &pool_info, nullptr, &imguiPool);
-
-	ImGui_ImplGlfw_InitForVulkan(window, true);
-	ImGui_ImplVulkan_InitInfo init_info = {};
-	init_info.Instance = instance;
-	init_info.PhysicalDevice = device.physicalDevice;
-	init_info.Device = device.device;
-	init_info.QueueFamily = findQueueFamilies(device.physicalDevice, surface).graphicsFamily.value(); //IF LITERALLY ANYTHING HAPPENS WE NEED TO COME BACK TO THIS
-	init_info.Queue = device.graphicsQueue;
-	init_info.PipelineCache = VK_NULL_HANDLE;
-	init_info.DescriptorPool = imguiPool;
-	init_info.Allocator = nullptr;
-	init_info.MinImageCount = 2;
-	init_info.ImageCount = MAX_FRAMES_IN_FLIGHT;
-	init_info.CheckVkResultFn = nullptr; //add a fucntion to this
-	ImGui_ImplVulkan_Init(&init_info, swapChain.imguiRenderPass);
-
-	VkCommandPoolCreateInfo commandPoolCreateInfo = {};
-	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	commandPoolCreateInfo.queueFamilyIndex = findQueueFamilies(device.physicalDevice, surface).graphicsFamily.value();
-	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-
-	if (vkCreateCommandPool(device.device, &commandPoolCreateInfo, nullptr, &imguiCommandPool) != VK_SUCCESS) {
-		throw std::runtime_error("Could not create graphics command pool");
-	}
-
-	VkCommandBuffer command_buffer = beginSingleTimeCommands(imguiCommandPool, device.device);
-	ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
-	endSingleTimeCommands(&command_buffer, device, imguiCommandPool);
-
-	
-	imguiCommandBuffers.resize(swapChain.swapChainFramebuffers.size());
-	VkCommandBufferAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.commandPool = commandPool;
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = static_cast<uint32_t>(imguiCommandBuffers.size());
-	if (vkAllocateCommandBuffers(device.device, &allocInfo, imguiCommandBuffers.data()) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate command buffers!");
-	}
-
-}
-
-
-#endif
