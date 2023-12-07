@@ -10,10 +10,14 @@ void Text::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain)
 	this->commandPool = commandPool;
 	
 	//initalize the font
-	const uint32_t fontWidth = STB_FONT_arial_24_usascii_BITMAP_WIDTH;
-	const uint32_t fontHeight = STB_FONT_arial_24_usascii_BITMAP_HEIGHT;
+	const uint32_t fontWidth = STB_FONT_consolas_24_latin1_BITMAP_WIDTH;
+	const uint32_t fontHeight = STB_FONT_consolas_24_latin1_BITMAP_HEIGHT;
+
+	std::cout << "font width: " << fontWidth << std::endl;
+	std::cout << "font height: " << fontHeight << std::endl;
+
 	static unsigned char fontpixels[fontHeight][fontWidth];
-	stb_font_arial_24_usascii(stbFontData, fontpixels, fontHeight);
+	stb_font_consolas_24_latin1(stbFontData, fontpixels, fontHeight);
 
 	//create the vertex buffer
 	VkDeviceSize bufferSize = maxTextLength * sizeof(glm::vec4);
@@ -41,7 +45,22 @@ void Text::init(Device* device, VkCommandPool commandPool, SwapChain* swapChain)
 	vkFreeMemory(device->device, stagingBufferMemory, nullptr);
 
 	//create image view
-	textureImageView = createImageView(*device, VK_FORMAT_R8_UNORM, texture);
+	// textureImageView = createImageView(*device, VK_FORMAT_R8_UNORM, texture);
+	VkImageViewCreateInfo viewInfo{};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.image = texture;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.format = VK_FORMAT_R8_UNORM;
+	viewInfo.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = 1;
+
+	if (vkCreateImageView(device->device, &viewInfo, nullptr, &textureImageView) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create texture image view!");
+	}
 
 	VkPhysicalDeviceProperties properties{};
 	vkGetPhysicalDeviceProperties(device->physicalDevice, &properties);
@@ -141,7 +160,7 @@ void Text::createGraphicsPipeline() {
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 	VkViewport viewport{};
@@ -197,14 +216,8 @@ void Text::createGraphicsPipeline() {
 
 	VkPipelineColorBlendStateCreateInfo colorBlending{};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-	colorBlending.logicOpEnable = VK_FALSE;
-	colorBlending.logicOp = VK_LOGIC_OP_COPY;
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
-	colorBlending.blendConstants[0] = 0.0f;
-	colorBlending.blendConstants[1] = 0.0f;
-	colorBlending.blendConstants[2] = 0.0f;
-	colorBlending.blendConstants[3] = 0.0f;
 
 	std::vector<VkDynamicState> dynamicStates = {
 		VK_DYNAMIC_STATE_VIEWPORT,
@@ -347,7 +360,7 @@ void Text::beginUpdate() {
 }
 
 void Text::add(std::string text, float x, float y, TextAlignment alignment) {
-	const uint32_t firstChar = STB_FONT_arial_24_usascii_FIRST_CHAR;
+	const uint32_t firstChar = STB_FONT_consolas_24_latin1_FIRST_CHAR;
 
 	assert(mappedMemory != nullptr);
 
@@ -356,8 +369,8 @@ void Text::add(std::string text, float x, float y, TextAlignment alignment) {
 
 	float fbW = (float)swapChain->swapChainExtent.width;
 	float fbH = (float)swapChain->swapChainExtent.height;
-	x = (x / fbW * 2.0f) - 1.0f;
-	y = (y / fbH * 2.0f) - 1.0f;
+	x = (x / fbW * 2.0f);// - 1.0f;
+	y = (y / fbH * 2.0f);// - 1.0f;
 
 	// Calculate text width
 	float textWidth = 0;
@@ -469,7 +482,7 @@ void Text::render(uint32_t currentFrame, uint32_t imageIndex, float bgColor[3]) 
 	vkCmdBindDescriptorSets(commandBuffers[currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 	for (uint32_t j = 0; j < numLetters; j++)
 	{
-		vkCmdDraw(commandBuffers[currentFrame], 3, 1, j * 4, 0);
+		vkCmdDraw(commandBuffers[currentFrame], 4, 1, j * 4, 0);
 	}
 	vkCmdEndRenderPass(commandBuffers[currentFrame]);
 

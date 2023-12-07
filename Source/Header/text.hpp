@@ -1,18 +1,18 @@
 #pragma once
 #include "device.hpp"
 #include "swapChain.hpp"
-#include "stb_font_arial_24_usascii.inl"
+#include "stb_font_consolas_24_latin1.inl"
 class Text{
 public:
 	uint32_t maxTextLength = 2048;
-	stb_fontchar stbFontData[STB_FONT_arial_24_usascii_NUM_CHARS];
+	stb_fontchar stbFontData[STB_FONT_consolas_24_latin1_NUM_CHARS];
 	uint32_t numLetters;
 	enum TextAlignment {
 		Left,
 		Center,
 		Right
 	};
-	float scale = 100.0f;
+	float scale = 4.0f;
 
 	const char* vertexShaderPath = "G:/Chronos/Shaders/textVert.spv";
 	const char* fragmentShaderPath = "G:/Chronos/Shaders/textFrag.spv";

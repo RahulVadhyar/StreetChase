@@ -1,0 +1,6 @@
+Source/Header/shape.hpp:	const char* vertexShaderPath = "G:/Chronos/Shaders/vert.spv";
+Source/Header/shape.hpp:	const char* fragmentShaderPath = "G:/Chronos/Shaders/frag.spv";
+Source/Header/text.hpp:	const char* vertexShaderPath = "G:/Chronos/Shaders/textVert.spv";
+Source/Header/text.hpp:	const char* fragmentShaderPath = "G:/Chronos/Shaders/textFrag.spv";
+Source/Source/gui.cpp:	char texturePath[100] = "G:/Chronos/Assets/texture.jpg";
+Source/Source/shapeManager.cpp:		shape.init(device, commandPool, swapChain, textureSampler, "G:/Chronos/Assets/texture.jpg", &renderPass);

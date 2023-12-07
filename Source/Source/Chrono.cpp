@@ -114,7 +114,7 @@ void ChronoApplication::drawFrame(){
 	}
 	shapeManager.update(currentFrame);
 	textManager.beginUpdate();
-	textManager.add("Hello world", 0.25f, 0.25f, Text::Center);
+	textManager.add("Hello world", 0.0f, 0.0f, Text::Center);
 	textManager.endUpdate();
 	vkResetFences(device.device, 1, &inFlightFences[currentFrame]);
 

@@ -4,8 +4,8 @@ project(Chronos)
 set(CMAKE_CXX_STANDARD 20)
 
 #GLFW
-set(GLFW_DIR glfw-3.3.8.bin.WIN64/include)
-set(GLFW_LIB glfw-3.3.8.bin.WIN64/lib-vc2022/)   
+set(GLFW_DIR glfw-3.3.8.bin.WIN64/include) # this path needed to be changed for linux, it is for windows only
+set(GLFW_LIB glfw-3.3.8.bin.WIN64/lib-vc2022/)   #same as above
 
 #vulkan sdk
 set(VULKAN_SDK_DIR $ENV{VULKAN_SDK})        
@@ -18,6 +18,7 @@ set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
 
 #fonts
 set(FONTS_DIR Assets/usascii/arial)
+set(FONTS_DIR Assets/latin1/consolas)
 
 #header files
 include_directories(Include)
