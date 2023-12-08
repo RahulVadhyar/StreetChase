@@ -179,7 +179,7 @@ void ChronoApplication::createInstance() {
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "Chrono Engine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
+	appInfo.apiVersion = VK_API_VERSION_1_3;
 
 	//create a struct to hold information about the instance to send to vulkan
 	VkInstanceCreateInfo createInfo{};
@@ -212,8 +212,8 @@ void ChronoApplication::createInstance() {
 		createInfo.enabledLayerCount = static_cast<uint32_t> (validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
 
-		/*populateDebugMessengerCreateInfo(debugCreateInfo);
-		createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;*/
+		// populateDebugMessengerCreateInfo(debugCreateInfo);
+		// createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
 	}
 
 	//create the instance
