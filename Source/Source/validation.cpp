@@ -1,5 +1,5 @@
-#include "validation.hpp"
 #include "vulkaninit.hpp"
+#include "validation.hpp"
 
 bool checkValidationLayerSupport() {
   uint32_t layerCount;

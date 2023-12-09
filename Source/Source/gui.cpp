@@ -1,8 +1,8 @@
+#include "vulkaninit.hpp"
+#include "shape.hpp"
 #include "gui.hpp"
 #include "Chrono.hpp"
 #include "helper.hpp"
-#include "shape.hpp"
-#include "vulkaninit.hpp"
 
 #ifdef DISPLAY_IMGUI
 

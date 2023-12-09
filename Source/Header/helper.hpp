@@ -1,6 +1,6 @@
 #pragma once
-#include "swapchain.hpp"
 #include "vulkaninit.hpp"
+#include "swapchain.hpp"
 
 struct QueueFamilyIndices {
   std::optional<uint32_t> graphicsFamily;

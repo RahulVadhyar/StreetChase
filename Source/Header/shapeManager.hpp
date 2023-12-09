@@ -1,8 +1,8 @@
 #pragma once
+#include "vulkaninit.hpp"
 #include "device.hpp"
 #include "shape.hpp"
 #include "swapchain.hpp"
-#include "vulkaninit.hpp"
 
 
 class ShapeManager {

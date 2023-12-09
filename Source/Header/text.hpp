@@ -1,7 +1,7 @@
 #pragma once
 #include "device.hpp"
-#include "stb_font_consolas_24_latin1.inl"
 #include "swapChain.hpp"
+#include "stb_font_consolas_24_latin1.inl"
 
 class Text {
 public:

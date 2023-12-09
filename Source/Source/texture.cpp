@@ -1,10 +1,10 @@
-#include "texture.hpp"
-#include "device.hpp"
-#include "helper.hpp"
 #include "vulkaninit.hpp"
-
+#include "device.hpp"
+#include "texture.hpp"
+#include "helper.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 void createImage(Device device, uint32_t width, uint32_t height,
                  VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,

@@ -1,10 +1,10 @@
 #pragma once
+#include "vulkaninit.hpp"
 #include "Vertex.hpp"
-#include "buffers.hpp"
 #include "device.hpp"
 #include "swapChain.hpp"
+#include "buffers.hpp"
 #include "texture.hpp"
-#include "vulkaninit.hpp"
 
 
 struct ShapeParams {

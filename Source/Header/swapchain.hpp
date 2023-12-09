@@ -1,6 +1,6 @@
 #pragma once
-#include "device.hpp"
 #include "vulkaninit.hpp"
+#include "device.hpp"
 
 struct SwapChainSupportDetails {
   VkSurfaceCapabilitiesKHR capabilities;
