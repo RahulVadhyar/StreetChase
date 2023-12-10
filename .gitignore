@@ -375,3 +375,6 @@ build/CMakeFiles/3.26.4/CMakeDetermineCompilerABI_C.bin
 build/CMakeFiles/3.26.4/CMakeDetermineCompilerABI_CXX.bin
 build/CMakeFiles/3.26.4/CompilerIdC/CompilerIdC.exe
 build/CMakeFiles/3.26.4/CompilerIdCXX/CompilerIdCXX.exe
+
+*.docx
+*.docx#

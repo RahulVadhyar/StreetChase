@@ -37,10 +37,10 @@
     <ClCompile Include="G:\Chronos\Source\Engine\Source\validation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="G:\Chronos\Source\API\manager.cpp">
+    <ClCompile Include="G:\Chronos\Source\API\Source\manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="G:\Chronos\Source\API\scene.cpp">
+    <ClCompile Include="G:\Chronos\Source\API\Source\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="G:\Chronos\ThirdParty\imgui\imgui.cpp">

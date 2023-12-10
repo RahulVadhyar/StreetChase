@@ -3,6 +3,8 @@
 //this is the api for chronos. Any applications will include and link to this file
 
 namespace Chronos{
+    typedef int Texture;
+
     struct Initializer{
         int WindowWidth = 800;
         int WindowHeight = 600;
@@ -25,7 +27,6 @@ namespace Chronos{
         int textNo;
     };
 
-    typedef int Texture;
     class Scene{
     public:
         int sceneNo;
@@ -44,6 +45,7 @@ namespace Chronos{
         std::vector<Text*> texts;
         std::vector<int> callbacks;   
     };
+    
     class Manager{
     public:
         Manager(Initializer initializer);

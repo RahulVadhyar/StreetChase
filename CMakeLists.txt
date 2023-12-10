@@ -22,8 +22,9 @@ set(FONTS_DIR ThirdParty/fonts/latin1/consolas)
 
 #header files
 include_directories(ThirdParty/stb)
-include_directories(Source/Engine/Header)
+include_directories(Source/Engine/Headers)
 include_directories(include)
+include_directories(Source/API/Headers)
 include_directories(${GLFW_DIR})
 include_directories(${VULKAN_SDK_INCLUDE})      
 include_directories(${IMGUI_DIR})               
@@ -32,7 +33,7 @@ include_directories(${FONTS_DIR})
 
 #source files
 set(SOURCE_DIR Source/Engine/Source)
-set(API_DIR Source/API)
+set(API_DIR Source/API/Source)
 file(GLOB MAIN ${SOURCE_DIR}/*.cpp)
 file(GLOB API ${API_DIR}/*.cpp)
 file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
