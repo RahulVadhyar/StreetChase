@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>G:\Chronos\Include;G:\Chronos\Source\Header;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\imgui;G:\Chronos\imgui\backends;G:\Chronos\Assets\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Chronos\ThirdParty\stb;G:\Chronos\Source\Engine\Header;G:\Chronos\include;G:\Chronos\ThirdParty\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\ThirdParty\imgui;G:\Chronos\ThirdParty\imgui\backends;G:\Chronos\ThirdParty\fonts\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -79,7 +79,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>G:\Chronos\Include;G:\Chronos\Source\Header;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\imgui;G:\Chronos\imgui\backends;G:\Chronos\Assets\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Chronos\ThirdParty\stb;G:\Chronos\Source\Engine\Header;G:\Chronos\include;G:\Chronos\ThirdParty\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\ThirdParty\imgui;G:\Chronos\ThirdParty\imgui\backends;G:\Chronos\ThirdParty\fonts\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -89,7 +89,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>G:\Chronos\Include;G:\Chronos\Source\Header;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\imgui;G:\Chronos\imgui\backends;G:\Chronos\Assets\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Chronos\ThirdParty\stb;G:\Chronos\Source\Engine\Header;G:\Chronos\include;G:\Chronos\ThirdParty\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\ThirdParty\imgui;G:\Chronos\ThirdParty\imgui\backends;G:\Chronos\ThirdParty\fonts\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -99,7 +99,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>G:\Chronos\Include;G:\Chronos\Source\Header;G:\Chronos\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\imgui;G:\Chronos\imgui\backends;G:\Chronos\Assets\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Chronos\ThirdParty\stb;G:\Chronos\Source\Engine\Header;G:\Chronos\include;G:\Chronos\ThirdParty\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.261.1\Include;G:\Chronos\ThirdParty\imgui;G:\Chronos\ThirdParty\imgui\backends;G:\Chronos\ThirdParty\fonts\latin1\consolas;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>

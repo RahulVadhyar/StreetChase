@@ -14,24 +14,16 @@
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
-class ChronoApplication {
+class Engine {
 public:
-	void run() {
-#ifdef DISPLAY_IMGUI
-		gui = GUI();
-		guiParams.settings = &settings;
-#endif
-		initWindow();
-		initVulkan();
-		mainLoop();
-		cleanup();
-	}
+	void run();
 	bool framebufferResized = false;
 	
 #ifdef DISPLAY_IMGUI
 	Settings settings{};
 	GUIParams guiParams{};
 #endif
+
 private:
 	float prev_time = 0.0f;
 	int width = 800;

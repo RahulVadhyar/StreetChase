@@ -1,7 +1,7 @@
 #include "vulkaninit.hpp"
 #include "device.hpp"
 #include "swapchain.hpp"
-#include "chrono.hpp"
+#include "engine.hpp"
 #include "validation.hpp"
 #include "helper.hpp"
 #include "Vertex.hpp"
@@ -10,11 +10,22 @@
 static void framebuffer_size_callback(GLFWwindow *window, int width,
                                       int height) {
   auto app =
-      reinterpret_cast<ChronoApplication *>(glfwGetWindowUserPointer(window));
+      reinterpret_cast<Engine *>(glfwGetWindowUserPointer(window));
   app->framebufferResized = true;
 }
 
-void ChronoApplication::initWindow() {
+void Engine::run() {
+#ifdef DISPLAY_IMGUI
+		gui = GUI();
+		guiParams.settings = &settings;
+#endif
+		initWindow();
+		initVulkan();
+		mainLoop();
+		cleanup();
+	}
+
+void Engine::initWindow() {
   // initialize glfw with a resizeable window
   glfwInit();
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -28,7 +39,7 @@ void ChronoApplication::initWindow() {
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 }
 
-void ChronoApplication::initVulkan() {
+void Engine::initVulkan() {
   createInstance();
   if (enableValidationLayers) {
     setupDebugMessenger();
@@ -57,7 +68,7 @@ void ChronoApplication::initVulkan() {
 #endif
 }
 
-void ChronoApplication::mainLoop() {
+void Engine::mainLoop() {
   while (!glfwWindowShouldClose(window)) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       glfwSetWindowShouldClose(window, true);
@@ -68,7 +79,7 @@ void ChronoApplication::mainLoop() {
   vkDeviceWaitIdle(device.device);
 }
 
-void ChronoApplication::cleanup() {
+void Engine::cleanup() {
   // after we are done, we need to cleanup all the resources we created
   swapChain.cleanup();
   vkDestroySampler(device.device, textureSampler, nullptr);
@@ -93,7 +104,7 @@ void ChronoApplication::cleanup() {
   glfwTerminate();
 }
 
-void ChronoApplication::drawFrame() {
+void Engine::drawFrame() {
   // wait for the previous frame to finish
   vkWaitForFences(device.device, 1, &inFlightFences[currentFrame], VK_TRUE,
                   UINT64_MAX);
@@ -191,7 +202,7 @@ void ChronoApplication::drawFrame() {
   currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void ChronoApplication::createInstance() {
+void Engine::createInstance() {
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "Chrono";
@@ -238,7 +249,7 @@ void ChronoApplication::createInstance() {
   }
 }
 
-void ChronoApplication::setupDebugMessenger() {
+void Engine::setupDebugMessenger() {
   if (!enableValidationLayers)
     return;
   VkDebugUtilsMessengerCreateInfoEXT createInfo;
@@ -249,14 +260,14 @@ void ChronoApplication::setupDebugMessenger() {
   }
 }
 
-void ChronoApplication::createSurface() {
+void Engine::createSurface() {
   if (glfwCreateWindowSurface(instance, window, nullptr, &surface) !=
       VK_SUCCESS) {
     throw std::runtime_error("Failed to create window surface");
   }
 }
 
-void ChronoApplication::createSyncObjects() {
+void Engine::createSyncObjects() {
   imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
