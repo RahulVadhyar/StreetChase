@@ -1,8 +1,8 @@
-#include "buffers.hpp"
-#include "device.hpp"
-#include "helper.hpp"
-#include "shape.hpp"
 #include "vulkaninit.hpp"
+#include "device.hpp"
+#include "shape.hpp"
+#include "buffers.hpp"
+#include "helper.hpp"
 
 
 void Buffer::create(Device device, VkBufferUsageFlags flags,

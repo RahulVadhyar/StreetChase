@@ -1,8 +1,8 @@
-#include "shapeManager.hpp"
-#include "device.hpp"
-#include "helper.hpp"
-#include "swapchain.hpp"
 #include "vulkaninit.hpp"
+#include "device.hpp"
+#include "swapchain.hpp"
+#include "shapeManager.hpp"
+#include "helper.hpp"
 
 
 void ShapeManager::init(Device *device, SwapChain *swapChain,

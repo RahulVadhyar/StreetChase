@@ -1,8 +1,8 @@
-#include "swapchain.hpp"
+#include "vulkaninit.hpp"
 #include "device.hpp"
+#include "swapchain.hpp"
 #include "helper.hpp"
 #include "texture.hpp"
-#include "vulkaninit.hpp"
 
 VkSurfaceFormatKHR chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &availableFormats) {

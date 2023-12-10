@@ -1,7 +1,7 @@
+#include "vulkaninit.hpp"
 #include "device.hpp"
 #include "helper.hpp"
 #include "validation.hpp"
-#include "vulkaninit.hpp"
 
 
 void Device::init(VkInstance instance, VkSurfaceKHR surface) {
