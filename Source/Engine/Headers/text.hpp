@@ -11,8 +11,8 @@ public:
   enum TextAlignment { Left, Center, Right };
   float scale = 4.0f;
 
-  const char *vertexShaderPath = "G:/Chronos/Shaders/textVert.spv";
-  const char *fragmentShaderPath = "G:/Chronos/Shaders/textFrag.spv";
+  const char *vertexShaderPath = "Shaders/textVert.spv";
+  const char *fragmentShaderPath = "Shaders/textFrag.spv";
   Device *device;
   SwapChain *swapChain;
   VkCommandPool commandPool;

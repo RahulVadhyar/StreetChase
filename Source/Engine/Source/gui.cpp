@@ -7,7 +7,7 @@
 #ifdef DISPLAY_IMGUI
 
 void GUI::config() {
-  char texturePath[100] = "G:/Chronos/Assets/texture.jpg";
+  char texturePath[100] = "Assets/texture.jpg";
   shapeHeader.resize(params->shapeManager->shapes.size());
 
   if (ImGui::BeginMainMenuBar()) {
