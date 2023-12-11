@@ -18,19 +18,23 @@ class Engine {
 public:
 	void run();
 	bool framebufferResized = false;
-	
+	Text textManager;
+	ShapeManager shapeManager;
+	int width = 800;
+	int height = 600;
+	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
 #ifdef DISPLAY_IMGUI
 	Settings settings{};
 	GUIParams guiParams{};
 #endif
+	void initWindow();
+	void initVulkan();
+	void mainLoop();
+	void cleanup();
 
 private:
 	float prev_time = 0.0f;
-	int width = 800;
-	int height = 600;
-	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
-	ShapeManager shapeManager;
-	Text textManager;
+	
 	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();
@@ -44,12 +48,7 @@ private:
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
-	
 
-	void initWindow();
-	void initVulkan();
-	void mainLoop();
-	void cleanup();
 	void createInstance();
 	void setupDebugMessenger();
 	void createSurface();
