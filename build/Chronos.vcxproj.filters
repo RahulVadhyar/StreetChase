@@ -40,9 +40,6 @@
     <ClCompile Include="G:\Chronos\Source\API\Source\manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="G:\Chronos\Source\API\Source\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="G:\Chronos\ThirdParty\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

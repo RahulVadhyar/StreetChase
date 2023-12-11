@@ -4,8 +4,8 @@ project(Chronos)
 set(CMAKE_CXX_STANDARD 20)
 
 #GLFW
-set(GLFW_DIR ThirdParty/glfw-3.3.8.bin.WIN64/include) # this path needed to be changed for linux, it is for windows only
-set(GLFW_LIB ThirdParty/glfw-3.3.8.bin.WIN64/lib-vc2022/)   #same as above
+add_subdirectory(ThirdParty/glfw)
+set(GLFW_DIR ThirdParty/glfw/include)
 
 #vulkan sdk
 set(VULKAN_SDK_DIR $ENV{VULKAN_SDK})        
@@ -38,10 +38,9 @@ file(GLOB MAIN ${SOURCE_DIR}/*.cpp)
 file(GLOB API ${API_DIR}/*.cpp)
 file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
 
-link_directories(${GLFW_LIB})   
 link_directories(${VULKAN_SDK_LIB})     
 
 #linking
 add_executable(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)      
-target_link_libraries(Chronos glfw3)   
 target_link_libraries(Chronos vulkan-1)           
+target_link_libraries(Chronos glfw)
