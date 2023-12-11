@@ -8,9 +8,9 @@ add_subdirectory(ThirdParty/glfw)
 set(GLFW_DIR ThirdParty/glfw/include)
 
 #vulkan sdk
-set(VULKAN_SDK_DIR $ENV{VULKAN_SDK})        
-set(VULKAN_SDK_LIB ${VULKAN_SDK_DIR}/Lib/)                  
-set(VULKAN_SDK_INCLUDE ${VULKAN_SDK_DIR}/Include) #glm is also included
+# add_subdirectory(ThirdParty/Vulkan-Hpp)
+
+# set(GLM_INCLUDE ThirdParty/Vulkan-Hpp/glm/glm)
 
 #imgui
 set(IMGUI_DIR ThirdParty/imgui) 
@@ -20,16 +20,17 @@ set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
 set(FONTS_DIR ThirdParty/fonts/usascii/arial)
 set(FONTS_DIR ThirdParty/fonts/latin1/consolas)
 
+
 #header files
 include_directories(ThirdParty/stb)
 include_directories(Source/Engine/Headers)
 include_directories(include)
 include_directories(Source/API/Headers)
-include_directories(${GLFW_DIR})
-include_directories(${VULKAN_SDK_INCLUDE})      
+include_directories(${GLFW_DIR})  
 include_directories(${IMGUI_DIR})               
 include_directories(${IMGUI_BACKENDS})
 include_directories(${FONTS_DIR})
+# include_directories(${GLM_INCLUDE})
 
 #source files
 set(SOURCE_DIR Source/Engine/Source)
@@ -38,9 +39,10 @@ file(GLOB MAIN ${SOURCE_DIR}/*.cpp)
 file(GLOB API ${API_DIR}/*.cpp)
 file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
 
-link_directories(${VULKAN_SDK_LIB})     
+# link_directories(${VULKAN_SDK_LIB})     
 
 #linking
 add_executable(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)      
-target_link_libraries(Chronos vulkan-1)           
+target_link_libraries(Chronos vulkan)   
+# target_link_libraries (Chronos ${VULKAN_LIB_LIST})
 target_link_libraries(Chronos glfw)
