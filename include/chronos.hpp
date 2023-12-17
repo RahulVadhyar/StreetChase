@@ -40,7 +40,7 @@ namespace Chronos{
         void removeText(int textNo);
         void removeCallback(int callbackNo);
         int changeBackgroundColor(float r, float g, float b);
-        int run();
+        void drawFrame();
 
     private:
         Engine engine;

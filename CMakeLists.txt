@@ -45,7 +45,7 @@ file(GLOB MAIN ${SOURCE_DIR}/*.cpp)
 file(GLOB API ${API_DIR}/*.cpp)
 file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
 
-#again windows vulkan stuf....
+#again windows vulkan stuf....git 
 if(WIN32)
 link_directories(${VULKAN_SDK_LIB})     
 endif(WIN32)

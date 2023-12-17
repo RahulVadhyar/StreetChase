@@ -73,7 +73,6 @@ void Engine::mainLoop() {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       glfwSetWindowShouldClose(window, true);
     }
-    glfwPollEvents();
     drawFrame();
   }
   vkDeviceWaitIdle(device.device);
@@ -106,6 +105,7 @@ void Engine::cleanup() {
 
 void Engine::drawFrame() {
   // wait for the previous frame to finish
+  glfwPollEvents();
   vkWaitForFences(device.device, 1, &inFlightFences[currentFrame], VK_TRUE,
                   UINT64_MAX);
 

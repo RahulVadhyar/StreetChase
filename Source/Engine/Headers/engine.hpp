@@ -31,6 +31,8 @@ public:
 	void initVulkan();
 	void mainLoop();
 	void cleanup();
+	void drawFrame();
+	
 
 private:
 	float prev_time = 0.0f;
@@ -52,7 +54,6 @@ private:
 	void createInstance();
 	void setupDebugMessenger();
 	void createSurface();
-	void drawFrame();
 	void createSyncObjects();
 
 #ifdef DISPLAY_IMGUI
