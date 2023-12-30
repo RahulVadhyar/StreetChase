@@ -21,7 +21,6 @@ ScreenStatus screen_status = {SCREEN_HEIGHT, SCREEN_WIDTH};
 
 //variable for stbi header
 #define STB_IMAGE_IMPLEMENTATION
-
 //DEBUGGING tools
 
 //person class

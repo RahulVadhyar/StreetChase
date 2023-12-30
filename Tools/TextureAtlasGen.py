@@ -5,19 +5,25 @@ import numpy as np
 import multiprocessing
 import math
 
-IMG_DIR = "/home/starsystem/Documents/StreetChase/Art/Main Character/Animations/Running/"
-MAX_IMAGES_IN_ROW = 4
+MAX_IMAGES_IN_ROW = 10
+img_dir = "Assets/Export/Animations/Police/Walking/"
+save_dir = "Textures/Animations/Police/walking.png"
+current_img_dir = img_dir
 
-def load_image(path):
-    path = IMG_DIR + path
+def load_image(path, img_dir):
+    path = img_dir + path
     img = Image.open(path)
     print(f"Processed image {path}")
     return np.array(img)
 
-def create_texture_atlas():
-    paths = os.listdir(IMG_DIR)
+def mp_load_image(path):
+    return load_image(path, current_img_dir)
+
+def create_texture_atlas(img_dir):
+    paths = os.listdir(img_dir)
+    
     with multiprocessing.Pool() as p:
-        output = p.map(load_image, paths)
+        output = p.map(mp_load_image, paths)
     columns = math.ceil(len(paths) / MAX_IMAGES_IN_ROW)
     rows = MAX_IMAGES_IN_ROW
     atlas = np.zeros((output[0].shape[0] * columns, output[0].shape[1] * rows, 4), dtype = np.uint8)
@@ -27,8 +33,9 @@ def create_texture_atlas():
                i % MAX_IMAGES_IN_ROW * img.shape[1]:(i % MAX_IMAGES_IN_ROW + 1) * img.shape[1]] = img
         print(f"Added image {i}/{len(output)} to atlas")
     print(f"Saving atlas to texture_atlas.png the shape is {atlas.shape}")
-    Image.fromarray(atlas, 'RGBA').save('texture_atlas.png')
+    Image.fromarray(atlas, 'RGBA').save(save_dir)
     print(f"The number of rows is {rows} and the number of columns is {columns}")
     print(f"The number of images is {len(output)}")
 
-create_texture_atlas()
+if __name__ == "__main__":
+    create_texture_atlas(img_dir)

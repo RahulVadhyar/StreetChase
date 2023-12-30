@@ -5095,7 +5095,8 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
             if (!s->img_x || !s->img_y) return stbi__err("0-pixel image","Corrupt PNG");
             if (!pal_img_n) {
                s->img_n = (color & 2 ? 3 : 1) + (color & 4 ? 1 : 0);
-               if ((1 << 30) / s->img_x / s->img_n < s->img_y) return stbi__err("too large", "Image too large to decode");
+               //StreetChase mod: Trying to decode big atlases, this restrictions is not needed
+               // if ((1 << 30) / s->img_x / s->img_n < s->img_y) return stbi__err("too large", "Image too large to decode");
             } else {
                // if paletted, then pal_n is our final components, and
                // img_n is # components to decompress/filter.

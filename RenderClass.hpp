@@ -103,7 +103,8 @@ class RenderObject{
                 }
             glGenerateMipmap(GL_TEXTURE_2D);   
             } else {
-                std::cout << "Failed to load texture" << std::endl;
+                std::cout << "Failed to load texture "  + image_dir << std::endl;
+                std::cout << "Failure reason: " << stbi_failure_reason() << std::endl;
                 exit(-1);
             }
             stbi_image_free(data);

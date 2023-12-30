@@ -33,9 +33,8 @@ class AnimationClass{
             height = input_height;
 
             animation_init_debug("Initializing animation states");
-            const std::string tex_dir = "Tools/texture_atlas.png";
             animation_init_debug("Animation states added");
-            animation_object = new AnimationRenderObject(width, height, tex_dir, 4, 22);
+            animation_object = new AnimationRenderObject(width, height, "Tools/texture_atlas.png", 4, 22);
             num_textures = 85;
             animation_init_debug("Animation object created");
         }

@@ -1,5 +1,18 @@
 this is a todo file, will be deleted.
 Things to be done
+
+-we need a proper 2d animation system
+    -support for 2d textures
+    -Smooth animations
+    -Time based
+    -Blending between animations
+    -UI editor for animations
+    -File system to store animations
+    -Animation editor
+    -Skelatal and rigging system
+    
+
+FOR NOW THIS IS ON HOLD UNTILL ANIMATIONS ARE TRULY WORKING
     -Things I can do right now
         -HUD
             -allow displaying of inventory and selection of weapons and ammo left

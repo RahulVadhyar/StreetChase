@@ -1,30 +1,41 @@
 //location for all the textures that we are going to use
-#define IMAGE1_DIR "Textures/container.jpg"
-#define STONE_TEX_DIR "Textures/stone.jpg"
-#define PLAYER_TEX_DIR "test/characterwalk_00000.png"
 #define CONTAINER_TEX_DIR "Textures/container.jpg"
 #define GUN_TEX_DIR "Textures/gun.png"
 #define BULLET_TEX_DIR "Textures/bullet.png"
 
+#define TEXTURE_DIR(dir) "Textures/" dir
+#define BACKGROUND_DIR(dir) TEXTURE_DIR("Backgrounds/" dir)
+#define OBJECT_DIR(dir) TEXTURE_DIR("Objects/" dir)
+#define ANIMATION_DIR(dir) TEXTURE_DIR("Animations/" dir)
 namespace texture_dirs{
     namespace background{
-        const char* moon_and_stars = "Assets/Export/Background/moon and stars.png";
-        const char* background_buildings = "Assets/Export/Background/background buildings.png";
-        const char* foreground_buildings = "Assets/Export/Background/foreground buildings.png";
-        const char* middle_buildings = "Assets/Export/Background/middle buildings.png";
-        const char* foreground = "Assets/Export/Background/foreground.png";
-        const char* ground = "Assets/Export/Background/ground.png";
+        const char* moon_and_stars = BACKGROUND_DIR("moon and stars.png");
+        const char* background_buildings = BACKGROUND_DIR("background buildings.png");
+        const char* foreground_buildings = BACKGROUND_DIR("foreground buildings.png");
+        const char* middle_buildings = BACKGROUND_DIR("middle buildings.png");
+        const char* foreground = BACKGROUND_DIR("foreground.png");
+        const char* ground = BACKGROUND_DIR("ground.png");
     };
 
     namespace objects{
-        const char* first_aid_kit = "Assets/Export/Objects/first aid kit.png";
-        const char* frag_granade = "Assets/Export/Objects/frag granade.png";
-        const char* med_kit = "Assets/Export/Objects/med kit.png";
-        const char* pistol = "Assets/Export/Objects/pistol.png";
-        const char* shotgun = "Assets/Export/Objects/shotgun.png";
-        const char* sniper = "Assets/Export/Objects/sniper.png";
-        const char* SMG = "Assets/Export/Objects/SMG.png";
-        const char* smoke_granade = "Assets/Export/Objects/smoke granade.png";
+        const char* first_aid_kit = OBJECT_DIR("first aid kit.png");
+        const char* frag_granade = OBJECT_DIR("frag granade.png");
+        const char* med_kit = OBJECT_DIR("med kit.png");
+        const char* pistol = OBJECT_DIR("pistol.png");
+        const char* shotgun = OBJECT_DIR("shotgun.png");
+        const char* sniper = OBJECT_DIR("sniper.png");
+        const char* SMG = OBJECT_DIR("SMG.png");
+        const char* smoke_granade = OBJECT_DIR("smoke granade.png");
+    };
+
+    namespace animations{
+        namespace Police{
+            const char* walking = ANIMATION_DIR("Police/walking.png");
+        };
+        namespace FinalBoss{};
+        namespace GangMember1{};
+        namespace GangMember2{};
+        namespace GangMember3{};
     };
 };
 //location where all the shaders are located
