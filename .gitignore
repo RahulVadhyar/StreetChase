@@ -1,12 +1,2 @@
 .vscode
-main
-test.cpp
-
-main.exe
-LevelFileSystem/test.txt
-FileReader.exe
-LevelEditor.exe
-test.exe
-main.lib
-main.exp
-test1
+build
