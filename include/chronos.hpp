@@ -42,7 +42,7 @@ namespace Chronos{
         // void removePolygon(int shapeNo);
         // void removeText(int textNo);
         // void removeCallback(int callbackNo);
-        // int changeBackgroundColor(float r, float g, float b);
+        int changeBackgroundColor(float r, float g, float b);
 
     private:
         std::vector<void (*)(void*)> callbacks;

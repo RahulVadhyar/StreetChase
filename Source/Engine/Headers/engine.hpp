@@ -24,6 +24,7 @@ public:
 	int height = 600;
 	GLFWwindow* window;
 	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
+	Device device = Device();
 #ifdef DISPLAY_IMGUI
 	Settings settings{};
 	GUIParams guiParams{};
@@ -39,7 +40,6 @@ private:
 	float prev_time = 0.0f;
 	
 	uint32_t currentFrame = 0;
-	Device device = Device();
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkSurfaceKHR surface;
