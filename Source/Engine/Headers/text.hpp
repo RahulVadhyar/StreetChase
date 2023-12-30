@@ -1,6 +1,6 @@
 #pragma once
 #include "device.hpp"
-#include "swapChain.hpp"
+#include "swapchain.hpp"
 #include "stb_font_consolas_24_latin1.inl"
 
 class Text {

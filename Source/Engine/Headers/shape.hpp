@@ -2,7 +2,7 @@
 #include "vulkaninit.hpp"
 #include "Vertex.hpp"
 #include "device.hpp"
-#include "swapChain.hpp"
+#include "swapchain.hpp"
 #include "buffers.hpp"
 #include "texture.hpp"
 

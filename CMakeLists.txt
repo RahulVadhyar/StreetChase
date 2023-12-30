@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.1)
+# cmake_minimum_required(VERSION 3.1)
 project(Chronos)
 
-set(CMAKE_CXX_STANDARD 20)
+# set(CMAKE_CXX_STANDARD 20)
 
 #GLFW
 add_subdirectory(ThirdParty/glfw)
@@ -22,22 +22,6 @@ set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
 set(FONTS_DIR ThirdParty/fonts/usascii/arial)
 set(FONTS_DIR ThirdParty/fonts/latin1/consolas)
 
-
-#header files
-include_directories(ThirdParty/stb)
-include_directories(Source/Engine/Headers)
-include_directories(include)
-include_directories(Source/API/Headers)
-include_directories(${GLFW_DIR})  
-include_directories(${IMGUI_DIR})               
-include_directories(${IMGUI_BACKENDS})
-include_directories(${FONTS_DIR})
-
-#vulkan sdk if using windows
-if(WIN32)
-include_directories(${VULKAN_SDK_INCLUDE})     
-endif(WIN32) 
-
 #source files
 set(SOURCE_DIR Source/Engine/Source)
 set(API_DIR Source/API/Source)
@@ -47,19 +31,36 @@ file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
 
 #again windows vulkan stuf....git 
 if(WIN32)
-link_directories(${VULKAN_SDK_LIB})     
+    target_link_directories(${CMAKE_PROJECT_NAME} PUBLIC ${VULKAN_SDK_LIB})
+    # link_directories(${VULKAN_SDK_LIB})     
 endif(WIN32)
 
-#linking
+# linking
 add_library(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)
 # add_executable(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)      
 
+#vulkan sdk if using windows
+if(WIN32)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${VULKAN_SDK_INCLUDE})     
+endif(WIN32) 
+
+#header filesPUBLIC 
+target_include_directories(${PROJECT_NAME} PUBLIC ThirdParty/stb)
+target_include_directories(${PROJECT_NAME} PUBLIC Source/Engine/Headers)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC Source/API/Headers)
+target_include_directories(${PROJECT_NAME} PUBLIC ${GLFW_DIR})  
+target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_DIR})               
+target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_BACKENDS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${FONTS_DIR})
+
+
 #linking vulkan is a pain....
 if(WIN32)
-target_link_libraries(Chronos vulkan-1) 
+target_link_libraries(${PROJECT_NAME} vulkan-1) 
 endif(WIN32)
 if(UNIX)
-target_link_libraries(Chronos vulkan)   
+target_link_libraries(${PROJECT_NAME} vulkan)   
 endif(UNIX)
 
-target_link_libraries(Chronos glfw)
+target_link_libraries(${PROJECT_NAME} glfw)
