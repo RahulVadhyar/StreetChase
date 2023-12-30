@@ -20,5 +20,5 @@ int main(){
         throw std::runtime_error("Chronos::Manager::stop() failed");
     };
     
-    return EXIT_SUCCESS;
+    return 0;
 }
