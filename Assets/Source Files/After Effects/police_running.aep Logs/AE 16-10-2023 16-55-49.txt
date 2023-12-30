@@ -1,32 +1,0 @@
-Adobe After Effects v23.1 Windows 64 render log for project “police_running.aep”
-
-Rendering started on 16-10-2023 at 16:55:49
-
-  16-10-2023 16:55:49: Starting composition “Dancing”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Dancing\Dancing_[###].png    16-10-2023 16:59:30: Finished composition “Dancing”.
-
-
-  16-10-2023 16:59:31: Starting composition “Idle”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Idle\Idle_[###].png    16-10-2023 17:00:46: Finished composition “Idle”.
-
-
-  16-10-2023 17:00:46: Starting composition “Jump”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Jumping\Jump_[###].png    16-10-2023 17:02:12: Finished composition “Jump”.
-
-
-  16-10-2023 17:02:12: Starting composition “TakeDamageBody”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\TakeDamageBody\TakeDamageBody_[###].png    16-10-2023 17:02:59: Finished composition “TakeDamageBody”.
-
-
-  16-10-2023 17:02:59: Starting composition “TakeDamageHead”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\TakeDamageHead\TakeDamageHead_[###].png    16-10-2023 17:03:14: Finished composition “TakeDamageHead”.
-
-
-  Total Time Elapsed: 7 Min, 25 Sec
-Log closed on 16-10-2023 at 17:03:14
-

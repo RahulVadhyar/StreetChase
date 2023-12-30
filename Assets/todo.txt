@@ -1,2 +1,0 @@
--background buldings need more buildings(extend it)
--seperate ground from railing etc for collisions

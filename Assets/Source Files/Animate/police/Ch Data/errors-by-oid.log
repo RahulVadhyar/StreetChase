@@ -1,1 +1,0 @@
-{"message":"libgit2 error -4(6/attempt to reinitialize 'G:\\StreetChase\\Assets\\Source Files\\Animate\\FinalBoss\\Ch Data\\repo.noindex') returned from git_repository_init_ext(&rawRepoP, (const char*)fullPathZ, &opts) [null]","seconds":543.9991299,"oid":"6bfbd1917868b0c7ce2c0981a7db32843ef43e12","timestamp":"2023.10.17 06:11:05"}

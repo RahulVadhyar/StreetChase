@@ -1,0 +1,3 @@
+[submodule "ThirdParty/Chronos"]
+	path = ThirdParty/Chronos
+	url = https://github.com/RahulVadhyar/Chronos.git

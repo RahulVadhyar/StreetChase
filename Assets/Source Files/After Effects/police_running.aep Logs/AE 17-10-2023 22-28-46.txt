@@ -1,42 +1,0 @@
-Adobe After Effects v23.1 Windows 64 render log for project “police_running.aep”
-
-Rendering started on 17-10-2023 at 22:28:46
-
-  17-10-2023 22:28:46: Starting composition “running”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Running\running_[###].png    17-10-2023 22:28:57: Finished composition “running”.
-
-
-  17-10-2023 22:28:57: Starting composition “walking”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Walking\walking_[###].png    17-10-2023 22:29:13: Finished composition “walking”.
-
-
-  17-10-2023 22:29:13: Starting composition “Dancing”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Dancing\Dancing_[###].png  After Effects warning: The file 'C:\Users\vadhy\AppData\Local\Temp\Adobe\After Effects\23.1\Disk Cache - Battleship.noindex\1f\1f4068c9-787c-a8d2-c34d-39c01c077199.ADBE ICV.B388653.AAAAAMcJJgc=.aecache' could not be found.  17-10-2023 22:32:45: Finished composition “Dancing”.
-
-
-  17-10-2023 22:32:46: Starting composition “Idle”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Idle\Idle_[###].png    17-10-2023 22:33:17: Finished composition “Idle”.
-
-
-  17-10-2023 22:33:18: Starting composition “Jump”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\Jumping\Jump_[###].png    17-10-2023 22:33:53: Finished composition “Jump”.
-
-
-  17-10-2023 22:33:53: Starting composition “TakeDamageBody”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\TakeDamageBody\TakeDamageBody_[###].png    17-10-2023 22:34:17: Finished composition “TakeDamageBody”.
-
-
-  17-10-2023 22:34:18: Starting composition “TakeDamageHead”.
-
-  Output To: G:\StreetChase\Assets\Export\Animations\Police\TakeDamageHead\TakeDamageHead_[###].png    17-10-2023 22:34:30: Finished composition “TakeDamageHead”.
-
-
-  Total Time Elapsed: 3 Min, 54 Sec
-Log closed on 17-10-2023 at 22:34:30
-
