@@ -26,7 +26,10 @@ namespace Chronos{
     int Manager::stop(){
         vkDeviceWaitIdle(engine.device.device);
         engine.cleanup();
-        return 0;
+        return 1;
     }
 
+    // int Manager::addPolygon(PolygonParameters polygonParameters, PolygonType polygonType, std::string texturePath){
+
+    // }
 };

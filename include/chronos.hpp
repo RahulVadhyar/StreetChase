@@ -37,7 +37,7 @@ namespace Chronos{
         void drawFrame();
         int stop();
         // int addText(Chronos::Text text);
-        // int addPolygon(PolygonParameters polygonParameters, PolygonType polygonType, std::string texturePath);
+        // int addPolygon(PolygonParameters* polygonParameters, PolygonType polygonType, std::string texturePath);
         // int addCallback(void (*callback)(void*), void* args);
         // void removePolygon(int shapeNo);
         // void removeText(int textNo);

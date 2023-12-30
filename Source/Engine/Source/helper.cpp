@@ -393,3 +393,12 @@ std::vector<VkCommandBuffer> createCommandBuffer(Device device,
   }
   return commandBuffers;
 }
+
+std::string getAbsolutePath(std::string relativePath){
+  //change the cwd so that VS doesnt go the the wrong directory.
+  //this is a total hack and should be fixed.
+  std::filesystem::path cwdPath = "G:/StreetChase";
+  std::filesystem::current_path(cwdPath);
+  std::filesystem::path path = relativePath;
+  return std::filesystem::absolute(relativePath).string();
+}

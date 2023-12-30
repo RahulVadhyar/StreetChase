@@ -51,3 +51,5 @@ std::vector<char> readFile(const std::string &filename);
 VkShaderModule createShaderModule(const std::vector<char> &code,
                                   VkDevice device);
 VkSampleCountFlagBits getMaxUsableSampleCount(VkPhysicalDevice physicalDevice);
+
+std::string getAbsolutePath(std::string relativePath);

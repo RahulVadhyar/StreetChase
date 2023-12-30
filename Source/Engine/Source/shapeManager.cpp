@@ -28,9 +28,10 @@ void ShapeManager::init(Device *device, SwapChain *swapChain,
 
   shapes.push_back(Rectangle());
   shapes.push_back(Triangle());
+  
   for (Shape &shape : shapes) {
     shape.init(device, commandPool, swapChain, textureSampler,
-               "Assets/texture.jpg", &renderPass);
+               "G:/StreetChase/Assets/texture.jpg", &renderPass);
   }
   // TODO: remove this
   shapes[0].params.x = 0.5;

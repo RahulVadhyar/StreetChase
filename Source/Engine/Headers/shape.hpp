@@ -5,6 +5,7 @@
 #include "swapchain.hpp"
 #include "buffers.hpp"
 #include "texture.hpp"
+#include "helper.hpp"
 
 
 struct ShapeParams {
@@ -17,8 +18,8 @@ struct ShapeParams {
 
 class Shape {
 public:
-  const char *vertexShaderPath = "Shaders/vert.spv";
-  const char *fragmentShaderPath = "Shaders/frag.spv";
+  const char *vertexShaderPath = "G:/StreetChase/ThirdParty/Chronos/Shaders/vert.spv";
+  const char *fragmentShaderPath = "G:/StreetChase/ThirdParty/Chronos/Shaders/frag.spv";
   ShapeParams params;
   std::vector<uint16_t> indices;
   std::vector<Vertex> vertices;
