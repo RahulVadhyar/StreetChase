@@ -22,6 +22,7 @@ public:
 	ShapeManager shapeManager;
 	int width = 800;
 	int height = 600;
+	GLFWwindow* window;
 	float bgColor[3] = { 0.0f, 0.0f, 0.0f };
 #ifdef DISPLAY_IMGUI
 	Settings settings{};
@@ -37,7 +38,6 @@ public:
 private:
 	float prev_time = 0.0f;
 	
-	GLFWwindow* window;
 	uint32_t currentFrame = 0;
 	Device device = Device();
 	VkInstance instance;

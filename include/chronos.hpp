@@ -33,16 +33,19 @@ namespace Chronos{
     class Manager{
     public:
         Manager(Initializer initializer);
-        int addText(Chronos::Text text);
-        int addPolygon(PolygonParameters polygonParameters, PolygonType polygonType, std::string texturePath);
-        int addCallback(void (*callback)(void*), void* args);
-        void removePolygon(int shapeNo);
-        void removeText(int textNo);
-        void removeCallback(int callbackNo);
-        int changeBackgroundColor(float r, float g, float b);
+        GLFWwindow* getWindow();
         void drawFrame();
+        int stop();
+        // int addText(Chronos::Text text);
+        // int addPolygon(PolygonParameters polygonParameters, PolygonType polygonType, std::string texturePath);
+        // int addCallback(void (*callback)(void*), void* args);
+        // void removePolygon(int shapeNo);
+        // void removeText(int textNo);
+        // void removeCallback(int callbackNo);
+        // int changeBackgroundColor(float r, float g, float b);
 
     private:
+        std::vector<void (*)(void*)> callbacks;
         Engine engine;
     };
 };
