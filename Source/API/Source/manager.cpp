@@ -72,4 +72,50 @@ namespace Chronos{
         }
         engine.textManager.endUpdate();
     }
+
+    int Manager::createAnimObject(int shapeNo){
+        if(engine.shapeManager.shapes.count(shapeNo) == 0){
+            throw std::runtime_error("Shape does not exist");
+        }
+        int animObjNo = nextFreeAnimObjNo;
+        nextFreeAnimObjNo++;
+        Shape* shape = &engine.shapeManager.shapes[shapeNo];
+        AnimObject animObject(shapeNo, animObjNo, shape);
+        animObject.animObjNo = animObjNo;
+        animObjects[animObjNo] = animObject;
+        return animObjNo;
+    }
+
+    void Manager::deleteAnimObject(int animObjNo){
+        if(animObjects.count(animObjNo) == 0){
+            throw std::runtime_error("AnimObject does not exist");
+        }
+        //TODO: remove the animObject from its parent's children
+        animObjects.erase(animObjNo);
+    }
+
+    void Manager::makeAnimObjectChild(int parentAnimObjNo, int childAnimObjNo){
+        if(animObjects.count(parentAnimObjNo) == 0){
+            throw std::runtime_error("Parent AnimObject does not exist");
+        }
+        if(animObjects.count(childAnimObjNo) == 0){
+            throw std::runtime_error("Child AnimObject does not exist");
+        }
+        AnimObject* parent = &animObjects[parentAnimObjNo];
+        AnimObject* child = &animObjects[childAnimObjNo];
+        parent->addChild(child);
+    }
+
+    void Manager::removeAnimObjectChild(int parentAnimObjNo, int childAnimObjNo){
+        if(animObjects.count(parentAnimObjNo) == 0){
+            throw std::runtime_error("Parent AnimObject does not exist");
+        }
+        if(animObjects.count(childAnimObjNo) == 0){
+            throw std::runtime_error("Child AnimObject does not exist");
+        }
+        AnimObject* parent = &animObjects[parentAnimObjNo];
+        AnimObject* child = &animObjects[childAnimObjNo];
+        parent->removeChild(child);
+    }
+
 };
