@@ -6,15 +6,9 @@
 #include "buffers.hpp"
 #include "texture.hpp"
 #include "helper.hpp"
+#include "structs.hpp"
 
 
-struct ShapeParams {
-  float x;
-  float y;
-  float rotation;
-  float xSize;
-  float ySize;
-};
 
 class Shape {
 public:
@@ -87,8 +81,3 @@ public:
   }
 };
 
-struct UniformBufferObject {
-  glm::mat4 model;
-  glm::mat4 view;
-  glm::mat4 proj;
-};

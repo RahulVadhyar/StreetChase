@@ -1,5 +1,5 @@
 #include "chronos.hpp"
-
+#include "text.hpp"
 namespace Chronos{
     Manager::Manager(Initializer initializer){
         engine.width = initializer.WindowWidth;
@@ -29,7 +29,47 @@ namespace Chronos{
         return 1;
     }
 
-    // int Manager::addPolygon(PolygonParameters polygonParameters, PolygonType polygonType, std::string texturePath){
+    int Manager::addPolygon(ShapeParams shapeParams, PolygonType polygonType, std::string texturePath){
+        if(polygonType.triangle){
+            return engine.shapeManager.addTriangle(shapeParams, texturePath);
+        }
+        else if(polygonType.rectangle){
+            return engine.shapeManager.addRectangle(shapeParams, texturePath);
+        }
+        return 0;
+    }
+    int Manager::updatePolygon(int shapeNo, ShapeParams shapeParams){
+        if(engine.shapeManager.shapes.count(shapeNo) == 0){
+            return -1;
+        }
+        engine.shapeManager.shapes[shapeNo].params = shapeParams;
+        return 0;
+    }
+    void Manager::removePolygon(int shapeNo){
+        if(engine.shapeManager.shapes.count(shapeNo) > 0){
+            engine.shapeManager.removeShape(shapeNo);
+        }
+    }
+    int Manager::addText(Chronos::Text text){
+        int textNo = nextFreeTextNo;
+        nextFreeTextNo++;
+        textMap[textNo] = text;
+        engine.textManager.beginUpdate();
+        for(auto& text : textMap){
+            engine.textManager.add(text.second.text, text.second.x, text.second.y, Center);
+        }
+        engine.textManager.endUpdate();
+        return textNo;
 
-    // }
+    }
+    void Manager::removeText(int textNo){
+        if(textMap.count(textNo) > 0){
+            textMap.erase(textNo);
+        }
+        engine.textManager.beginUpdate();
+        for(auto& text : textMap){
+            engine.textManager.add(text.second.text, text.second.x, text.second.y, Center);
+        }
+        engine.textManager.endUpdate();
+    }
 };

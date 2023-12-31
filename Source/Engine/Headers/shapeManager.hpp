@@ -10,8 +10,8 @@ public:
   Device *device;
   SwapChain *swapChain;
   VkCommandPool commandPool;
-
-  std::vector<Shape> shapes;
+  int nextFreeShapeNo = 0;
+  std::map<int, Shape> shapes;
   std::vector<VkCommandBuffer> commandBuffers;
   VkRenderPass renderPass;
   VkSampler textureSampler;
@@ -19,8 +19,9 @@ public:
 
   void init(Device *device, SwapChain *swapChain, VkCommandPool commandPool,
             VkSampler textureSampler);
-  void addTriangle(ShapeParams shapeParams, std::string texturePath);
-  void addRectangle(ShapeParams shapeParams, std::string texturePath);
+  int addTriangle(ShapeParams shapeParams, std::string texturePath);
+  int addRectangle(ShapeParams shapeParams, std::string texturePath);
+  void removeShape(int shapeNo);
   void destroy();
   void update(uint32_t currentFrame);
   void render(uint32_t currentFrame, uint32_t imageIndex, float bgColor[3]);

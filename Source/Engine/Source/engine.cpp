@@ -129,9 +129,6 @@ void Engine::drawFrame() {
   }
   // update the shapes and text
   shapeManager.update(currentFrame);
-  textManager.beginUpdate();
-  textManager.add("Hello world", 0.0f, 0.0f, Text::Center);
-  textManager.endUpdate();
   gui.update();
 
   // reset the fences

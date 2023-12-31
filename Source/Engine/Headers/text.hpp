@@ -3,12 +3,12 @@
 #include "swapchain.hpp"
 #include "stb_font_consolas_24_latin1.inl"
 
+enum TextAlignment { Left, Center, Right };
 class Text {
 public:
   uint32_t maxTextLength = 2048;
   stb_fontchar stbFontData[STB_FONT_consolas_24_latin1_NUM_CHARS];
   uint32_t numLetters;
-  enum TextAlignment { Left, Center, Right };
   float scale = 4.0f;
 
   const char *vertexShaderPath = "G:/StreetChase/ThirdParty/Chronos/Shaders/textVert.spv";

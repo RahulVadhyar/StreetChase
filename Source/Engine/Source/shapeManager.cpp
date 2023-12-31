@@ -25,40 +25,20 @@ void ShapeManager::init(Device *device, SwapChain *swapChain,
                                 true, false);
   commandBuffers = createCommandBuffer(*device, *swapChain, commandPool);
   framebuffers = createFramebuffer(*device, *swapChain, renderPass, true);
-
-  shapes.push_back(Rectangle());
-  shapes.push_back(Triangle());
-  
-  for (Shape &shape : shapes) {
-    shape.init(device, commandPool, swapChain, textureSampler,
-               "G:/StreetChase/Assets/texture.jpg", &renderPass);
-  }
-  // TODO: remove this
-  shapes[0].params.x = 0.5;
-  shapes[0].params.y = 0.5;
-  shapes[0].params.xSize = 0.5;
-  shapes[0].params.ySize = 0.5;
-  shapes[0].params.rotation = 0;
-
-  shapes[1].params.x = -0.5;
-  shapes[1].params.y = -0.5;
-  shapes[1].params.xSize = 0.5;
-  shapes[1].params.ySize = 0.5;
-  shapes[1].params.rotation = 0;
 }
 
 void ShapeManager::destroy() {
   vkDestroyRenderPass(device->device, renderPass, nullptr);
   for (auto framebuffer : framebuffers)
     vkDestroyFramebuffer(device->device, framebuffer, nullptr);
-  for (Shape &shape : shapes) {
-    shape.destroy();
+  for(auto& shapeMap: shapes){
+    shapeMap.second.destroy();
   }
 }
 
 void ShapeManager::update(uint32_t currentFrame) {
-  for (Shape shape : shapes) {
-    shape.update(currentFrame);
+  for (auto &shapeMap : shapes) {
+    shapeMap.second.update(currentFrame);
   }
 }
 
@@ -99,23 +79,23 @@ void ShapeManager::render(uint32_t currentFrame, uint32_t imageIndex,
                        VK_SUBPASS_CONTENTS_INLINE);
 
   // render the shapes
-  for (Shape &shape : shapes) {
+  for(auto& shape: shapes){
     vkCmdBindPipeline(commandBuffers[currentFrame],
-                      VK_PIPELINE_BIND_POINT_GRAPHICS, shape.graphicsPipeline);
+                      VK_PIPELINE_BIND_POINT_GRAPHICS, shape.second.graphicsPipeline);
     vkCmdSetViewport(commandBuffers[currentFrame], 0, 1, &viewport);
     vkCmdSetScissor(commandBuffers[currentFrame], 0, 1, &scissor);
-    VkBuffer vertexBuffers[] = {shape.vertexBuffer.buffer};
+    VkBuffer vertexBuffers[] = {shape.second.vertexBuffer.buffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffers[currentFrame], 0, 1, vertexBuffers,
                            offsets);
-    vkCmdBindIndexBuffer(commandBuffers[currentFrame], shape.indexBuffer.buffer,
+    vkCmdBindIndexBuffer(commandBuffers[currentFrame], shape.second.indexBuffer.buffer,
                          0, VK_INDEX_TYPE_UINT16);
     vkCmdBindDescriptorSets(commandBuffers[currentFrame],
                             VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            shape.pipelineLayout, 0, 1,
-                            &shape.descriptorSets[currentFrame], 0, nullptr);
+                            shape.second.pipelineLayout, 0, 1,
+                            &shape.second.descriptorSets[currentFrame], 0, nullptr);
     vkCmdDrawIndexed(commandBuffers[currentFrame],
-                     static_cast<uint32_t>(shape.indices.size()), 1, 0, 0, 0);
+                     static_cast<uint32_t>(shape.second.indices.size()), 1, 0, 0, 0);
   }
   vkCmdEndRenderPass(commandBuffers[currentFrame]);
 
@@ -131,20 +111,30 @@ void ShapeManager::changeMsaa() {
                                 true, false);
 }
 
-void ShapeManager::addRectangle(ShapeParams shapeParams,
+int ShapeManager::addRectangle(ShapeParams shapeParams,
                                 std::string texturePath) {
-  shapes.push_back(Triangle());
-  shapes.back().init(device, commandPool, swapChain, textureSampler,
+  int shapeNo = shapes.size();
+  shapes[shapeNo] = Rectangle();
+  shapes[shapeNo].init(device, commandPool, swapChain, textureSampler,
                      texturePath, &renderPass);
-  shapes.back().params = shapeParams;
+  shapes[shapeNo].params = shapeParams;
+  return shapeNo;
 }
 
-void ShapeManager::addTriangle(ShapeParams shapeParams,
+int ShapeManager::addTriangle(ShapeParams shapeParams,
                                std::string texturePath) {
-  shapes.push_back(Triangle());
-  shapes.back().init(device, commandPool, swapChain, textureSampler,
+  
+  int shapeNo = nextFreeShapeNo;
+  nextFreeShapeNo++;
+  shapes[shapeNo] = Triangle();
+  shapes[shapeNo].init(device, commandPool, swapChain, textureSampler,
                      texturePath, &renderPass);
-  shapes.back().params = shapeParams;
+  shapes[shapeNo].params = shapeParams;
+  return shapeNo;
+  }
+void ShapeManager::removeShape(int shapeNo) {
+  shapes[shapeNo].destroy();
+  shapes.erase(shapeNo);
 }
 
 void ShapeManager::cleanup() {

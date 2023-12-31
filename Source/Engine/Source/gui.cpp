@@ -22,10 +22,12 @@ void GUI::config() {
     ImGui::Begin("Shapes");
     {
       for (size_t i = 0; i < params->shapeManager->shapes.size(); i++) {
-        shapeHeader[i] = ImGui::CollapsingHeader(
-            ("Shape Params " + std::to_string(i + 1)).c_str(), shapeHeader[i]);
-        if (shapeHeader[i])
-          shapeMover(&params->shapeManager->shapes[i].params);
+        if(params->shapeManager->shapes.count(i) > 0){ 
+          shapeHeader[i] = ImGui::CollapsingHeader(
+              ("Shape Params " + std::to_string(i + 1)).c_str(), shapeHeader[i]);
+          if (shapeHeader[i])
+            shapeMover(&params->shapeManager->shapes[i].params);
+        }
       }
     }
     ImGui::End();
@@ -248,16 +250,6 @@ void GUI::init(Device *device, GLFWwindow *window, SwapChain *swapChain,
                                commandBuffers.data()) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate command buffers!");
   }
-
-  std::cout << "Command Buffers(GUI): " << std::endl;
-  for (auto commandBuffer : commandBuffers)
-    std::cout << commandBuffer << std::endl;
-  std::cout << "Framebuffers(GUI): " << std::endl;
-  for (auto framebuffer : framebuffers)
-    std::cout << framebuffer << std::endl;
-  std::cout << "Render Pass(GUI): " << std::endl;
-  std::cout << renderPass << std::endl;
-  std::cout << std::endl;
 }
 
 void GUI::destroy() {
