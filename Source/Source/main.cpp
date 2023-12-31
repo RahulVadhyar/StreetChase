@@ -10,6 +10,32 @@ int main(){
 
     Chronos::Manager manager(initializer);
     
+    ShapeParams triangleParams;
+    triangleParams.x = 0.5;
+    triangleParams.y = 0.5;
+    triangleParams.xSize = 0.5;
+    triangleParams.ySize = 0.5;
+    triangleParams.rotation = 0;
+    Chronos::PolygonType triangleType;
+    triangleType.triangle = true;
+    int triangle = manager.addPolygon(triangleParams, triangleType, "G:/StreetChase/Assets/texture.jpg");
+
+    ShapeParams rectangleParams;
+    rectangleParams.x = -0.5;
+    rectangleParams.y = -0.5;
+    rectangleParams.xSize = 0.5;
+    rectangleParams.ySize = 0.5;
+    rectangleParams.rotation = 0;
+    Chronos::PolygonType rectangleType;
+    rectangleType.rectangle = true;
+    int rectangle = manager.addPolygon(rectangleParams, rectangleType, "G:/StreetChase/Assets/texture.jpg");
+
+    Chronos::Text text;
+    text.x = 0.0;
+    text.y = 0.0;
+    text.text = "Hello World";
+    int textNo = manager.addText(text);
+
     while (!glfwWindowShouldClose(manager.getWindow())) {
         if (glfwGetKey(manager.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(manager.getWindow(), true);
