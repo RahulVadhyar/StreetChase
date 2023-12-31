@@ -4,3 +4,9 @@
 [submodule "ThirdParty/glfw"]
 	path = ThirdParty/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "ThirdParty/im-neo-sequencer"]
+	path = ThirdParty/im-neo-sequencer
+	url = https://gitlab.com/GroGy/im-neo-sequencer.git
+[submodule "ThirdParty/imgui-node-editor"]
+	path = ThirdParty/imgui-node-editor
+	url = https://github.com/thedmd/imgui-node-editor.git
