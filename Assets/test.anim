@@ -1,0 +1,11 @@
+shape1{
+    Type:Rectangle
+    Child:[shape2, shape3, shape4]
+    #xValues, yValues, rotation, xSize, ySize, show
+    0:[0, 0, 0, 0.5, 0.5, true]
+    1:[0, 0, 0, 0.5, 0.5, true]
+    2:[0.1, -0.32, 0, 0.5, 0.5, true]
+    3:[0.1, -0.32, 0, 0.5, 0.5, true]
+    4:[0.1, -0.32, 0, 0.5, 0.5, true]
+}
+
