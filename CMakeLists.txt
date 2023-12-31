@@ -18,6 +18,12 @@ endif (WIN32)
 set(IMGUI_DIR ThirdParty/imgui) 
 set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
 
+#imGuizmo
+set(IMGUI_GUIZMO ThirdParty/ImGuizmo)
+
+#imgui-node-editor
+set(IMGUI_NODE_EDITOR_DIR ThirdParty/imgui-node-editor)
+
 #fonts
 set(FONTS_DIR ThirdParty/fonts/usascii/arial)
 set(FONTS_DIR ThirdParty/fonts/latin1/consolas)
@@ -28,6 +34,8 @@ set(API_DIR Source/API/Source)
 file(GLOB MAIN ${SOURCE_DIR}/*.cpp)
 file(GLOB API ${API_DIR}/*.cpp)
 file(GLOB IMGUI ${IMGUI_DIR}/*.cpp)
+file(GLOB IM_GUIZMO_CPP ${IMGUI_GUIZMO}/*.cpp)
+file(GLOB IMGUI_NODE_EDITOR_CPP ${IMGUI_NODE_EDITOR_DIR}/*.cpp)
 
 #again windows vulkan stuf....git 
 if(WIN32)
@@ -36,8 +44,12 @@ if(WIN32)
 endif(WIN32)
 
 # linking
-add_library(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)
-# add_executable(Chronos ${MAIN} ${API} ${IMGUI} ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp)      
+add_library(Chronos ${MAIN} ${API} ${IMGUI} 
+            ${IMGUI_BACKENDS}/imgui_impl_glfw.cpp 
+            ${IMGUI_BACKENDS}/imgui_impl_vulkan.cpp
+            ${IM_GUIZMO_CPP}
+            ${IMGUI_NODE_EDITOR_CPP}
+            )
 
 #vulkan sdk if using windows
 if(WIN32)
@@ -53,6 +65,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${GLFW_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_DIR})               
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_BACKENDS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${FONTS_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_GUIZMO})    
+target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI_NODE_EDITOR_DIR})
 
 
 #linking vulkan is a pain....
