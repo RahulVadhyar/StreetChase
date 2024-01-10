@@ -1,14 +1,14 @@
 #include "chronos.hpp"
 
 int main(){
-    Chronos::Initializer initializer;
+    Chronos::Manager::Initializer initializer;
     initializer.WindowWidth = 800;
     initializer.WindowHeight = 600;
     initializer.BackgroundColor[0] = 0;
     initializer.BackgroundColor[1] = 0;
     initializer.BackgroundColor[2] = 0;
 
-    Chronos::Manager manager(initializer);
+    Chronos::Manager::Manager manager(initializer);
     
     ShapeParams triangleParams;
     triangleParams.x = 0.5;
@@ -16,7 +16,7 @@ int main(){
     triangleParams.xSize = 0.5;
     triangleParams.ySize = 0.5;
     triangleParams.rotation = 0;
-    Chronos::PolygonType triangleType;
+    Chronos::Manager::PolygonType triangleType;
     triangleType.triangle = true;
     int triangle = manager.addPolygon(triangleParams, triangleType, "G:/StreetChase/Assets/texture.jpg");
 
@@ -26,11 +26,11 @@ int main(){
     rectangleParams.xSize = 0.5;
     rectangleParams.ySize = 0.5;
     rectangleParams.rotation = 0;
-    Chronos::PolygonType rectangleType;
+    Chronos::Manager::PolygonType rectangleType;
     rectangleType.rectangle = true;
     int rectangle = manager.addPolygon(rectangleParams, rectangleType, "G:/StreetChase/Assets/texture.jpg");
 
-    Chronos::Text text;
+    Chronos::Manager::Text text;
     text.x = 0.0;
     text.y = 0.0;
     text.text = "Hello World";
