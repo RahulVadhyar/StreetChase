@@ -18,7 +18,7 @@ int main(){
     triangleParams.rotation = 0;
     Chronos::Manager::PolygonType triangleType;
     triangleType.triangle = true;
-    int triangle = manager.addPolygon(triangleParams, triangleType, "G:/StreetChase/Assets/texture.jpg");
+    int triangle = manager.addPolygon(triangleParams, triangleType, "../Assets/texture.jpg");
 
     ShapeParams rectangleParams;
     rectangleParams.x = -0.5;
@@ -28,7 +28,7 @@ int main(){
     rectangleParams.rotation = 0;
     Chronos::Manager::PolygonType rectangleType;
     rectangleType.rectangle = true;
-    int rectangle = manager.addPolygon(rectangleParams, rectangleType, "G:/StreetChase/Assets/texture.jpg");
+    int rectangle = manager.addPolygon(rectangleParams, rectangleType, "../Assets/texture.jpg");
 
     Chronos::Manager::Text text;
     text.x = 0.0;
