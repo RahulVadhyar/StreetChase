@@ -1,10 +1,38 @@
-shape1{
-    shape1:[0.3, 0.2]
-    shape3:[0.1, 0.4]
-    shape2:[0.7, 0.6]
+body{
+Type: Triangle
+TexturePath: "Assets/texture.png"
+[0.1, -0.1, 0.4, 0.6, 0.7, true]
+{
+head:[0.3, 0.2],
+leg1:[0.7, 0.6],
+leg2:[0.1, 0.4],
+}
 }
 
-shape3{
-    shape4:[-0.1, 0.3]
-    shape5:[0.9, 0.8]
+leg1{
+Type: Rectangle
+TexturePath: "Assets/texture.png"
+[0.2, -0.16, 0.38, 0.12, -0.7, true]
+{
+foot1:[0.3, 0.2],
+foot2:[0.1, 0.4],
+}
+}
+
+head{
+Type: Rectangle
+TexturePath: "Assets/texture.png"
+[0.2, -0.16, 0.38, 0.12, -0.7, true]
+}
+
+foot1{
+Type: Rectangle
+TexturePath: "Assets/texture.png"
+[0.2, -0.16, 0.38, 0.12, -0.7, true]
+}
+
+foot2{
+Type: Rectangle
+TexturePath: "Assets/texture.png"
+[0.2, -0.16, 0.38, 0.12, -0.7, true]
 }
