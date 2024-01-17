@@ -2,7 +2,7 @@
 
 int main(){
 
-    std::filesystem::path cwdpath("../");
+    std::filesystem::path cwdpath("../../");
     std::cout << cwdpath << std::endl;
     std::filesystem::current_path(cwdpath);
     Chronos::Manager::Initializer initializer;
