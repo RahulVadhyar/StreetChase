@@ -2,8 +2,7 @@
 
 int main(){
 
-    std::filesystem::path cwdpath("../../");
-    std::cout << cwdpath << std::endl;
+    std::filesystem::path cwdpath("../");
     std::filesystem::current_path(cwdpath);
     Chronos::Manager::Initializer initializer;
     initializer.WindowWidth = 800;
@@ -34,11 +33,15 @@ int main(){
     rectangleType.rectangle = true;
     int rectangle = manager.addPolygon(rectangleParams, rectangleType, "Assets/texture.jpg");
 
-    Chronos::Manager::Text text;
-    text.x = 0.0;
-    text.y = 0.0;
-    text.text = "Hello World";
-    int textNo = manager.addText(text);
+
+    Chronos::Engine::TextParams textParams;
+    textParams.x = 0.0f;
+    textParams.y = 0.0f;
+    textParams.text = "This is a test";
+    textParams.rotation = 0;
+    textParams.scale = 0;
+
+    int textNo = manager.addText(textParams);
 
     while (!glfwWindowShouldClose(manager.getWindow())) {
         if (glfwGetKey(manager.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
