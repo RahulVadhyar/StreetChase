@@ -2,7 +2,7 @@
 
 int main(){
 
-    std::filesystem::path cwdpath("../");
+    std::filesystem::path cwdpath("../../");
     std::filesystem::current_path(cwdpath);
     Chronos::Manager::Initializer initializer;
     initializer.WindowWidth = 800;
@@ -39,7 +39,7 @@ int main(){
     textParams.y = 0.0f;
     textParams.text = "This is a test";
     textParams.rotation = 0;
-    textParams.scale = 0;
+    textParams.scale = 1.0;
 
     int textNo = manager.addText(textParams);
 
