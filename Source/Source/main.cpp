@@ -13,7 +13,7 @@ int main(){
 
     Chronos::Manager::Manager manager(initializer);
     
-    Chronos::Engine::ShapeParams triangleParams;
+    Chronos::Manager::ShapeParams triangleParams;
     triangleParams.x = 0.5;
     triangleParams.y = 0.5;
     triangleParams.xSize = 0.5;
@@ -23,7 +23,7 @@ int main(){
     triangleType.triangle = true;
     int triangle = manager.addPolygon(triangleParams, triangleType, "Assets/texture.jpg");
 
-    Chronos::Engine::ShapeParams rectangleParams;
+    Chronos::Manager::ShapeParams rectangleParams;
     rectangleParams.x = -0.5;
     rectangleParams.y = -0.5;
     rectangleParams.xSize = 0.5;
