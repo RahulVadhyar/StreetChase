@@ -13,6 +13,8 @@ int main(){
 
     Chronos::Manager::Manager manager(initializer);
     
+    int texture = manager.addTexture("Assets/texture.jpg");
+
     Chronos::Manager::ShapeParams triangleParams;
     triangleParams.x = 0.5;
     triangleParams.y = 0.5;
@@ -21,7 +23,7 @@ int main(){
     triangleParams.rotation = 0;
     Chronos::Manager::PolygonType triangleType;
     triangleType.triangle = true;
-    int triangle = manager.addPolygon(triangleParams, triangleType, "Assets/texture.jpg");
+    int triangle = manager.addPolygon(triangleParams, triangleType, texture);
 
     Chronos::Manager::ShapeParams rectangleParams;
     rectangleParams.x = -0.5;
@@ -31,15 +33,15 @@ int main(){
     rectangleParams.rotation = 0;
     Chronos::Manager::PolygonType rectangleType;
     rectangleType.rectangle = true;
-    int rectangle = manager.addPolygon(rectangleParams, rectangleType, "Assets/texture.jpg");
+    int rectangle = manager.addPolygon(rectangleParams, rectangleType, texture);
 
     rectangleParams.x = -0.25;
     rectangleParams.y = -0.25;
     rectangleParams.xSize = 0.3;
     rectangleParams.ySize = 0.3;
     rectangleParams.rotation = 0.9;
-    std::array<float, 3> color = {0.5, 0.5, 0.5};
-    int rectangle2 = manager.addPolygon(rectangleParams, rectangleType, color);
+    rectangleParams.color = {0.5, 0.5, 0.5};
+    int rectangle2 = manager.addPolygon(rectangleParams, rectangleType);
 
     Chronos::Engine::TextParams textParams;
     textParams.x = 0.0f;
@@ -47,6 +49,7 @@ int main(){
     textParams.text = "This is a test";
     textParams.rotation = 0;
     textParams.scale = 1.0;
+    textParams.color = {1.0, 0.5, 0.0};
 
     int textNo = manager.addText(textParams);
 
