@@ -43,6 +43,17 @@ int main(){
     rectangleParams.color = {0.5, 0.5, 0.5};
     int rectangle2 = manager.addPolygon(rectangleParams, rectangleType);
 
+    rectangleParams.x = 0.25;
+    rectangleParams.y = 0.25;
+    rectangleParams.xSize = 0.3;
+    rectangleParams.ySize = 0.3;
+    rectangleParams.rotation = 0.9;
+    Chronos::Manager::PolygonType npolygonType;
+    npolygonType.npolygon = true;
+    int rectangle23 = manager.addPolygon(rectangleParams, npolygonType, texture, {{-0.5, -0.5}, {0.5, -0.5},
+                                                                                    {0.5, 0.5}, {-0.5, 0.5} });
+
+
     Chronos::Engine::TextParams textParams;
     textParams.x = 0.0f;
     textParams.y = 0.0f;
